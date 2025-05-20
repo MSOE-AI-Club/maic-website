@@ -1,1 +1,1 @@
-# maic-website
+# MAIC Website
