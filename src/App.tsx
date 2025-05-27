@@ -131,7 +131,7 @@ function App() {
           <img src={selectedImageUrl} alt={selectedFileItem?.name} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
         )}
         {!isFileLoading && !fileError && viewingMode === 'file-text' && selectedFileContent !== null && (
-          <pre style={{ whiteSpace: 'pre-wrap', border: '1px solid #ccc', padding: '10px', maxHeight: '80vh', overflowY: 'auto' }}>
+          <pre style={{ textAlign: 'left', whiteSpace: 'pre-wrap', border: '1px solid #ccc', padding: '10px', maxHeight: '80vh', overflowY: 'auto' }}>
             {selectedFileContent}
           </pre>
         )}
