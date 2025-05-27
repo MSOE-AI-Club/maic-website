@@ -1,3 +1,8 @@
+// Define constants for repository details
+const repoOwner = "MSOE-AI-Club";
+const repoName = "maic-content";
+
+// Keep the existing getLatestCommitHash function as it's crucial for determining the branch/commit
 export async function getLatestCommitHash(): Promise<string | null> {
   const branchName = import.meta.env.VITE_BRANCH;
 
@@ -6,8 +11,8 @@ export async function getLatestCommitHash(): Promise<string | null> {
     return null;
   }
 
-  const repoOwner = "MSOE-AI-Club";
-  const repoName = "maic-content";
+  // const repoOwner = "MSOE-AI-Club"; // Defined at module level
+  // const repoName = "maic-content"; // Defined at module level
   const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/branches/${branchName}`;
 
   try {
@@ -44,92 +49,150 @@ export async function getLatestCommitHash(): Promise<string | null> {
   }
 }
 
+// Interface for the manifest.json structure
+interface Manifest {
+  generated_at: string;
+  files: string[];
+}
+
+// Cache for the manifest file
+let cachedManifest: { commitSha: string; data: Manifest | null } | null = null;
+
+// Updated GitHubContentItem interface: sha and size are now optional
 export interface GitHubContentItem {
   name: string;
   path: string;
-  sha: string;
-  size: number;
+  sha?: string; // Optional: Not available from manifest
+  size?: number; // Optional: Not available from manifest
   type: "file" | "dir";
-  download_url: string | null; // null for directories
+  download_url: string | null;
   html_url: string;
-  // Add other fields if needed, e.g., _links
+  // Add other fields if needed
 }
+
+// Helper function to fetch manifest.json for a specific commit
+async function fetchManifestForCommit(commitSha: string): Promise<Manifest | null> {
+  const manifestUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${commitSha}/manifest.json`;
+  try {
+    const response = await fetch(manifestUrl, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      console.error(
+        `Error fetching manifest.json from GitHub: ${response.status} ${response.statusText} for commit: ${commitSha}`
+      );
+      console.error(`Attempted URL: ${manifestUrl}`);
+      const errorBody = await response.text();
+      console.error("Error body (if any):", errorBody);
+      return null;
+    }
+    const manifestData = await response.json();
+    // Basic validation of manifest structure
+    if (!manifestData || !Array.isArray(manifestData.files) || typeof manifestData.generated_at !== 'string') {
+        console.error("Invalid manifest format:", manifestData);
+        return null;
+    }
+    return manifestData as Manifest;
+  } catch (error) {
+    console.error(`An unexpected error occurred while fetching manifest for commit ${commitSha}:`, error);
+    return null;
+  }
+}
+
+// Helper function to get (and cache) the manifest
+async function getManifest(): Promise<{ manifest: Manifest; commitSha: string } | null> {
+  const currentCommitSha = await getLatestCommitHash();
+  if (!currentCommitSha) {
+    console.error("Error: Could not retrieve the latest commit hash to fetch manifest.");
+    return null;
+  }
+
+  // Check cache, but also ensure cached data is not null (which indicates a previous failed fetch for this SHA)
+  if (cachedManifest && cachedManifest.commitSha === currentCommitSha && cachedManifest.data) {
+    return { manifest: cachedManifest.data, commitSha: currentCommitSha };
+  }
+
+  // If cache miss, or cached data was null (failed attempt), fetch new manifest
+  const manifestData = await fetchManifestForCommit(currentCommitSha);
+  
+  // Update cache regardless of success or failure to store the attempt for this commitSha
+  cachedManifest = { commitSha: currentCommitSha, data: manifestData };
+
+  if (manifestData) {
+    return { manifest: manifestData, commitSha: currentCommitSha };
+  } else {
+    return null;
+  }
+}
+
 
 export async function getDirectoryContents(
   directoryPath: string
 ): Promise<GitHubContentItem[] | null> {
-  const commitSha = await getLatestCommitHash();
-
-  if (!commitSha) {
+  const manifestResult = await getManifest();
+  if (!manifestResult) {
     console.error(
-      "Error: Could not retrieve the latest commit hash to fetch directory contents."
+      "Error: Could not retrieve manifest to list directory contents."
     );
     return null;
   }
+  const { manifest, commitSha } = manifestResult;
 
-  const repoOwner = "MSOE-AI-Club";
-  const repoName = "maic-content";
-  // Ensure the directory path is properly encoded for the URL
-  const encodedPath = directoryPath
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/");
-  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedPath}?ref=${commitSha}`;
+  const items: GitHubContentItem[] = [];
+  const foundDirs = new Set<string>();
 
-  try {
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+  const normalizedPath = directoryPath.trim();
+  // Ensure prefix ends with a slash if it's not the root path.
+  // For root path (empty string or "."), prefix should be empty to match files at the root.
+  const prefix = (normalizedPath === "" || normalizedPath === ".") ? "" : (normalizedPath.endsWith("/") ? normalizedPath : normalizedPath + "/");
 
-    if (!response.ok) {
-      console.error(
-        `Error fetching directory contents from GitHub: ${response.status} ${response.statusText} for path: ${directoryPath} at commit: ${commitSha}`
-      );
-      const errorBody = await response.text();
-      console.error("Error body:", errorBody);
-      return null;
+  for (const filePath of manifest.files) {
+    if (filePath.startsWith(prefix)) {
+      const relativePath = filePath.substring(prefix.length);
+      if (relativePath === "") continue; // Skip if filePath itself is the prefix
+
+      const slashIndex = relativePath.indexOf("/");
+
+      if (slashIndex === -1) { // It's a file
+        items.push({
+          name: relativePath,
+          path: filePath,
+          type: "file",
+          download_url: `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${commitSha}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+          html_url: `https://github.com/${repoOwner}/${repoName}/blob/${commitSha}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+        });
+      } else { // It's a directory or a file in a subdirectory
+        const dirName = relativePath.substring(0, slashIndex);
+        if (!foundDirs.has(dirName)) {
+          foundDirs.add(dirName);
+          const dirFullPath = prefix + dirName;
+          items.push({
+            name: dirName,
+            path: dirFullPath,
+            type: "dir",
+            download_url: null,
+            html_url: `https://github.com/${repoOwner}/${repoName}/tree/${commitSha}/${dirFullPath.split("/").map(encodeURIComponent).join("/")}`,
+          });
+        }
+      }
     }
-
-    const data = await response.json();
-
-    // The GitHub API returns an array for directory contents.
-    // If the path points to a file, it returns an object. We ensure it's an array.
-    if (Array.isArray(data)) {
-      return data as GitHubContentItem[];
-    } else {
-      console.error(
-        `Error: Expected an array of contents for directory ${directoryPath}, but received type ${typeof data}. This might happen if the path points to a file. Data:`, data
-      );
-      // If the path was supposed to be a directory, this is an error.
-      // If a single file's metadata was acceptable, one might return [data as GitHubContentItem], but the function is named getDirectoryContents.
-      return null;
-    }
-  } catch (error) {
-    console.error(
-      `An unexpected error occurred while fetching directory contents for path ${directoryPath}:`,
-      error
-    );
-    return null;
   }
+  return items;
 }
 
 export async function getFileContent(filePath: string): Promise<string | null> {
-  const commitSha = await getLatestCommitHash();
-
-  if (!commitSha) {
+  const manifestResult = await getManifest();
+  if (!manifestResult) {
     console.error(
-      "Error: Could not retrieve the latest commit hash to fetch file content."
+      "Error: Could not retrieve manifest details (and commit hash) to fetch file content."
     );
     return null;
   }
+  const { commitSha } = manifestResult;
 
-  const repoOwner = "MSOE-AI-Club";
-  const repoName = "maic-content";
-  // Ensure the file path is properly encoded for the URL, though typically not strictly necessary for raw.githubusercontent
-  // It's safer for paths that might contain special characters, though less common for this type of URL.
+  // const repoOwner = "MSOE-AI-Club"; // Defined at module level
+  // const repoName = "maic-content"; // Defined at module level
   const encodedFilePath = filePath
     .split("/")
     .map(encodeURIComponent)
@@ -140,9 +203,6 @@ export async function getFileContent(filePath: string): Promise<string | null> {
   try {
     const response = await fetch(rawContentUrl, {
       method: "GET",
-      // No special headers typically needed for raw.githubusercontent.com
-      // However, for private repos, a token might be needed via query param or header depending on setup,
-      // but this hook assumes public access or tokenless access to raw content.
     });
 
     if (!response.ok) {
@@ -167,19 +227,17 @@ export async function getFileContent(filePath: string): Promise<string | null> {
 }
 
 export async function getRawFileUrl(filePath: string): Promise<string | null> {
-  const commitSha = await getLatestCommitHash();
-
-  if (!commitSha) {
+  const manifestResult = await getManifest();
+  if (!manifestResult) {
     console.error(
-      "Error: Could not retrieve the latest commit hash to construct file URL."
+      "Error: Could not retrieve manifest details (and commit hash) to construct file URL."
     );
     return null;
   }
+  const { commitSha } = manifestResult;
 
-  const repoOwner = "MSOE-AI-Club";
-  const repoName = "maic-content";
-  // Ensure the file path is properly encoded. While raw.githubusercontent.com is often lenient,
-  // it's good practice, especially if paths could contain spaces or special characters.
+  // const repoOwner = "MSOE-AI-Club"; // Defined at module level
+  // const repoName = "maic-content"; // Defined at module level
   const encodedFilePath = filePath
     .split("/")
     .map((segment) => encodeURIComponent(segment))
