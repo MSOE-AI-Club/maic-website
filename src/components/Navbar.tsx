@@ -1,6 +1,4 @@
 import "../assets/css/navbar.css";
-import { useEffect, useState } from "react";
-import { getRawFileUrl } from "../hooks/github-hook";
 
 /**
  * The NavBarProps interface represents the props that the NavBar component receives.
@@ -18,23 +16,13 @@ const NavBar = (props: NavBarProps) => {
   /**
    * The NavBar component.
    */
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchLogoUrl = async () => {
-      const url = await getRawFileUrl("images/general/Logo.png");
-      setLogoUrl(url);
-    };
-    fetchLogoUrl();
-  }, []);
-
   return (
     <div id="toolbar" style={{ textAlign: "center" }}>
       <h3>
         <a href="/">
           <img
             className="logo"
-            src={logoUrl || ""}
+            src="/Logo.png"
             alt="Logo"
             height="25px"
             style={{
@@ -48,7 +36,7 @@ const NavBar = (props: NavBarProps) => {
       </h3>
       <a
         className={`${props.page === "Home" ? "active" : ""}`}
-        href="/index.html"
+        href="/"
       >
         <p>Home</p>
       </a>
