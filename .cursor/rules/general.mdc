@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+If editing an S3 link, never use the S3 as a fallback as it is deprecated. Always use the updated string.

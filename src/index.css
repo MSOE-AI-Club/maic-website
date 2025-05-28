@@ -1,70 +1,243 @@
-@import "tailwindcss";
+@import "tailwindcss/theme.css" layer(theme);
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.js-loading *,
+.js-loading *:before,
+.js-loading *:after {
+    animation-play-state: paused !important;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+:root{
+    --bg-1: 25, 25, 30;
+    --bg-2: 18, 22, 25;
+
+    --hl-1: 141, 224, 254;
+    --hl-2: 224, 132, 255;
+
+    --text-1: 255, 255, 255;
+    --text-2: 139, 140, 173;
+
+    --transition-height: 80px;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+
+body{
+    margin:0px;
+    background: rgb(var(--bg-1));
+    color: rgb(var(--text-1));
+    font-family: Helvetica;
+    line-height: 170%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    /* optional size in px or %: */
+    /* width: 100px;
+    height: 100px; */
+
+    text-align: center;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+hr {
+    /* clear:both; */
+    border:0;
+    height:1px;
+    background-image:linear-gradient(to right,rgba(var(--text-1),0),rgba(var(--text-1),.75),rgba(var(--text-1),0))
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+a{
+    color: rgb(var(--hl-1));
+}
+
+a:visited{
+    color: rgb(var(--hl-2));
+}
+
+.transition {
+    width: 100%;
+    height: var(--transition-height);
+}
+
+/** TOOLBAR **/
+
+#toolbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: rgba(var(--bg-1), 0.5);
+    padding: 10px;
+    z-index: 100;
+    line-height: 40px;
+}
+
+ 
+#toolbar h3 {
+    padding: 15px;
+    display: inline;
+}
+
+#toolbar p {
+    padding: 15px;
+    display: inline;
+}
+
+#toolbar h4 {
+    padding: 15px;
+    display: inline;
+    user-select: none;
+    color: rgb(var(--text-2));
+}
+
+#toolbar a {
+    text-decoration: none;
+    color: rgb(var(--text-1));
+}
+
+#toolbar p:hover {
+    background-color: rgb(71, 46, 134); 
+    padding-top: 7px; 
+    padding-bottom: 7px; 
+    border-radius: 10px;
+}
+
+td, th{
+    padding-right: 100px;
+}
+
+tr:nth-child(even), th {
+    background-color: rgb(var(--bg-2));
+}
+
+
+
+.card{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+.card div{
+    padding-left: 40px;
+}
+.break{
+    flex-basis: 100%;
+    height:0;
+}
+
+code{
+    background: rgb(35, 39, 42);
+    width: 100%;
+    border-radius: 1rem;
+    overflow-x: scroll;
+    text-overflow: ellipsis;
+    
+    padding: 5px;
+}
+
+.js-loading *,
+.js-loading *:before,
+.js-loading *:after {
+    animation-play-state: paused !important;
+}
+
+:root{
+    --bg-1: 25, 25, 30;
+    --bg-2: 18, 22, 25;
+
+    --hl-1: 141, 224, 254;
+    --hl-2: 224, 132, 255;
+
+    --text-1: 255, 255, 255;
+    --text-2: 139, 140, 173;
+
+    --transition-height: 80px;
+}
+
+
+body{
+    margin:0px;
+    background: rgb(var(--bg-1));
+    color: rgb(var(--text-1));
+    font-family: Helvetica;
+    line-height: 170%;
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    /* optional size in px or %: */
+    /* width: 100px;
+    height: 100px; */
+
+    text-align: center;
+}
+
+hr {
+    /* clear:both; */
+    border:0;
+    height:1px;
+    background-image:linear-gradient(to right,rgba(var(--text-1),0),rgba(var(--text-1),.75),rgba(var(--text-1),0))
+}
+
+a{
+    color: rgb(var(--hl-1));
+}
+
+a:visited{
+    color: rgb(var(--hl-2));
+}
+
+.transition {
+    width: 100%;
+    height: var(--transition-height);
+}
+
+
+td, th{
+    padding-right: 100px;
+}
+
+tr:nth-child(even), th {
+    background-color: rgb(var(--bg-2));
+}
+
+
+
+.card{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    margin-left: 40px;
+    margin-right: 40px;
+    /* border-bottom: rgb(var(--text-2)) solid 1px; */
+    /* align-items: center; */
+    /* justify-content:center; */
+    /* position:relative;
+    left: 50%;
+    transform: translateX(-25%); */
+}
+.card div{
+    padding-left: 40px;
+    /* width: 50%; */
+}
+.break{
+    flex-basis: 100%;
+    height:0;
+}
+
+code{
+    background: rgb(35, 39, 42);
+    width: 100%;
+    border-radius: 1rem;
+    overflow-x: scroll;
+    text-overflow: ellipsis;
+    
+    padding: 5px;
 }
