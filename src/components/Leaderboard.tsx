@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getRawFileUrl } from "../hooks/github-hook";
+import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
 
 interface LeaderboardEntry {
   user: string;
@@ -12,6 +12,65 @@ interface Achievement {
   iconUrl: string;
   title: string;
 }
+
+/**
+ * Maps award names to icon filenames (add more as needed)
+ */
+const AWARD_ICON_MAP: Record<string, { filename: string; title: string }> = {
+  Hacksgiving: { filename: "hacksgiving.png", title: "Hacksgiving" },
+  "ROSIE Competition Finalist 2024": {
+    filename: "ROSIE2024.png",
+    title: "2024 ROSIE Challenge Finalist",
+  },
+  "ROSIE Competition Finalist 2023": {
+    filename: "ROSIE2023.png",
+    title: "2023 ROSIE Challenge Finalist",
+  },
+  "ROSIE Competition Finalist 2022": {
+    filename: "ROSIE2022.png",
+    title: "2022 ROSIE Challenge Finalist",
+  },
+  "ROSIE Presenter": {
+    filename: "ROSIE_Presenter.png",
+    title: "ROSIE Presenter",
+  },
+  "2024 MICS Attendee": {
+    filename: "2024MICS.png",
+    title: "2024 MICS Attendee",
+  },
+  "2023 MICS Attendee": {
+    filename: "2023MICS.png",
+    title: "2023 MICS Attendee",
+  },
+  "2022 MICS Attendee": {
+    filename: "2022MICS.png",
+    title: "2022 MICS Attendee",
+  },
+  "2024 Researcher": {
+    filename: "2024Researcher.png",
+    title: "2024 AI Researcher",
+  },
+  "2023 Researcher": {
+    filename: "2023Researcher.png",
+    title: "2023 AI Researcher",
+  },
+  "2022 Researcher": {
+    filename: "2022Researcher.png",
+    title: "2022 AI Researcher",
+  },
+  "NVIDIA DLI 2023": {
+    filename: "NVIDIA_DLI_2023.jpg",
+    title: "NVIDIA DLI 2023",
+  },
+  Overlord: { filename: "Overlord.png", title: "Tech Coord Overlord" },
+  Founder: { filename: "Founder.png", title: "Founder" },
+  eboard2024: { filename: "current_eboard.png", title: "2024 Eboard" },
+  eboard2023: { filename: "old_eboard.png", title: "2023 Eboard" },
+  eboard2022: { filename: "old_eboard.png", title: "2022 Eboard" },
+  eboard2021: { filename: "old_eboard.png", title: "2021 Eboard" },
+  eboard2020: { filename: "old_eboard.png", title: "2020 Eboard" },
+  // Add more mappings as needed
+};
 
 /**
  * Leaderboard component that displays user rankings and achievements
@@ -28,132 +87,61 @@ const Leaderboard: React.FC = () => {
     const fetchLeaderboardData = async () => {
       try {
         setIsLoading(true);
+        setError(null);
+        // Fetch CSV from content repo
+        const csv = await getFileContent("data/points/user_data.csv");
+        if (!csv) throw new Error("Could not load leaderboard data");
 
-        // Try to fetch leaderboard data from a JSON file or CSV
-        // For now, I'll create mock data based on the HTML structure
-        // In a real implementation, you'd fetch from data/leaderboard.json or similar
+        // Parse CSV
+        const lines = csv.split(/\r?\n/).filter(Boolean);
+        const header = lines[0].split(",");
+        const userIdx = header.indexOf("User");
+        const awardsIdx = header.indexOf("Awards");
+        const allTimeIdx = header.indexOf("All-Time Points");
+        const currentIdx = header.indexOf("Current Points");
 
-        const mockData: LeaderboardEntry[] = [
-          {
-            user: "🏆 Mitchell Johnstone",
-            allTimePoints: 65,
-            currentPoints: 0,
-            achievements: [
-              {
-                iconUrl: "data/custom_icons/ROSIE_Presenter.png",
-                title: "ROSIE Presenter",
-              },
-              {
-                iconUrl: "data/custom_icons/2024MICS.png",
-                title: "2024 MICS Attendee",
-              },
-              {
-                iconUrl: "data/custom_icons/2023MICS.png",
-                title: "2023 MICS Attendee",
-              },
-              {
-                iconUrl: "data/custom_icons/2024Researcher.png",
-                title: "2024 Researcher",
-              },
-              {
-                iconUrl: "data/custom_icons/2023Researcher.png",
-                title: "2023 Researcher",
-              },
-              {
-                iconUrl: "data/custom_icons/hacksgiving.png",
-                title: "Hacksgiving",
-              },
-            ],
-          },
-          {
-            user: "🥈 Bart Gebka",
-            allTimePoints: 62,
-            currentPoints: 48,
-            achievements: [
-              {
-                iconUrl: "data/custom_icons/ROSIE2024.png",
-                title: "2024 ROSIE Challenge Finalist",
-              },
-              {
-                iconUrl: "data/custom_icons/ROSIE_Presenter.png",
-                title: "ROSIE Presenter",
-              },
-              {
-                iconUrl: "data/custom_icons/2024Researcher.png",
-                title: "2024 Researcher",
-              },
-              {
-                iconUrl: "data/custom_icons/2023Researcher.png",
-                title: "2023 Researcher",
-              },
-            ],
-          },
-          {
-            user: "🥉 Travis Jankowski",
-            allTimePoints: 53,
-            currentPoints: 50,
-            achievements: [],
-          },
-          {
-            user: "Sydney Balboni",
-            allTimePoints: 48,
-            currentPoints: 47,
-            achievements: [
-              {
-                iconUrl: "data/custom_icons/old_eboard.png",
-                title: "2023 Eboard",
-              },
-              {
-                iconUrl: "data/custom_icons/ROSIE2024.png",
-                title: "2024 ROSIE Challenge Finalist",
-              },
-              {
-                iconUrl: "data/custom_icons/ROSIE2023.png",
-                title: "2023 ROSIE Challenge Finalist",
-              },
-              {
-                iconUrl: "data/custom_icons/ROSIE_Presenter.png",
-                title: "ROSIE Presenter",
-              },
-              {
-                iconUrl: "data/custom_icons/2024MICS.png",
-                title: "2024 MICS Attendee",
-              },
-              {
-                iconUrl: "data/custom_icons/2023MICS.png",
-                title: "2023 MICS Attendee",
-              },
-              {
-                iconUrl: "data/custom_icons/2024Researcher.png",
-                title: "2024 Researcher",
-              },
-            ],
-          },
-          {
-            user: "Patrick Rafferty",
-            allTimePoints: 48,
-            currentPoints: 48,
-            achievements: [
-              {
-                iconUrl: "data/custom_icons/hacksgiving.png",
-                title: "Hacksgiving",
-              },
-              {
-                iconUrl: "data/custom_icons/NVIDIA_DLI_2023.jpg",
-                title: "NVIDIA DLI",
-              },
-            ],
-          },
-        ];
+        const entries: LeaderboardEntry[] = [];
+        for (let i = 1; i < lines.length; i++) {
+          const row = lines[i].split(",");
+          if (row.length < Math.max(userIdx, awardsIdx, allTimeIdx, currentIdx))
+            continue;
+          const user = row[userIdx];
+          const allTimePoints = parseInt(row[allTimeIdx], 10) || 0;
+          const currentPoints = parseInt(row[currentIdx], 10) || 0;
+          const awards =
+            row[awardsIdx]
+              ?.split("|")
+              .map((a) => a.trim())
+              .filter(Boolean) || [];
 
-        // Convert achievement icon paths to full URLs
+          entries.push({
+            user,
+            allTimePoints,
+            currentPoints,
+            achievements: awards
+              .map((award) => {
+                const mapping = AWARD_ICON_MAP[award];
+                return mapping
+                  ? { iconUrl: mapping.filename, title: mapping.title }
+                  : null;
+              })
+              .filter(Boolean) as Achievement[],
+          });
+        }
+
+        // Sort by allTimePoints descending
+        entries.sort((a, b) => b.allTimePoints - a.allTimePoints);
+
+        // Convert icon filenames to full URLs
         const processedData = await Promise.all(
-          mockData.map(async (entry) => ({
+          entries.map(async (entry) => ({
             ...entry,
             achievements: await Promise.all(
               entry.achievements.map(async (achievement) => {
                 try {
-                  const url = await getRawFileUrl(achievement.iconUrl);
+                  const url = await getRawFileUrl(
+                    `data/custom_icons/${achievement.iconUrl}`
+                  );
                   return {
                     ...achievement,
                     iconUrl: url || achievement.iconUrl,
