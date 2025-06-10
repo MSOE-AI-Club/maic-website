@@ -16,6 +16,7 @@ const NavBar = (props: NavBarProps) => {
   /**
    * The NavBar component.
    */
+
   return (
     <div id="toolbar" style={{ textAlign: "center" }}>
       <h3>
@@ -47,32 +48,32 @@ const NavBar = (props: NavBarProps) => {
         <p>Library</p>
       </a>
       <a
-        className={`${props.page === "LearningTree" ? "active" : ""}`}
+        className={`${props.page === "Earning Tree" ? "active" : ""}`}
         href="/learning-tree"
       >
         <p>Learning Tree</p>
       </a>
       <a
         className={`${props.page === "Workshops" ? "active" : ""}`}
-        href="/Workshops.html"
+        href="/workshops"
       >
         <p>Workshops</p>
       </a>
       <a
         className={`${props.page === "Merch" ? "active" : ""}`}
-        href="/Merch.html"
+        href="/merch"
       >
         <p>Merch</p>
       </a>
       <a
         className={`${props.page === "Contact" ? "active" : ""}`}
-        href="/Contact.html"
+        href="/contact"
       >
         <p>Contact</p>
       </a>
       <a
         className={`${props.page === "About" ? "active" : ""}`}
-        href="/About.html"
+        href="/about"
       >
         <p>About</p>
       </a>

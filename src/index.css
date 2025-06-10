@@ -80,7 +80,6 @@ a:visited{
 }
 
 #toolbar p {
-    padding: 15px;
     display: inline;
 }
 
@@ -94,13 +93,6 @@ a:visited{
 #toolbar a {
     text-decoration: none;
     color: rgb(var(--text-1));
-}
-
-#toolbar p:hover {
-    background-color: rgb(71, 46, 134); 
-    padding-top: 7px; 
-    padding-bottom: 7px; 
-    border-radius: 10px;
 }
 
 td, th{

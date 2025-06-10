@@ -23,8 +23,21 @@
     text-decoration: none;
     color: white;
     display: inline-block;
+    border-radius: 10px;
+    padding: 5px 20px;
+    line-height: 1em;
+    margin: 0 2px;
   }
   
   #toolbar p {
     margin: 0;
+    font-size: 1em;
+  }
+
+  #toolbar > a.active {
+    background-color: rgb(52, 31, 105); 
+  }
+
+  #toolbar > a:hover {
+    background-color: rgb(71, 46, 134); 
   }
