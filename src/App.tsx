@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import ExampleNavigator from './pages/ExampleNavigator'
+import Home from './pages/Home'
 import Achievements from './pages/Achievements'
 import Points from './pages/Points'
 import About from './pages/About'
@@ -12,7 +12,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<ExampleNavigator />} />
+          <Route path="/" element={<Home />} />
           <Route path="/achievements" element={<Achievements />} />
           <Route path="/points" element={<Points />} />
           <Route path="/about" element={<About />} />

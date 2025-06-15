@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import { getFileContent } from '../hooks/github-hook';
+import { getFileContent, getRawFileUrl } from '../hooks/github-hook';
 
 interface Achievement {
   imageUrl: string;
@@ -12,6 +12,7 @@ interface Achievement {
 
 const Achievements: React.FC = () => {
     const [achievementsData, setAchievementsData] = useState<Achievement[]>([]);
+    const [images, setImages] = useState<{[key: string]: string}>({});
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,21 @@ const Achievements: React.FC = () => {
             try {
                 const jsonData = await getFileContent('data/achievements/achievementsData.json');
                 if (jsonData) {
-                    setAchievementsData(JSON.parse(jsonData));
+                    const data: Achievement[] = JSON.parse(jsonData);
+                    setAchievementsData(data);
+
+                    const imagePaths = data.map(ach => ach.imageUrl);
+                    const imageUrls = await Promise.all(
+                        imagePaths.map(path => getRawFileUrl(path))
+                    );
+
+                    const imageMap = imagePaths.reduce((acc, path, index) => {
+                        if (imageUrls[index]) {
+                            acc[path] = imageUrls[index] as string;
+                        }
+                        return acc;
+                    }, {} as {[key: string]: string});
+                    setImages(imageMap);
                 } else {
                     setError('Failed to fetch achievements data.');
                 }
@@ -73,7 +88,18 @@ const Achievements: React.FC = () => {
                     {achievementsData.map((achievement, index) => (
                         <React.Fragment key={index}>
                             <span style={{ fontWeight: 'bold', marginBottom: '3px', marginTop: '3px' }}>
-                                <img src={achievement.imageUrl} title={achievement.title} className="custom-emoji" height="25px" width="25px" style={{ marginRight: '5px' }} alt={achievement.altText} />
+                                {images[achievement.imageUrl] && (
+                                    <img 
+                                        src={images[achievement.imageUrl]} 
+                                        title={achievement.title} 
+                                        className="custom-emoji" 
+                                        height="25px" 
+                                        width="25px" 
+                                        style={{ marginRight: '5px' }} 
+                                        alt={achievement.altText}
+                                        loading="lazy"
+                                    />
+                                )}
                                 {achievement.name}
                             </span>: {achievement.description}<br />
                         </React.Fragment>

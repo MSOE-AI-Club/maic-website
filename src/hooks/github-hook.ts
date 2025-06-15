@@ -2,49 +2,35 @@
 const repoOwner = "MSOE-AI-Club";
 const repoName = "maic-content";
 
-// Keep the existing getLatestCommitHash function as it's crucial for determining the branch/commit
 export async function getLatestCommitHash(): Promise<string | null> {
   const branchName = import.meta.env.VITE_BRANCH;
 
-  if (!branchName) {
-    console.error("Error: VITE_BRANCH environment variable is not set.");
+  if (!branchName || !repoOwner || !repoName) {
+    console.error("Missing environment variables.");
     return null;
   }
 
-  // const repoOwner = "MSOE-AI-Club"; // Defined at module level
-  // const repoName = "maic-content"; // Defined at module level
-  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/branches/${branchName}`;
+  const githubAtomUrl = `https://github.com/${repoOwner}/${repoName}/commits/${branchName}.atom`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(githubAtomUrl)}`;
 
   try {
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
-
+    const response = await fetch(proxyUrl);
     if (!response.ok) {
-      console.error(
-        `Error fetching branch data from GitHub: ${response.status} ${response.statusText}`
-      );
-      const errorBody = await response.text();
-      console.error("Error body:", errorBody);
+      console.error(`Failed to fetch proxied Atom feed: ${response.statusText}`);
       return null;
     }
 
-    const data = await response.json();
+    const xml = await response.text();
+    const match = xml.match(/<id>tag:github\.com,\d+:Grit::Commit\/([0-9a-f]{40})<\/id>/);
 
-    if (data && data.commit && data.commit.sha) {
-      return data.commit.sha;
+    if (match && match[1]) {
+      return match[1]; // Latest commit SHA
     } else {
-      console.error(
-        "Error: Could not find commit SHA in the API response.",
-        data
-      );
+      console.error("Commit hash not found in Atom feed.");
       return null;
     }
-  } catch (error) {
-    console.error("An unexpected error occurred:", error);
+  } catch (err) {
+    console.error("Error retrieving commit hash:", err);
     return null;
   }
 }
@@ -58,7 +44,6 @@ interface Manifest {
 // Cache for the manifest file
 let cachedManifest: { commitSha: string; data: Manifest | null } | null = null;
 
-// Updated GitHubContentItem interface: sha and size are now optional
 export interface GitHubContentItem {
   name: string;
   path: string;
@@ -67,7 +52,6 @@ export interface GitHubContentItem {
   type: "file" | "dir";
   download_url: string | null;
   html_url: string;
-  // Add other fields if needed
 }
 
 // Helper function to fetch manifest.json for a specific commit

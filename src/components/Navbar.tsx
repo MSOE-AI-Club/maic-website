@@ -48,16 +48,16 @@ const NavBar = (props: NavBarProps) => {
         <p>Library</p>
       </a>
       <a
-        className={`${props.page === "Earning Tree" ? "active" : ""}`}
+        className={`${props.page === "Learning Tree" ? "active" : ""}`}
         href="/learning-tree"
       >
         <p>Learning Tree</p>
       </a>
       <a
-        className={`${props.page === "Workshops" ? "active" : ""}`}
-        href="/workshops"
+        className={`${props.page === "Events" ? "active" : ""}`}
+        href="/events"
       >
-        <p>Workshops</p>
+        <p>Events</p>
       </a>
       <a
         className={`${props.page === "Merch" ? "active" : ""}`}
