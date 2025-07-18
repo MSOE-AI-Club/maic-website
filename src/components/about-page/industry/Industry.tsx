@@ -42,14 +42,18 @@ function Industry() {
       <div className="industry-list">
         {industryList.map((industry) => (
           <SpotlightCard key={industry.name} className="dark">
-            <div className="spotlight-card-content">
-              <img
-                className="industry-image"
-                src={industry.image}
-                alt={industry.name}
-              />
-              <h2 className="industry-name">{industry.name}</h2>
-              <p className="industry-description">{industry.description}</p>
+            <div className="industry-card-content">
+              <div className="industry-logo-section">
+                <img
+                  className="industry-image"
+                  src={industry.image}
+                  alt={industry.name}
+                />
+              </div>
+              <div className="industry-text-section">
+                <h2 className="industry-name">{industry.name}</h2>
+                <p className="industry-description">{industry.description}</p>
+              </div>
             </div>
           </SpotlightCard>
         ))}
