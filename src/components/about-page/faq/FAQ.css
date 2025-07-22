@@ -32,14 +32,3 @@
   align-items: center;
   gap: 0.75rem;
 }
-
-/* Remove the .faq-accordion class since we're using sx prop now */
-/* The styling is now handled directly in the component */
-
-.faq-question {
-  /* Styles are now handled by sx prop */
-}
-
-.faq-answer {
-  /* Styles are now handled by sx prop */
-}

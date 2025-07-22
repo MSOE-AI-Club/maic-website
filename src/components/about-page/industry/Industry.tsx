@@ -1,5 +1,5 @@
 import "./Industry.css";
-import SpotlightCard from "../spotlight-card/SpotlightCard";
+import SpotlightCard from "../../react-bits/spotlight-card/SpotlightCard";
 import DirectSupply from "../../../assets/direct_supply_logo.png";
 import NVIDIA from "../../../assets/nvidia_logo.png";
 import MSOE from "../../../assets/msoe_logo.png";

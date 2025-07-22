@@ -1,10 +1,9 @@
 import "./Landing.css";
-import SpotlightCard from "../spotlight-card/SpotlightCard";
-import Aurora from "../aurora-background/Aurora";
+import SpotlightCard from "../../react-bits/spotlight-card/SpotlightCard";
+import Aurora from "../../react-bits/aurora-background/Aurora";
 import { LuBrain } from "react-icons/lu";
 import { TbBrackets } from "react-icons/tb";
 import { FaLightbulb } from "react-icons/fa";
-import { MdKeyboardArrowDown } from "react-icons/md";
 
 function Landing() {
   const spotlightCards = [
@@ -50,12 +49,6 @@ function Landing() {
               </div>
             </SpotlightCard>
           ))}
-        </div>
-        <div className="scroll-prompt">
-          <div className="scroll-prompt-text">Scroll to learn more!</div>
-          <div className="scroll-prompt-icon">
-            <MdKeyboardArrowDown />
-          </div>
         </div>
       </div>
     </div>
