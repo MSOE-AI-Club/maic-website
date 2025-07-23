@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import { getFileContent, getRawFileUrl } from '../hooks/github-hook';
+import Navbar from '../../components/Navbar';
+import { getFileContent, getRawFileUrl } from '../../hooks/github-hook';
 import { Link } from 'react-router-dom';
 import './Home.css';
-import { startAnimation } from './Home/bg-animation';
+import { startAnimation } from './bg-animation';
 
 interface User {
     User: string;
@@ -112,6 +112,8 @@ const Home: React.FC = () => {
 
                     const imagePaths = cardData.map(card => card.imageUrl);
                     imagePaths.push('images/home/maic_eboard_25.jpg');
+                    imagePaths.push('images/home/logo.png');
+                    imagePaths.push('images/about/NN_background_pattern_2.png');
                     const achievementImagePaths = achievementData.map(a => a.imageUrl);
                     const allImagePaths = [...imagePaths, ...achievementImagePaths];
                     
@@ -195,7 +197,7 @@ const Home: React.FC = () => {
             <div style={{position: 'relative', width: '100%', height: '100vh'}}>
                 <canvas id="splash-bg"></canvas>
                 <div id="splash-logo">
-                    <img className="appear" src="https://maic-fastapi-lambda.s3.amazonaws.com/img/misc/logo.png" style={{animation: 'AppearFromTop 0.7s ease-out 0s 1'}}/>
+                    <img className="appear" src={images['images/home/logo.png']} style={{animation: 'AppearFromTop 0.7s ease-out 0s 1'}}/>
                 </div>
 
                 <div id="splash-abt">
@@ -252,7 +254,7 @@ const Home: React.FC = () => {
                                     <tbody>
                                         {leaderboardData.map((user, index) => {
                                             const rowStyle: React.CSSProperties = {
-                                                background: index % 2 === 0 ? '#282828' : '#303030',
+                                                background: index % 2 === 0 ? '#121619' : '#19191e',
                                                 fontWeight: 'bold',
                                                 fontSize: '1em'
                                             };
@@ -270,9 +272,9 @@ const Home: React.FC = () => {
                                             }
                                             return (
                                                 <tr key={index} style={rowStyle}>
-                                                    <td style={{padding: '8px'}}>{getTrophy(index)}{user.User} {renderAwards(user.Awards)}</td>
-                                                    <td style={{padding: '8px'}}>{user['All-Time Points']}</td>
-                                                    <td style={{padding: '8px'}}>{user['Current Points']}</td>
+                                                    <td style={{padding: '4px', paddingLeft: '16px', border: '2px solid #121619'}}>{getTrophy(index)}{user.User} {renderAwards(user.Awards)}</td>
+                                                    <td style={{padding: '4px', paddingLeft: '16px', border: '2px solid #121619'}}>{user['All-Time Points']}</td>
+                                                    <td style={{padding: '4px', paddingLeft: '16px', border: '2px solid #121619'}}>{user['Current Points']}</td>
                                                 </tr>
                                             );
                                         })}
@@ -324,7 +326,7 @@ const Home: React.FC = () => {
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     marginBottom: '20px', 
-                                    backgroundImage: 'url(https://maic-fastapi-lambda.s3.amazonaws.com/img/misc/NN_background_pattern_2.png)',
+                                    backgroundImage: 'url(' + images['images/about/NN_background_pattern_2.png'] + ')',
                                     backgroundSize: 'cover', 
                                     borderRadius: '30px', 
                                     border: `3px solid ${card.borderColor}`, 

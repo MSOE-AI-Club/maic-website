@@ -1,4 +1,5 @@
 import "../assets/css/navbar.css";
+import { Link } from "react-router-dom";
 
 /**
  * The NavBarProps interface represents the props that the NavBar component receives.
@@ -20,7 +21,7 @@ const NavBar = (props: NavBarProps) => {
   return (
     <div id="toolbar" style={{ textAlign: "center" }}>
       <h3>
-        <a href="/">
+        <Link to="/">
           <img
             className="logo"
             src="/Logo.png"
@@ -33,50 +34,50 @@ const NavBar = (props: NavBarProps) => {
               paddingBottom: "5px",
             }}
           />
-        </a>
+        </Link>
       </h3>
-      <a
+      <Link
         className={`${props.page === "Home" ? "active" : ""}`}
-        href="/"
+        to="/"
       >
         <p>Home</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "Library" ? "active" : ""}`}
-        href="/library"
+        to="/library"
       >
         <p>Library</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "Learning Tree" ? "active" : ""}`}
-        href="/learning-tree"
+        to="/learning-tree"
       >
         <p>Learning Tree</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "Events" ? "active" : ""}`}
-        href="/events"
+        to="/events"
       >
         <p>Events</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "Merch" ? "active" : ""}`}
-        href="/merch"
+        to="/merch"
       >
         <p>Merch</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "Contact" ? "active" : ""}`}
-        href="/contact"
+        to="/contact"
       >
         <p>Contact</p>
-      </a>
-      <a
+      </Link>
+      <Link
         className={`${props.page === "About" ? "active" : ""}`}
-        href="/about"
+        to="/about"
       >
         <p>About</p>
-      </a>
+      </Link>
     </div>
   );
 };
