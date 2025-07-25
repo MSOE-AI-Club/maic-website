@@ -8,6 +8,7 @@ import Contact from './pages/Contact'
 import Merch from './pages/Merch'
 import Library from './pages/Library/Library'
 import LearningTree from './pages/LearningTree'
+import Events from './pages/Events'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/merch" element={<Merch />} />
           <Route path="/library" element={<Library />} />
           <Route path="/learning-tree" element={<LearningTree />} />
+          <Route path="/events" element={<Events />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

@@ -1,0 +1,408 @@
+.event-item {
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    /* background-image: url(https://maic-fastapi-lambda.s3.amazonaws.com/img/misc/NN_background_pattern_2.png); */
+    /* background-size: cover; */
+    /* border-radius: 20px; */
+    border: 0px solid #444;
+    /* padding: 32px 28px 28px 28px; */
+    /* box-shadow: 0 4px 24px rgba(0,0,0,0.18), 0 1.5px 8px rgba(80,80,120,0.10); */
+    /* transition: box-shadow 0.18s, transform 0.18s; */
+    height: 400px;
+    position: relative;
+}
+.event-item:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28), 0 2.5px 12px rgba(80,80,120,0.18);
+    transform: translateY(-2px) scale(1.015);
+}
+
+/* .event-item::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(40,40,60,0) 0%, rgba(40,40,60,0.95) 100%);
+    pointer-events: none;
+} */
+
+/* Remove old event-grid-item styles that conflict with JS-generated structure */
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    align-items: stretch;
+}
+
+@media (max-width: 768px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* Remove duplicate event preview title/date styles */
+
+.event-preview-content-row {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    align-items: flex-start;
+}
+
+.event-preview-description-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+.event-preview-description {
+    font-size: 1.08em;
+    line-height: 1.5;
+    color: #e0e0e0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
+.event-preview-image {
+    width: 100%;
+    max-width: 250px;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+    background: rgba(0,0,0,0.15);
+}
+
+/* NEW: Styles for upcoming events horizontal scroll */
+.upcoming-events-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    justify-content: flex-start;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: calc(100% - 20px);
+    padding-left: 0; 
+    padding-right: 0;
+    box-sizing: border-box;
+}
+
+/* Dark scrollbar styles for .upcoming-events-row */
+.upcoming-events-row::-webkit-scrollbar {
+    height: 15px; /* Height of horizontal scrollbar */
+}
+
+.upcoming-events-row::-webkit-scrollbar-track {
+    background: #2c2c2c; /* Dark background for the track */
+    border-radius: 10px;
+}
+
+.upcoming-events-row::-webkit-scrollbar-thumb {
+    background-color: #555; /* Dark color for the scrollbar thumb */
+    border-radius: 10px;
+    border: 3px solid #2c2c2c; /* Creates padding around thumb, matches track color */
+}
+
+.upcoming-events-row::-webkit-scrollbar-thumb:hover {
+    background-color: #777; /* Slightly lighter thumb on hover */
+}
+.upcoming-events-row::-webkit-scrollbar-corner {
+    background: #2c2c2c; /* Match track background */
+}
+/* End of scrollbar styles */
+
+.upcoming-events-row > .event-item.featured-event {
+    flex: 0 0 50%; /* Always half the row width */
+    width: 50%;
+    max-width: 700px;
+    margin: 0 auto !important; /* Center if only one */
+}
+.upcoming-events-row:only-child > .event-item.featured-event,
+.upcoming-events-row > .event-item.featured-event:only-child {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+/* End of NEW upcoming events styles */
+
+/* Modal styles */
+.events-modal {
+    /* display: none;  Hidden by default, but JS controls display */
+    display: flex; /* Use flex to center modal content */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    overflow: hidden; /* Prevent modal background from scrolling */
+    background-color: rgba(0,0,0,0.85);  /* Restore dark overlay */
+}
+.modal-content {
+    background-color: rgba(25,25,25,0.95); /* Slightly more opaque for better readability */
+    color: white;
+    margin: 2% auto; /* Reduced top margin for more content space */
+    padding: 0; /* Remove padding to let content body handle it */
+    border: 1px solid #888;
+    width: 85vw; /* Slightly wider */
+    max-width: 900px; /* Maximum width for large screens */
+    height: 90vh; /* Fixed height */
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.modal-content-body {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 20px 25px; /* Move padding here */
+    padding-right: 40px; /* Extra space for scrollbar */
+}
+
+/* Dark scrollbar styles for .modal-content-body */
+.modal-content-body::-webkit-scrollbar {
+    width: 15px; /* Width of vertical scrollbar */
+    height: 15px; /* Height of horizontal scrollbar, if needed */
+}
+
+.modal-content-body::-webkit-scrollbar-track {
+    background: #2c2c2c; /* Dark background for the track */
+    border-radius: 10px;
+}
+
+.modal-content-body::-webkit-scrollbar-thumb {
+    background-color: #555; /* Dark color for the scrollbar thumb */
+    border-radius: 10px;
+    border: 3px solid #2c2c2c; /* Creates padding around thumb, matches track color */
+}
+
+.modal-content-body::-webkit-scrollbar-thumb:hover {
+    background-color: #777; /* Slightly lighter thumb on hover */
+}
+.modal-content-body::-webkit-scrollbar-corner {
+    background: #2c2c2c; /* Match track background */
+}
+/* End of scrollbar styles for modal */
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px; /* Adjusted for new layout */
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 10; /* Ensure it's above other content */
+}
+.close-button:hover,
+.close-button:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Filter button styles to match toolbar links */
+.filter-button {
+    background-color: transparent;
+    color: rgb(var(--text-1)); /* Match toolbar link text color */
+    border: none; /* Links typically don't have a border */
+    padding: 7px 12px; /* Adjusted to be similar to toolbar link effective padding */
+    margin: 5px; /* Reverted to 5px on all sides */
+    border-radius: 10px; /* Match toolbar link hover/active border-radius */
+    cursor: pointer;
+    font-size: 1em; 
+    font-weight: normal;
+    text-decoration: none; /* Like links */
+    transition: background-color 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
+    display: inline-flex; /* Use inline-flex for icon and text alignment */
+    align-items: center; /* Vertically center icon and text */
+    justify-content: center; /* Center content within the button's width */
+    gap: 8px; /* Space between icon and text */
+    min-width: 140px; /* Ensure a minimum width for all buttons */
+}
+
+.filter-button .material-icons {
+    font-size: 1.3em;
+    /* margin-right: 8px; */
+    /* Color will be set per button below */
+}
+.filter-button.all .material-icons {
+    color: #b0b0b0;
+}
+.filter-button.workshop .material-icons {
+    color: #ff6b6b; /* RED for workshops */
+}
+.filter-button.speaker .material-icons {
+    color: #a991ff; /* PURPLE for speaker events */
+}
+.filter-button.competition .material-icons {
+    color: #6ec6ff; /* BLUE for competitions */
+}
+.filter-button.intro .material-icons {
+    color: #ffe066; /* YELLOW for intro series */
+}
+
+.filter-button:hover {
+    background-color: rgb(71, 46, 134, 0.18);
+    color: #fff;
+}
+
+.filter-button.active {
+    background-color: rgb(55, 34, 107); /* Matches active toolbar link background */
+    color: white; /* Or rgb(var(--text-1)) */
+    font-weight: bold; /* Matches active toolbar link font-weight */
+}
+
+/* Class to prevent body scroll when modal is open */
+body.no-scroll {
+    overflow: hidden;
+}
+
+.event-img-col {
+    float: left;
+    padding-right: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Event header styles */
+.event-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.event-title {
+    font-size: 1.7em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 5px 0;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-title .material-icons {
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+.event-date {
+    font-size: 1.05em;
+    color: #bdbdbd;
+    margin: 0;
+}
+/* Remove duplicate filter button styles */
+/* Modal image max size */
+.modal-content-body img {
+    max-width: 90vw;
+    max-height: 70vh;
+    border-radius: 12px;
+    margin: 10px 0;
+    display: block;
+}
+
+.upcoming-events-row-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+}
+.upcoming-events-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: rgba(30,30,40,0.85);
+    border: none;
+    color: #fff;
+    font-size: 2.2em;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.15s, background 0.15s;
+}
+.upcoming-events-arrow:hover {
+    opacity: 1;
+    background: rgba(60,60,90,0.95);
+}
+.upcoming-events-arrow.left { left: 0px; }
+.upcoming-events-arrow.right { right: 0px; }
+@media (max-width: 768px) {
+    .upcoming-events-arrow.left { left: 2px; }
+    .upcoming-events-arrow.right { right: 2px; }
+    
+    .event-preview-content-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .event-preview-image {
+        max-width: 200px;
+        width: 200px;
+        align-self: center;
+    }
+    
+    /* Keep carousel but make items bigger and more readable */
+    .upcoming-events-row > .event-item.featured-event {
+        flex: 0 0 85%; /* Bigger width for better readability */
+        width: 85%;
+        max-width: 600px;
+        min-width: 400px; /* Minimum size to stay readable */
+        margin: 0 !important;
+    }
+}
+
+/* Remove complex mobile overrides - keep it simple */
+/* Remove old duplicate and conflicting styles */
+
+.sort-toggle-button {
+    margin-left: 8px;
+    font-weight: 600;
+    font-size: 1em;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 0px solid #fff;
+    border-radius: 8px;
+    padding: 7px 16px;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.sort-toggle-button:focus {
+    box-shadow: 0 0 0 2px #ffffff;
+}
+.sort-toggle-button:hover {
+    background: rgba(255,255,255,0.18);
+    color: #ffffff;
+}
+
+.liquid-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+}
