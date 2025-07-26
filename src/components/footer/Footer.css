@@ -1,0 +1,111 @@
+.footer {
+  background: #2a2a2e;
+  color: white;
+  padding: 1.5rem 0 0;
+  margin-top: 3rem;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+  flex: 1;
+  align-items: start;
+}
+
+.footer-club-name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+.footer-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.footer-club-name h2 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+
+.footer-description {
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.footer-center h3,
+.footer-right h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 0 0.8rem 0;
+}
+
+.footer-center ul,
+.footer-right ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-center li,
+.footer-right li {
+  margin-bottom: 0.3rem;
+}
+
+.footer-center a,
+.footer-right a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-center a:hover,
+.footer-right a:hover {
+  color: white;
+}
+
+.social-links {
+  margin-top: 0.5rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-link:hover {
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid #272727;
+  background-color: #2a2a2e;
+  margin-top: auto;
+}
+
+.footer-bottom p {
+  color: #999;
+  font-size: 0.8rem;
+  margin: 0;
+}

@@ -1,0 +1,361 @@
+.eboard-intro {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.eboard-intro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, 
+      rgba(224, 132, 255, 0.02) 0%, 
+      transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+.eboard-intro h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 2;
+}
+
+
+.line {
+  width: 60vw;
+  height: 1px;
+  /* Purple gradient: 25% and 75% at 25% opacity, 50% at 100% */
+  background: linear-gradient(
+    90deg,
+    rgba(132, 67, 255, 0.001) 0%,
+    rgba(132, 67, 255, 0.25) 25%,
+    rgba(132, 67, 255, 1) 50%,
+    rgba(132, 67, 255, 0.25) 75%,
+    rgba(132, 67, 255, 0.001) 100%
+  );
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.eboard-members-container {
+  display: grid;
+  grid-template-columns: repeat(3, 320px);
+  column-gap: 3rem;
+  row-gap: 3rem;
+  justify-content: center;
+  align-items: start;
+  padding: 2.5rem;
+  margin: 2rem auto;
+  width: fit-content;
+  max-width: calc(100vw - 4rem);
+}
+
+.eboard-member-card {
+  /* Liquid glass (glassmorphism) style */
+  background: rgba(35, 35, 40, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  width: 320px;
+  height: 590px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow:
+    0 4px 32px 0 rgba(0,0,0,0.18),
+    0 1.5px 8px 0 rgba(163, 201, 247, 0.08);
+  overflow: hidden;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  /* Subtle glassy gradient overlay */
+  background-image:
+    linear-gradient(135deg, rgba(163,201,247,0.10) 0%, rgba(35,35,40,0.35) 100%);
+  position: relative;
+}
+
+.eboard-member-image-wrapper {
+  background: rgba(255,255,255,0.65);
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  overflow: hidden;
+}
+
+.eboard-member-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: 0 2px 12px rgba(163,201,247,0.13);
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+.eboard-member-info {
+  background: rgba(45, 45, 50, 0.65);
+  padding: 1.2rem 1.2rem 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  position: relative;
+  padding-bottom: 3.2rem; /* space for fixed email row */
+}
+
+.eboard-member-name {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 1px 8px rgba(163,201,247,0.13);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+.eboard-member-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 1px 8px rgba(163,201,247,0.08);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eboard-member-subtitle {
+  font-size: 0.95rem;
+  color: #d1d1d1;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 1px 8px rgba(163,201,247,0.07);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.eboard-member-email-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, rgba(35, 35, 40, 0.8) 0%, rgba(45, 45, 50, 0.6) 100%);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(224, 132, 255, 0.1);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 4px rgba(224, 132, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: absolute;
+  left: 1.2rem;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  margin-top: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.eboard-member-email-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(224, 132, 255, 0.15) 25%, 
+    rgba(224, 132, 255, 0.25) 50%, 
+    rgba(224, 132, 255, 0.15) 75%, 
+    transparent 100%);
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.eboard-member-email-row:hover::before {
+  left: 100%;
+}
+
+.eboard-member-email-row:hover {
+  background: linear-gradient(135deg, rgba(224, 132, 255, 0.15) 0%, rgba(224, 132, 255, 0.08) 100%);
+  border-color: rgba(224, 132, 255, 0.3);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(224, 132, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.eboard-member-email-row:active {
+  transform: translateY(0px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* Focus states for accessibility */
+.eboard-member-email-row:focus-within {
+  outline: 2px solid rgba(224, 132, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .eboard-member-email-row,
+  .eboard-member-email-row::before,
+  .eboard-member-email-icon,
+  .eboard-member-email {
+    transition: none;
+  }
+  
+  .eboard-member-email-row:hover {
+    transform: none;
+  }
+  
+  .eboard-member-email-row:hover .eboard-member-email-icon {
+    transform: none;
+  }
+  
+  .eboard-member-email:hover {
+    transform: none;
+  }
+}
+
+.eboard-member-email-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(224, 132, 255, 0.1);
+  border-radius: 6px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.eboard-member-email-row:hover .eboard-member-email-icon {
+  transform: scale(1.15) rotate(5deg);
+  color: rgb(224, 132, 255);
+  background: rgba(224, 132, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(224, 132, 255, 0.3);
+}
+
+.eboard-member-email {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  word-break: break-word;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.eboard-member-email:hover {
+  color: rgb(224, 132, 255);
+  text-decoration: none;
+  transform: translateX(3px);
+  text-shadow: 0 2px 4px rgba(224, 132, 255, 0.3);
+}
+
+.eboard-member-email:focus {
+  outline: 2px solid rgba(224, 132, 255, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Responsive design for intro section */
+@media (max-width: 1100px) {
+  .eboard-members-container {
+    grid-template-columns: repeat(2, 320px);
+    column-gap: 2.5rem;
+    row-gap: 2.5rem;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .eboard-intro {
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .eboard-intro h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .eboard-intro p {
+    font-size: 1.1rem;
+    max-width: 100%;
+  }
+  
+  .eboard-members-container {
+    grid-template-columns: repeat(2, 300px);
+    column-gap: 2rem;
+    row-gap: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .eboard-member-card {
+    width: 300px;
+    height: 570px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eboard-intro {
+    padding: 1.5rem 1rem;
+  }
+  
+  .eboard-intro h1 {
+    font-size: 2rem;
+  }
+  
+  .eboard-intro p {
+    font-size: 1rem;
+  }
+  
+  .eboard-members-container {
+    grid-template-columns: 280px;
+    column-gap: 0;
+    row-gap: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .eboard-member-card {
+    width: 280px;
+    height: 550px;
+  }
+}

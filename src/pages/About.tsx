@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import FAQ from "../components/about-page/faq/FAQ";
 import Landing from "../components/about-page/landing/Landing";
 import Industry from "../components/about-page/industry/Industry";
+import Footer from "../components/footer/Footer";
 
 const About: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const About: React.FC = () => {
         <FAQ />
         <Industry />
       </div>
+      <Footer />
     </div>
   );
 };
