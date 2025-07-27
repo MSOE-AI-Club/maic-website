@@ -33,14 +33,7 @@ function Industry() {
     <div className="industry-container">
       <h1>Driven By Industry</h1>
       <p>
-        MAIC is driven by industry, meaning we want to provide students with the
-        skills and knowledge that they need to be successful in industry.
-        <br />
-        <br />
-        To accomplish this goal, MAIC hopes to frequently communicate with many
-        industry partners, including local companies, to understand what skills
-        they are looking for in their employees. We also hope to bring in
-        speakers from these companies to talk about what they do.
+      MAIC prepares students for real-world success by aligning with industry needs. We work closely with companies, especially local partners, to understand the skills they value, equip members with relevant experience, and host professionals who share insights, career advice, and real-world AI applications.
       </p>
       <div className="industry-list">
         {industryList.map((industry) => (

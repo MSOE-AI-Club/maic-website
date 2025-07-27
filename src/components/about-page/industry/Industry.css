@@ -17,7 +17,7 @@
 }
 
 .industry-container p {
-  text-align: center;
+  text-align: left;
   font-size: 1.2rem;
   margin-bottom: 3rem;
   color: rgb(var(--text-1));

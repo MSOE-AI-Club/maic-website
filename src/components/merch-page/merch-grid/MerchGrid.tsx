@@ -164,12 +164,9 @@ function MerchGrid() {
                                     {selectedItem.description.split('\n').map((paragraph: string, index: number) => (
                                         <p key={index}>{paragraph}</p>
                                     ))}
-                                </div>
-                                <div className="merch-modal-purchase-section">
-                                    <div className="merch-modal-cost-badge">{selectedItem.cost}</div>
-                                    <p className="merch-modal-purchase">
-                                        <strong>Want one? Just ask an E-Board member to get started.</strong>
-                                    </p>
+                                    <div className="merch-modal-cost-container">
+                                        <p className="merch-modal-cost">{selectedItem.cost}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

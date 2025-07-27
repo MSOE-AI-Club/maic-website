@@ -1,7 +1,6 @@
 .eboard-intro {
   text-align: center;
   padding: 3rem 2rem;
-  margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
 }
@@ -78,8 +77,6 @@
   overflow: hidden;
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
-  background-image:
-    linear-gradient(135deg, rgba(163,201,247,0.10) 0%, rgba(35,35,40,0.35) 100%);
   position: relative;
 }
 

@@ -1,6 +1,5 @@
 import "./Landing.css";
 import SpotlightCard from "../../react-bits/spotlight-card/SpotlightCard";
-import Aurora from "../../react-bits/aurora-background/Aurora";
 import { LuBrain } from "react-icons/lu";
 import { TbBrackets } from "react-icons/tb";
 import { FaLightbulb } from "react-icons/fa";
@@ -23,16 +22,8 @@ function Landing() {
 
   return (
     <div className="landing-container">
-      <div className="aurora-background">
-        <Aurora
-          colorStops={["#A066FD", "#61EBF3", "#A066FD"]}
-          amplitude={0.5}
-          blend={0.5}
-          speed={0.2}
-        />
-      </div>
       <div className="landing-content">
-        <h1 className="landing-title">About MAIC</h1>
+        <h1 className="landing-title">Learn more about MAIC</h1>
         <p className="landing-description">
           We are dedicated to making artificial intelligence accessible and
           engaging for students of all backgrounds, regardless of prior
