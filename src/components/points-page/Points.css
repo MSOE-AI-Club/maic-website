@@ -1,0 +1,276 @@
+.points-page {
+  padding: 0 2rem;
+  margin-top: 5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.points-header {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.points-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, 
+      rgba(var(--purple-primary), 0.04) 0%, 
+      transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.points-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: rgb(var(--text-1));
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 2;
+}
+
+.points-intro {
+  font-size: 1.1rem;
+  color: rgb(var(--text-2));
+  line-height: 1.6;
+  margin-bottom: 3rem;
+  text-align: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.points-intro .highlight {
+  color: rgb(var(--hl-2));
+  font-weight: 600;
+}
+
+.points-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.points-card {
+  background: var(--glass-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  box-shadow: var(--shadow-glass);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.points-card:hover {
+  background: rgba(var(--bg-3), 0.8);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glass-hover);
+}
+
+.points-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(var(--purple-primary), 0.10) 50%, 
+      transparent 100%);
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.points-card:hover::before {
+  left: 100%;
+}
+
+.points-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.points-star {
+  color: #FFD700;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.points-value {
+  font-weight: 700;
+  color: rgb(var(--hl-2));
+  font-size: 1.1rem;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.points-description {
+  color: rgb(var(--text-1));
+  line-height: 1.5;
+  flex: 1;
+}
+
+.difficulty-easy {
+  border-left: 4px solid #10B981;
+}
+
+.difficulty-medium {
+  border-left: 4px solid #F59E0B;
+}
+
+.difficulty-hard {
+  border-left: 4px solid #EF4444;
+}
+
+.difficulty-advanced {
+  border-left: 4px solid #8B5CF6;
+}
+
+.points-footer {
+  background: var(--glass-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  box-shadow: var(--shadow-glass);
+  padding: 2rem;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.points-footer p {
+  color: rgb(var(--text-2));
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.points-footer a {
+  color: rgb(var(--hl-1));
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.points-footer a:hover {
+  color: rgb(var(--hl-2));
+  text-decoration: underline;
+}
+
+.points-footer a:visited {
+  color: rgb(var(--hl-2));
+}
+
+.gradient-line-points {
+  width: 60vw;
+  height: 1px;
+  background: linear-gradient(
+      90deg,
+      rgba(var(--hl-2), 0.001) 0%,
+      rgba(var(--hl-2), 0.25) 25%,
+      rgba(var(--hl-2), 1) 50%,
+      rgba(var(--hl-2), 0.25) 75%,
+      rgba(var(--hl-2), 0.001) 100%
+  );
+  margin: 2rem auto;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.loading-state h1 {
+  color: rgb(var(--text-2));
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.error-state h1 {
+  color: #EF4444;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.error-state p {
+  color: rgb(var(--text-2));
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .points-page {
+    padding: 0 1rem;
+    margin-top: 3rem;
+  }
+  
+  .points-header {
+    padding: 2rem 1rem;
+  }
+  
+  .points-header h1 {
+    font-size: 2rem;
+  }
+  
+  .points-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .points-card {
+    padding: 1rem;
+  }
+  
+  .points-item {
+    gap: 0.75rem;
+  }
+  
+  .points-star {
+    font-size: 1.25rem;
+  }
+  
+  .points-value {
+    min-width: 60px;
+    font-size: 1rem;
+  }
+  
+  .points-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .points-page {
+    padding: 0 0.5rem;
+  }
+  
+  .points-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .points-intro {
+    font-size: 1rem;
+  }
+}
