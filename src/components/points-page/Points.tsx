@@ -1,197 +1,124 @@
-import React from 'react';
-import './Points.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Points.css";
+import Temp from "../../assets/maic_logo.png";
+import { FaTshirt } from "react-icons/fa";
+import { FaTicketAlt } from "react-icons/fa";
 
-interface Point {
-  points: string;
-  description: string;
-  difficulty?: 'easy' | 'medium' | 'hard' | 'advanced';
-}
 
-interface PointsSystemProps {
-  pointsData?: Point[];
-  loading?: boolean;
-  error?: string | null;
-}
-
-interface PointsItemProps {
-  point: Point;
-}
-
-interface PointsHeaderProps {
-  title: string;
-  subtitle: string;
-}
-
-interface PointsFooterProps {
-  children: React.ReactNode;
-}
-
-// Static points data based on the image
-const defaultPointsData: Point[] = [
+const earnPoints = [
   {
-    points: "1 point",
-    description: "for every MAIC workshop/speaker event you attend.",
-    difficulty: "easy"
+    title: "Attend MAIC Meetings",
+    description: "Join our bi-weekly workshops, speaker events, etc.",
+    points: "+1",
   },
   {
-    points: "1 point",
-    description: "for every research meeting you attend.",
-    difficulty: "easy"
+    title: "Participate in Workshops",
+    description: "Attend hands-on AI/ML workshops and coding sessions",
+    points: "+2",
   },
   {
-    points: "1 point",
-    description: "for every <span style='color: #10B981; font-weight: bold;'>easy 🟢</span> challenge problem you complete.",
-    difficulty: "easy"
+    title: "Join Research Groups",
+    description: "Actively participate in MAIC research initiatives",
+    points: "+3",
   },
   {
-    points: "2 points",
-    description: "for every <span style='color: #F59E0B; font-weight: bold;'>medium 🟡</span> challenge problem you complete.",
-    difficulty: "medium"
+    title: "Present at Events",
+    description: "Share your projects or research with the MAIC community",
+    points: "+5",
   },
   {
-    points: "3 points",
-    description: "for every <span style='color: #EF4444; font-weight: bold;'>hard 🔴</span> challenge problem you complete.",
-    difficulty: "hard"
+    title: "Complete NVIDIA DLI Courses",
+    description: "Finish certified Deep Learning Institute courses",
+    points: "+4",
   },
   {
-    points: "4 points",
-    description: "for every <span style='color: #8B5CF6; font-weight: bold;'>advanced 🟣</span> challenge problem you complete.",
-    difficulty: "advanced"
+    title: "Participate in Hackathons",
+    description: "Join MAIC-sponsored hackathons like Hacksgiving",
+    points: "+6",
   },
   {
-    points: "5 points",
-    description: "for every research conference attended.",
-    difficulty: "advanced"
+    title: "Volunteer at Events",
+    description: "Help organize and run MAIC events and activities",
+    points: "+3",
   },
   {
-    points: "5 points",
-    description: "for publishing a research paper.",
-    difficulty: "advanced"
+    title: "Submit to MICS Conference",
+    description: "Present your research at the MICS conference",
+    points: "+8",
   },
   {
-    points: "5 points",
-    description: "for presenting in the ROSIE Competition.",
-    difficulty: "advanced"
+    title: "ROSIE Challenge Participation",
+    description: "Compete in the annual ROSIE Supercomputer Challenge",
+    points: "+7",
   },
-  {
-    points: "5 points minimum",
-    description: "for posting a new learning resource to the website.",
-    difficulty: "medium"
-  }
 ];
 
-// Individual point item component
-const PointsItem: React.FC<PointsItemProps> = ({ point }) => {
-  const getDifficultyClass = (difficulty?: string) => {
-    switch (difficulty) {
-      case 'easy': return 'difficulty-easy';
-      case 'medium': return 'difficulty-medium';
-      case 'hard': return 'difficulty-hard';
-      case 'advanced': return 'difficulty-advanced';
-      default: return '';
-    }
-  };
+function Points() {
+  const navigate = useNavigate();
 
   return (
-    <div className={`points-card ${getDifficultyClass(point.difficulty)}`}>
-      <div className="points-item">
-        <span className="points-star">⭐</span>
-        <span className="points-value">{point.points}</span>
-        <span 
-          className="points-description"
-          dangerouslySetInnerHTML={{ __html: point.description }}
-        />
-      </div>
-    </div>
-  );
-};
-
-// Header component
-const PointsHeader: React.FC<PointsHeaderProps> = ({ title, subtitle }) => {
-  return (
-    <div className="points-header">
-      <h1>{title}</h1>
+    <>
       <div className="points-intro">
-        <span 
-          dangerouslySetInnerHTML={{ __html: subtitle }}
-        />
+        <h1>How Do The MAIC Points Work?</h1>
+        <p className="points-intro-description">
+          Earn points by participating in MAIC events like workshops, hackathons, research groups, and more. Climb the leaderboard and redeem your points for exclusive merch or end-of-semester raffles!
+        </p>
       </div>
-      <div className="gradient-line-points"></div>
-    </div>
-  );
-};
-
-// Footer component
-const PointsFooter: React.FC<PointsFooterProps> = ({ children }) => {
-  return (
-    <div className="points-footer">
-      {children}
-    </div>
-  );
-};
-
-// Loading state component
-const LoadingState: React.FC = () => {
-  return (
-    <div className="loading-state">
-      <h1>Loading points system...</h1>
-    </div>
-  );
-};
-
-// Error state component
-const ErrorState: React.FC<{ error: string }> = ({ error }) => {
-  return (
-    <div className="error-state">
-      <h1>Error</h1>
-      <p>{error}</p>
-    </div>
-  );
-};
-
-// Main Points System component
-const PointsSystem: React.FC<PointsSystemProps> = ({ 
-  pointsData = defaultPointsData, 
-  loading = false, 
-  error = null 
-}) => {
-  if (loading) {
-    return <LoadingState />;
-  }
-
-  if (error) {
-    return <ErrorState error={error} />;
-  }
-
-  return (
-    <div className="points-page">
-      <PointsHeader
-        title="How Do The MAIC Points Work?"
-        subtitle='<span class="highlight">Earn points by completing MAIC activities and use them to purchase some of our merch!</span><br />To keep track of your points, you can reference the leaderboard on the landing page of this website. These points are gained through a variety of MAIC activities, with some providing you more points than others:'
-      />
-
-      <div className="points-grid">
-        {pointsData.map((point, index) => (
-          <PointsItem key={index} point={point} />
+      <div className="line"></div>
+      <div className="points-container">
+        {earnPoints.map((item, idx) => (
+          <div className="points-item" key={idx}>
+            <div className="points-item-left">
+              <h2 className="points-item-value">
+                {item.points}
+              </h2>
+            </div>
+            <div className="points-item-right">
+              <h2 className="points-item-title">
+                {item.title}
+              </h2>
+              <p className="points-item-description">
+                {item.description}
+              </p>
+            </div>
+          </div>
         ))}
       </div>
-
-      <PointsFooter>
-        <p>
-          You can spend these points in our{' '}
-          <a href="/merch">Merch Shop!</a> Just tell{' '}
-          <a href="/contact">one of the eboard members</a>{' '}
-          what you want to buy and they will deduct the points from your account.
-        </p>
-        <p>
-          You can also use these points to buy a ticket to the end-of-semester raffle, 
-          where we will be giving out awards to a few lucky winners!
-        </p>
-      </PointsFooter>
-    </div>
+      <div className="points-spend-container">
+        <h1 className="points-spend-title">What Can You Do With Points?</h1>
+        <div className="points-spend-options">
+          <div className="points-spend-option">
+            <FaTshirt size={80} color="rgb(255, 255, 255)" />
+            <h2 className="points-spend-option-title">
+              MAIC Merch
+            </h2>
+            <p className="points-spend-option-description">
+              Redeem points for exclusive club swag and gear
+            </p>
+          </div>
+          <div className="points-spend-option">
+            <FaTicketAlt size={80} color="rgb(255, 255, 255)" />
+            <h2 className="points-spend-option-title">
+              Raffles
+            </h2>
+            <p className="points-spend-option-description">
+              Enter end-of-semester raffles for special prizes
+            </p>
+          </div>
+        </div>  
+      </div>
+      <div className="points-spend-cta">
+        <h1>Ready to Spend Your Points?</h1>
+        <button
+          className="points-spend-cta-button"
+          onClick={() => navigate("/merch")}
+        >
+          Visit Merch Page
+        </button>
+      </div>
+    </>
   );
-};
+}
 
-export default PointsSystem;
-export { PointsItem, PointsHeader, PointsFooter, LoadingState, ErrorState, defaultPointsData };
-export type { Point, PointsSystemProps, PointsItemProps, PointsHeaderProps, PointsFooterProps };
+export default Points;

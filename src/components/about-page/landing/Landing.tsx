@@ -23,7 +23,7 @@ function Landing() {
   return (
     <div className="landing-container">
       <div className="landing-content">
-        <h1 className="landing-title">Learn more about MAIC</h1>
+        <h1 className="landing-title">Learn More About MAIC</h1>
         <p className="landing-description">
           We are dedicated to making artificial intelligence accessible and
           engaging for students of all backgrounds, regardless of prior

@@ -5,12 +5,14 @@ interface SpotlightCardProps {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  spotlightColor?: string;
 }
 
 const SpotlightCard: React.FC<SpotlightCardProps> = ({
   children,
   className = "",
   style = {},
+  spotlightColor = "rgba(255, 255, 255, 0.15)",
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -50,6 +52,12 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
           style={{
             left: mousePosition.x,
             top: mousePosition.y,
+            background: `radial-gradient(
+              circle,
+              ${spotlightColor} 0%,
+              ${spotlightColor.replace(/[\d.]+\)$/g, '0.08)')} 40%,
+              transparent 70%
+            )`,
           }}
         />
       )}
