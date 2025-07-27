@@ -1,10 +1,8 @@
 import React from "react";
 import "./Footer.css";
-import { FaInstagram, FaLinkedin, FaGraduationCap } from "react-icons/fa";
 import MAICLogo from "../../assets/maic_logo.png";
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
@@ -50,26 +48,16 @@ function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="social-link">
-              <FaLinkedin />
               <span>LinkedIn</span>
             </a>
-            <a href="#" className="social-link">
-              <FaInstagram />
-              <span>Instagram</span>
-            </a>
-            <a href="https://www.msoe.edu/ai-and-msoe/ai-student-projects-and-clubs/"
+            <a href="https://www.instagram.com/msoe_ai/" 
               target="_blank"
               rel="noopener noreferrer"
               className="social-link">
-              <FaGraduationCap />
-              <span>MSOE</span>
+              <span>Instagram</span>
             </a>
           </div>
         </div>
-      </div>
-
-      <div className="footer-bottom">
-        <p>© {currentYear} MSOE AI CLUB. All rights reserved.</p>
       </div>
     </footer>
   );
