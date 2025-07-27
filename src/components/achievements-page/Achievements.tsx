@@ -13,6 +13,7 @@ import MICS2024 from "../../assets/icons/2024MICS.png";
 import Researcher2023 from "../../assets/icons/2023Researcher.png";
 import Researcher2022 from "../../assets/icons/2022Researcher.png";
 import Researcher2024 from "../../assets/icons/2024Researcher.png";
+import Researcher2025 from "../../assets/icons/2025Researcher.png";
 import Hacksgiving from "../../assets/icons/hacksgiving.png";
 import MICSIcon from "../../assets/icons/MICS Icon.png";
 import ROSIELogo2025 from "../../assets/icons/ROSIE_Logo_2025.png";
@@ -75,7 +76,7 @@ const listOfAchievements = [
         description: "Presented at the 2022 MICS Conference at MSOE"
     },
     {
-        icon: <img src={Researcher2024} alt="2025 AI Researcher" className="achievement-img-icon" />,
+        icon: <img src={Researcher2025} alt="2025 AI Researcher" className="achievement-img-icon" />,
         title: "2025 AI Researcher",
         description: "Actively pursued AI-research in a MAIC research group throughout the 2025 school year"
     },

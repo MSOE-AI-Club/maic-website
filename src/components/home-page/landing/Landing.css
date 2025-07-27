@@ -1,0 +1,329 @@
+.landing-hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1e 0%, #000 100%);
+}
+
+.landing-bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 1;
+}
+
+.landing-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.landing-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+  .landing-logo-section {
+    flex: 1;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  @media (max-width: 768px) {
+    .landing-logo-section {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+.landing-maic-logo {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 6px 30px rgba(var(--purple-primary), 0.4));
+  transition: all 0.3s ease;
+  animation: slideInRight 1s ease-out;
+}
+
+.landing-maic-logo:hover {
+  opacity: 1;
+  filter: drop-shadow(0 8px 35px rgba(var(--purple-primary), 0.6));
+  transform: scale(1.02);
+}
+
+
+.landing-text-section {
+  flex: 1;
+  max-width: 600px;
+  text-align: left;
+}
+
+.landing-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: rgb(var(--text-1));
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+  animation: slideInRight 1s ease-out;
+  text-align: left !important;
+}
+
+.landing-description {
+  font-size: 1.3rem;
+  color: rgba(var(--text-1), 0.85);
+  line-height: 1.7;
+  margin: 0 0 2.5rem 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  animation: slideInRight 1s ease-out;
+  text-align: left;
+}
+
+.landing-button-container {
+  animation: slideInRight 1s ease-out;
+}
+
+.landing-learn-more-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.landing-learn-more-btn {
+  padding: 1.2rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-slow);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  user-select: none;
+  background: linear-gradient(135deg, rgba(var(--purple-primary), 0.9) 0%, rgba(var(--purple-primary), 0.7) 100%);
+  color: rgb(var(--text-1));
+  box-shadow: 
+    0 4px 16px rgba(var(--purple-primary), 0.2),
+    0 2px 8px rgba(var(--purple-primary), 0.1);
+}
+
+.landing-learn-more-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(var(--text-1), 0.1) 50%, 
+    transparent 100%);
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.landing-learn-more-btn:hover::before {
+  left: 100%;
+}
+
+.landing-learn-more-btn:hover {
+  background: linear-gradient(135deg, rgba(var(--purple-primary), 1) 0%, rgba(40, 24, 80, 0.9) 100%);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 
+    0 6px 20px rgba(var(--purple-primary), 0.3),
+    0 3px 10px rgba(var(--purple-primary), 0.2);
+}
+
+.landing-learn-more-btn:active {
+  transform: translateY(0px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.landing-learn-more-btn:focus {
+  outline: 2px solid rgba(var(--purple-primary), 0.6);
+  outline-offset: 2px;
+}
+
+.landing-scroll-btn-container {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  animation: bounce 2s infinite;
+  z-index: 2;
+}
+
+.landing-scroll-text {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.landing-scroll-arrow {
+  font-size: 1.5rem;
+  opacity: 0.6;
+  margin-bottom: 2rem;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .landing-content-wrapper {
+    gap: 3rem;
+  }
+  
+  .landing-title {
+    font-size: 2.8rem;
+  }
+  
+  .landing-description {
+    font-size: 1.2rem;
+  }
+  
+  .landing-maic-logo {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-content-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  
+  .landing-text-section {
+    text-align: left;
+    width: 100%;
+  }
+  
+  .landing-title {
+    font-size: 2.4rem;
+  }
+  
+  .landing-description {
+    font-size: 1.1rem;
+  }
+  
+  .landing-maic-logo {
+    max-width: 300px;
+  }
+  
+  .landing-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-title {
+    font-size: 2rem;
+  }
+  
+  .landing-description {
+    font-size: 1rem;
+  }
+  
+  .landing-maic-logo {
+    max-width: 250px;
+  }
+  
+  .landing-container {
+    padding: 1rem;
+  }
+  
+  .landing-scroll-btn-container {
+    bottom: 1rem;
+  }
+  
+  .landing-learn-more-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .landing-maic-logo,
+  .landing-title,
+  .landing-description,
+  .landing-button-container,
+  .landing-scroll-btn-container,
+  .landing-scroll-text,
+  .landing-scroll-arrow,
+  .landing-learn-more-btn,
+  .landing-learn-more-btn::before {
+    animation: none;
+    transition: none;
+  }
+  
+  .landing-learn-more-btn:hover {
+    transform: none;
+  }
+}
