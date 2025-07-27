@@ -13,14 +13,14 @@
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: white;
+  color: rgb(var(--text-1));
 }
 
 .industry-container p {
   text-align: center;
   font-size: 1.2rem;
   margin-bottom: 3rem;
-  color: white;
+  color: rgb(var(--text-1));
   max-width: 800px;
   line-height: 1.6;
 }
@@ -65,7 +65,7 @@
   max-height: 150px;
   object-fit: contain;
   border-radius: 8px;
-  background-color: white;
+  background-color: rgb(var(--text-1));
   padding: 1rem;
 }
 
@@ -73,7 +73,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
-  color: white;
+  color: rgb(var(--text-1));
   text-align: center;
   width: 100%;
 }
@@ -81,7 +81,7 @@
 .industry-description {
   font-size: 1rem;
   line-height: 1.6;
-  color: white;
+  color: rgb(var(--text-1));
   text-align: left !important;
   margin: 0;
   width: 100%;

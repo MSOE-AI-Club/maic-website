@@ -1,6 +1,6 @@
 import React from "react";
 import "./Footer.css";
-import { FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaGraduationCap } from "react-icons/fa";
 import MAICLogo from "../../assets/maic_logo.png";
 
 function Footer() {
@@ -46,16 +46,23 @@ function Footer() {
         <div className="footer-right">
           <h3>Social Media</h3>
           <div className="social-links">
-            <a href="#" className="social-link">
-              <FaInstagram />
-              <span>Instagram</span>
-            </a>
-            <a href="https://www.linkedin.com/company/msoeaiclub/"
+          <a href="https://www.linkedin.com/company/msoeaiclub/"
               target="_blank"
               rel="noopener noreferrer"
               className="social-link">
               <FaLinkedin />
               <span>LinkedIn</span>
+            </a>
+            <a href="#" className="social-link">
+              <FaInstagram />
+              <span>Instagram</span>
+            </a>
+            <a href="https://www.msoe.edu/ai-and-msoe/ai-student-projects-and-clubs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-link">
+              <FaGraduationCap />
+              <span>MSOE</span>
             </a>
           </div>
         </div>

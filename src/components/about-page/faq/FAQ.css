@@ -9,14 +9,14 @@
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: white;
+  color: rgb(var(--text-1));
 }
 
 .faq-description {
   text-align: center;
   font-size: 1.2rem;
   margin-bottom: 3rem;
-  color: white;
+  color: rgb(var(--text-1));
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
