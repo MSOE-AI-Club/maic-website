@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./EboardMember.css";
 import { FaEnvelope } from "react-icons/fa";
 import Brett from "../../../assets/contact/brett_s.png";
@@ -102,6 +102,18 @@ const members: EboardMemberInfo[] = [
 ];
 
 function EboardMember() {
+    const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+
+    const handleCopy = async (email: string) => {
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopiedEmail(email);
+            setTimeout(() => setCopiedEmail(null), 2000);
+        } catch (error) {
+            console.error("Failed to copy email:", error);
+        }
+    };
+
     return (
         <>
         <div className="eboard-intro">
@@ -127,12 +139,13 @@ function EboardMember() {
                             <span className="eboard-member-email-icon" aria-hidden="true">
                                 <FaEnvelope />
                             </span>
-                            <a
-                                className="eboard-member-email"
-                                href={`mailto:${member.email}`}
+                            <button
+                                className={`eboard-member-email ${copiedEmail === member.email ? 'copied' : ''}`}
+                                onClick={() => handleCopy(member.email)}
+                                type="button"
                             >
-                                {member.email}
-                            </a>
+                                {copiedEmail === member.email ? 'Copied!' : member.email}
+                            </button>
                         </div>
                     </div>
                 </div>

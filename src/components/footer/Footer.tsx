@@ -50,7 +50,10 @@ function Footer() {
               <FaInstagram />
               <span>Instagram</span>
             </a>
-            <a href="https://www.linkedin.com/company/msoeaiclub/" className="social-link">
+            <a href="https://www.linkedin.com/company/msoeaiclub/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-link">
               <FaLinkedin />
               <span>LinkedIn</span>
             </a>

@@ -22,104 +22,87 @@ const listOfAchievements = [
     {
         icon: <img src={CurrentEboard} alt="Current Eboard" className="achievement-img-icon" />,
         title: "Current Eboard",
-        description: "Be a member of the current 2025 MAIC Eboard",
-        color: "#D4AF37"
+        description: "Be a member of the current 2025 MAIC Eboard"
     },
     {
         icon: <img src={OldEboard} alt="Previous Eboard" className="achievement-img-icon" />,
         title: "Previous Eboard", 
-        description: "Was previously a member of the MAIC eboard",
-        color: "#8B7355"
+        description: "Was previously a member of the MAIC eboard"
     },
     {
         icon: <img src={ROSIELogo2025} alt="ROSIE 2025" className="achievement-img-icon" />,
         title: "ROSIE 2025",
-        description: "Was a finalist or winner of the 2025 ROSIE Supercomputer Challenge",
-        color: "#FF69B4"
+        description: "Was a finalist or winner of the 2025 ROSIE Supercomputer Challenge"
     },
     {
         icon: <img src={ROSIE2024} alt="ROSIE 2024" className="achievement-img-icon" />,
         title: "ROSIE 2024",
-        description: "Was a finalist or winner of the 2024 ROSIE Supercomputer Challenge",
-        color: "#FF69B4"
+        description: "Was a finalist or winner of the 2024 ROSIE Supercomputer Challenge"
     },
     {
         icon: <img src={ROSIE2023} alt="ROSIE 2023" className="achievement-img-icon" />,
         title: "ROSIE 2023",
-        description: "Was a finalist or winner of the 2023 ROSIE Supercomputer Challenge",
-        color: "#FF69B4"
+        description: "Was a finalist or winner of the 2023 ROSIE Supercomputer Challenge"
     },
     {
         icon: <img src={ROSIE2022} alt="ROSIE 2022" className="achievement-img-icon" />,
         title: "ROSIE 2022",
-        description: "Was a finalist or winner of the 2022 ROSIE Supercomputer Challenge", 
-        color: "#FF1493"
+        description: "Was a finalist or winner of the 2022 ROSIE Supercomputer Challenge"
     },
     {
         icon: <img src={ROSIEPresenter} alt="ROSIE Presenter" className="achievement-img-icon" />,
         title: "ROSIE Presenter",
-        description: "Presented their project in the Atrium for the 2023 ROSIE Supercomputer Challenge",
-        color: "#4169E1"
+        description: "Presented their project in the Atrium for the 2023 ROSIE Supercomputer Challenge"
     },
     {
         icon: <img src={MICSIcon} alt="MICS 2025" className="achievement-img-icon" />,
         title: "MICS 2025",
-        description: "Presented at the 2025 MICS Conference at Augsburg University",
-        color: "#32CD32"
+        description: "Presented at the 2025 MICS Conference at Augsburg University"
     },
     {
         icon: <img src={MICS2024} alt="MICS 2024" className="achievement-img-icon" />,
         title: "MICS 2024",
-        description: "Presented at the 2024 MICS Conference at Augsburg University",
-        color: "#32CD32"
+        description: "Presented at the 2024 MICS Conference at Augsburg University"
     },
     {
         icon: <img src={MICS2023} alt="MICS 2023" className="achievement-img-icon" />,
         title: "MICS 2023",
-        description: "Presented at the 2023 MICS Conference at Iowa University",
-        color: "#32CD32"
+        description: "Presented at the 2023 MICS Conference at Iowa University"
     },
     {
         icon: <img src={MICS2022} alt="MICS 2022" className="achievement-img-icon" />,
         title: "MICS 2022", 
-        description: "Presented at the 2022 MICS Conference at MSOE",
-        color: "#32CD32"
+        description: "Presented at the 2022 MICS Conference at MSOE"
     },
     {
         icon: <img src={Researcher2024} alt="2025 AI Researcher" className="achievement-img-icon" />,
         title: "2025 AI Researcher",
-        description: "Actively pursued AI-research in a MAIC research group throughout the 2025 school year",
-        color: "#00CED1"
+        description: "Actively pursued AI-research in a MAIC research group throughout the 2025 school year"
     },
     {
         icon: <img src={Researcher2024} alt="2024 AI Researcher" className="achievement-img-icon" />,
         title: "2024 AI Researcher",
-        description: "Actively pursued AI-research in a MAIC research group throughout the 2024 school year",
-        color: "#FFD700"
+        description: "Actively pursued AI-research in a MAIC research group throughout the 2024 school year"
     },
     {
         icon: <img src={Researcher2023} alt="2023 AI Researcher" className="achievement-img-icon" />,
         title: "2023 AI Researcher",
-        description: "Actively pursued AI-research in a MAIC research group throughout the 2023 school year",
-        color: "#9370DB"
+        description: "Actively pursued AI-research in a MAIC research group throughout the 2023 school year"
     },
     {
         icon: <img src={Researcher2022} alt="2022 AI Researcher" className="achievement-img-icon" />,
         title: "2022 AI Researcher", 
-        description: "Actively pursued AI-research in a MAIC research group throughout the 2022 school year",
-        color: "#FF4500"
+        description: "Actively pursued AI-research in a MAIC research group throughout the 2022 school year"
     },
     {
         icon: <img src={Hacksgiving} alt="Hacksgiving Participant" className="achievement-img-icon" />,
         title: "Hacksgiving Participant",
-        description: "Participated in the 2025 Hacksgiving Hackathon",
-        color: "#4169E1"
+        description: "Participated in the Hacksgiving Hackathon"
     },
     {
         icon: <img src={NVIDIALogo} alt="NVIDIA DLI Certified" className="achievement-img-icon" />,
         title: "NVIDIA DLI Certified",
-        description: "Completed the NVIDIA Deep Learning Institute (DLI) course on AI and Machine Learning",
-        color: "#4169E1"
+        description: "Completed the NVIDIA Deep Learning Institute (DLI) course on AI and Machine Learning"
     },
 ];
 
@@ -139,7 +122,7 @@ function Achievements() {
             <div className="achievements-container">
                 {listOfAchievements.map((achievement, index) => (
                     <div className="achievement-card" key={index}>
-                        <div className="achievement-icon" style={{color: achievement.color}}>
+                        <div className="achievement-icon">
                             {achievement.icon}
                         </div>
                         <div className="achievement-content">
