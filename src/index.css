@@ -29,8 +29,8 @@
     --glass-border-hover: rgba(255, 255, 255, 0.2);
 
     /* Purple Theme Colors */
-    --purple-primary: 52, 31, 105;
-    --purple-secondary: 132, 67, 255;
+    --purple-primary: 52, 31, 105;    /*MAIC Purple*/
+    --purple-secondary: 132, 67, 255; /*MAIC Secondary Purple*/
 
     /* Transition */
     --transition-height: 80px;
