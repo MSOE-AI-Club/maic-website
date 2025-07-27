@@ -2,72 +2,106 @@ import { useState } from 'react';
 import "./MerchGrid.css";
 import DummyImage from "../../../assets/merch/tshirt.png"
 
+interface MerchItem {
+    name: string;
+    images: string[];
+    cost: string;
+    description: string;
+    purchaseInfo: string;
+}
 
-const merchItems = [
+const merchItems: MerchItem[] = [
     {
         name: "Researcher Hoodie",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage, DummyImage, DummyImage],
         cost: "Research Participation",
-        description: "Introducing the MAIC Researcher Hoodie – the quintessential cloak for those who dance with data and tango with tensors!\n\nStep into the realm of wearable experimentation, where pockets are perfect for stashing extra code snippets and hoods serve as cocoons of contemplation. With this hoodie, you're not just embracing warmth; you're enveloping yourself in the very essence of innovation. Whether you're decoding the cryptic language of machine learning or simply seeking enlightenment through lines of Python, the MAIC Researcher Hoodie is the attire that turns heads and sparks \"aha\" moments in equal measure. It's not just clothing; it's the dress code for decoding the future.",
+        description: "The MAIC Researcher Hoodie is your go-to uniform for experimentation. Designed for deep thinkers and tensor tamers alike, it blends cozy comfort with computational charisma. Whether you're testing models or reflecting on philosophy, this hoodie says you mean innovation.",
         purchaseInfo: "Participate in AI Research"
     },
     {
         name: "MAIC T-Shirt",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage, DummyImage],
         cost: "10 Points",
-        description: "Introducing the AI Club T-Shirt – the cotton canvas that turns your torso into a tech-savvy masterpiece! This isn't just a shirt; it's a byte-sized billboard broadcasting your passion for all things AI.\n\nWhether you're relaxing with regression analysis or mingling with deep learning, the AI Club T-Shirt is your statement piece.",
+        description: "The MAIC T-Shirt is your casual badge of AI brilliance. Soft, stylish, and packed with personality, it's ideal for team meetings, workshops, or just lounging with a laptop. Show your club pride and code in comfort—this shirt does both.",
         purchaseInfo: "Ask an Eboard Member"
     },  
     {
         name: "MAIC Brain",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage],
         cost: "1 point",
-        description: "Introducing the MAIC-Squeezer: Your brain's new best friend! This squishy plastic blue brain stress toy proudly rocks the MAIC logo, and boy, does it know how to de-stress with style! Give it a ~~gentle~~ squeeze, and you'll unleash the genius within 💙",
+        description: "Meet the MAIC Brain: a squeezable stress-relief sidekick for late-night coding marathons. Shaped like a brain and decked in blue, it's more than a toy—it’s a symbol of mental power and club pride, ready to squish your worries away.",
         purchaseInfo: "Ask an Eboard Member"
     },
     {
         name: "MAIC Polo",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage, DummyImage, DummyImage],
         cost: "25 Points or Attend MICS",
-        description: "Introducing the MAIC Polo – where business meets a digital flair! This isn't just fashion; it's intellectual elegance. Whether you're engaging in a heated debate about neural network architectures or on a coding break, the MAIC Polo is attire for boardrooms and server rooms alike.",
+        description: "The MAIC Polo delivers professionalism with a punch of AI sophistication. Perfect for conferences, presentations, or casual flexing in class, it balances smart design with serious style. It's a clean look for sharp minds.",
         purchaseInfo: "Ask an Eboard Member"
     },
     {
         name: "MAIC Hoodie",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage, DummyImage, DummyImage],
         cost: "35 Points",
-        description: "Introducing the MAIC Hoodie – a cosmic collision of code and comfort! Imagine wrapping yourself in the enigmatic embrace of deep space, where the constellations are constellations of code and the stars are binary bits. Whether you're pondering perplexing problems or simply plotting your next coding escapade, our MAIC Hoodie is the attire that turns heads and sparks discussions in all dimensions – both artificial and natural!",
+        description: "The MAIC Hoodie wraps you in a warm layer of machine learning mystique. With subtle tech vibes and standout comfort, it’s your wearable reminder that you live and breathe code—on campus or in the cosmos.",
         purchaseInfo: "Ask an Eboard Member"
     },
     {
         name: "MAIC Quarter Zip",
-        imageUrl: DummyImage,
+        images: [DummyImage, DummyImage, DummyImage, DummyImage],
         cost: "40 Points",
-        description: "Introducing the MAIC Quarter Zip Sweatshirt – the digital drapery that zips up your zest for code, one pixel at a time! This isn't your run-of-the-mill sweatshirt; it's a byte-sized burst of brilliance that's all about keeping you cozy while you compute.\n\nImagine wrapping yourself in a cocoon of computational charm, where every zip is a reminder that life is but a series of ones and zeros waiting to be embraced. It's like wearing a hug from a robot with impeccable fashion sense – snug, stylish, and algorithmically aligned.\n\nWhether you're debugging dilemmas or dreaming up neural networks, the MAIC Quarter Zip Sweatshirt is your trusty companion. It's not just a sweatshirt; it's a symphony of style for the AI aficionado, a wearable wink to the future you're helping shape, one line of code at a time.",
+        description: "This MAIC Quarter Zip is sleek, smart, and engineered for coder comfort. Whether you're hacking through homework or hosting a workshop, it keeps your flow state stylish. It’s the default layer for default greatness.",
         purchaseInfo: "Ask an Eboard Member"
     },
 ]
 
-
-
 function MerchGrid() {
-    // const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState<MerchItem | null>(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // const handleOpen = (item) => {
-    //     setSelectedItem(item);
-    // };
+    const handleOpen = (item: MerchItem) => {
+        setSelectedItem(item);
+        setCurrentImageIndex(0);
+    };
 
-    // const handleClose = () => {
-    //     setSelectedItem(null);
-    // };
+    const handleClose = () => {
+        setSelectedItem(null);
+        setCurrentImageIndex(0);
+    };
+
+    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            handleClose();
+        }
+    };
+
+    const handlePrevImage = () => {
+        if (selectedItem && currentImageIndex > 0) {
+            setCurrentImageIndex(currentImageIndex - 1);
+        }
+    };
+
+    const handleNextImage = () => {
+        if (selectedItem && currentImageIndex < selectedItem.images.length - 1) {
+            setCurrentImageIndex(currentImageIndex + 1);
+        }
+    };
+
+    const handleThumbnailClick = (index: number) => {
+        setCurrentImageIndex(index);
+    };
     
     return (
-        //<div className={`merch-page ${selectedItem ? "blurred" : ""}`}>
+        <>
             <div className="merch-grid">
                 <div className="merch-grid-item">
                     {merchItems.map((item, index) => (
-                        <div key={index} className="merch-grid-item-container">
-                            <img className="merch-item-image" src={item.imageUrl} alt={item.name} />
+                        <div 
+                            key={index} 
+                            className="merch-grid-item-container"
+                            onClick={() => handleOpen(item)}
+                        >
+                            <img className="merch-item-image" src={item.images[0]} alt={item.name} />
                             <div className="merch-item-info">
                                 <h3 className="merch-item-name">{item.name}</h3>
                                 <p className="merch-item-cost">{item.cost}</p>
@@ -76,7 +110,73 @@ function MerchGrid() {
                     ))}
                 </div>
             </div>
-       // </div>
+
+            {selectedItem && (
+                <div className="merch-modal-overlay" onClick={handleOverlayClick}>
+                    <div className="merch-modal">
+                        <button className="merch-modal-close" onClick={handleClose}>
+                            ×
+                        </button>
+                        <div className="merch-modal-content">
+                            <div className="merch-modal-left">
+                                <div className="merch-modal-image-container">
+                                    {selectedItem.images.length > 1 && (
+                                        <button 
+                                            className="image-nav-button prev"
+                                            onClick={handlePrevImage}
+                                            disabled={currentImageIndex === 0}
+                                        >
+                                            &#8249;
+                                        </button>
+                                    )}
+                                    <img 
+                                        className="merch-modal-image" 
+                                        src={selectedItem.images[currentImageIndex]} 
+                                        alt={`${selectedItem.name} - View ${currentImageIndex + 1}`}
+                                    />
+                                    {selectedItem.images.length > 1 && (
+                                        <button 
+                                            className="image-nav-button next"
+                                            onClick={handleNextImage}
+                                            disabled={currentImageIndex === selectedItem.images.length - 1}
+                                        >
+                                            &#8250;
+                                        </button>
+                                    )}
+                                </div>
+                                {selectedItem.images.length > 1 && (
+                                    <div className="image-thumbnails">
+                                        {selectedItem.images.map((image, index) => (
+                                            <img
+                                                key={index}
+                                                className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
+                                                src={image}
+                                                alt={`${selectedItem.name} thumbnail ${index + 1}`}
+                                                onClick={() => handleThumbnailClick(index)}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="merch-modal-right">
+                                <h2 className="merch-modal-title">{selectedItem.name}</h2>
+                                <div className="merch-modal-description">
+                                    {selectedItem.description.split('\n').map((paragraph: string, index: number) => (
+                                        <p key={index}>{paragraph}</p>
+                                    ))}
+                                </div>
+                                <div className="merch-modal-purchase-section">
+                                    <div className="merch-modal-cost-badge">{selectedItem.cost}</div>
+                                    <p className="merch-modal-purchase">
+                                        <strong>Want one? Just ask an E-Board member to get started.</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 

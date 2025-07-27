@@ -9,34 +9,49 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function FAQ() {
   const faqList = [
     {
-      question: "Do I need to sign-up to come to events?",
+      question: "Do I need to sign up to attend events?",
       answer:
-        "No, you do not need to sign-up to come to events! However, if you are in our Teams, you'll be able to get notifications about upcoming events and other club news.",
+        "Nope! You can attend events without signing up. However, joining our Teams group lets you stay up to date with event reminders and club announcements.",
     },
     {
-      question: "Do I need to be CS to join?",
+      question: "Do I need to be a CS major to join?",
       answer:
-        "No, you do not need to be a CS major to join! We welcome all majors and all skill levels. We have members from all majors, including CS, SE, EE, ME, and more! In fact, we encourage other majors to join the club to get AI experience on their resumes as AI continues to spread throughout all major industries. Other majors also offer a fresh perspective on research projects, and some of our top-performing groups have included members from other majors!",
+        "Not at all! We welcome all majors and experience levels. Our members come from CS, SE, EE, ME, and many other backgrounds. In fact, students from non-CS majors often bring unique perspectives to our research projects—and some of our most successful teams have included them. Plus, it's a great way to add AI experience to your resume, no matter your field.",
     },
     {
       question: "How do I join the club?",
-      answer:
-        "You can come to any of our events on Thursdays from 6:30pm - 7:30pm in the ITC Great Hall every-other week. Joining our Teams is as easy as clicking this link!",
+      answer: (
+        <>
+          You’re welcome to attend any of our events—held every other Thursday from 6:30pm to 7:30pm in the ITC Great Hall. To officially join and get updates, just click{" "}
+          <a href="https://teams.microsoft.com/l/team/19%3A1910afef1d1d4e3b9bfd5f7938182f0b%40thread.tacv2/conversations?groupId=8f7bf1ac-c9b6-4bf0-b74a-407f088e74cc&tenantId=4046ceac-fdd3-46c9-ac80-b7c4a49bab70">
+            this link
+          </a>{" "}
+          to join our Teams group.
+        </>
+      ),
     },
     {
-      question: "How do I get points?",
-      answer:
-        "You can get points by attending events, participating in workshops, and participating in research groups. You can also get points by completing challenge problems and submitting them to us! For a comprehensive list of how else you can get points, check out this webpage.",
+      question: "How do I earn points?",
+      answer: (
+        <>
+          You can earn points by attending events, joining workshops, and participating in research groups. You’ll also get points for solving challenge problems and submitting them to us. For the full breakdown, check out{" "}
+          <a href="/points">this webpage</a>.
+        </>
+      ),
     },
     {
-      question: "How do I get achievements?",
-      answer:
-        "You can get achievements by completing certain tasks, such as attending a certain number of events or completing a certain number of challenge problems. For a comprehensive list of how else you can get achievements, check out this webpage.",
+      question: "How do I earn achievements?",
+      answer: (
+        <>
+          Achievements are awarded for completing specific milestones—like attending a set number of events or solving multiple challenge problems. For the full list, visit{" "}
+          <a href="/achievements">this webpage</a>.
+        </>
+      ),
     },
     {
       question: "How do I get on the leaderboard?",
       answer:
-        "You can get on the leaderboard by getting points! The more points you have, the higher you are on the leaderboard. If you are not on the leaderboard, please notify an eboard member and ensure you are a member of our Teams.",
+        "Earn points to climb the leaderboard—the more you have, the higher you go! If you're missing from the leaderboard, make sure you're in our Teams group and let an e-board member know.",
     },
   ];
 
