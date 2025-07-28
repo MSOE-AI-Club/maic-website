@@ -31,10 +31,8 @@ function Industry() {
 
   return (
     <div className="industry-container">
-      <h1>Driven By Industry</h1>
-      <p>
-      MAIC prepares students for real-world success by aligning with industry needs. We work closely with companies, especially local partners, to understand the skills they value, equip members with relevant experience, and host professionals who share insights, career advice, and real-world AI applications.
-      </p>
+      <h1>Driven By Industry Partners</h1>
+      <div className="line" />
       <div className="industry-list">
         {industryList.map((industry) => (
           <SpotlightCard key={industry.name} className="dark">

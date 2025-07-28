@@ -58,9 +58,7 @@ function FAQ() {
   return (
     <div className="faq-container">
       <h1 className="faq-title">Frequently Asked Questions</h1>
-      <p className="faq-description">
-        Everything you need to know about joining and participating in MAIC!
-      </p>
+      <div className="line" />
       <div className="faq-list">
         <div className="accordion-container">
           {faqList.map((faq, index) => (
