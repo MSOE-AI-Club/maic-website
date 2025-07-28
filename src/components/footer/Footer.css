@@ -113,33 +113,48 @@
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .footer {
-    padding: 1rem 0 0;
-    margin-top: 2rem;
-    min-height: auto;
+    padding: 1.5rem 0 0;
+    margin-top: 3rem;
+    min-height: 180px;
   }
 
   .footer-content {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem;
+    padding: 0 1.5rem;
   }
 
   .footer-club-name {
-    justify-content: center;
-    text-align: center;
-    flex-direction: column;
-    gap: 0.5rem;
+    justify-content: flex-start;
+    text-align: left;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
   }
 
   .footer-logo {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
   }
 
-  /* Hide club name and description on mobile */
+  /* Show club name and description like desktop */
   .footer-club-text,
   .footer-description {
-    display: none;
+    display: block;
+  }
+
+  .footer-club-text h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+  }
+
+  .footer-description {
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.5;
+    margin: 0;
   }
 
   /* Show mobile-only links on mobile */
@@ -147,33 +162,36 @@
     display: block;
   }
 
-  /* Hide the second footer-center section on mobile */
+  /* Keep the second footer-center section */
   .footer-center:nth-of-type(3) {
-    display: none;
+    display: block;
   }
 
   .footer-center,
   .footer-right {
-    text-align: center;
+    text-align: left;
   }
 
   .footer-center h3,
   .footer-right h3 {
-    font-size: 1rem;
-    margin-bottom: 0.6rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    margin: 0 0 0.8rem 0;
   }
 
   .footer-center a,
   .footer-right a,
   .social-link {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .social-links {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
+    margin-top: 0;
   }
 }
 
@@ -186,22 +204,69 @@
   .footer-content {
     padding: 0 0.8rem;
     gap: 1.2rem;
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem !important;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .footer-club-name {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 0.8rem;
+    margin-bottom: 0;
+  }
+
+  .footer-club-text {
+    display: block;
+  }
+
+  .footer-club-text h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .footer-description {
+    display: none;
+  }
+
+  .footer-center {
+    display: none;
+  }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .footer-right h3 {
+    display: none;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .social-link {
+    margin-bottom: 0;
+    font-size: 0.9rem;
   }
 
   .footer-logo {
     width: 35px;
     height: 35px;
-  }
-
-  .footer-center h3,
-  .footer-right h3 {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-center a,
-  .footer-right a,
-  .social-link {
-    font-size: 0.8rem;
   }
 }
