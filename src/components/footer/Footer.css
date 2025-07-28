@@ -3,7 +3,7 @@
   color: white;
   padding: 1.5rem 0 0;
   margin-top: 3rem;
-  height: 180px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
 }
@@ -25,13 +25,14 @@
   gap: 1rem;
   margin-bottom: 0.8rem;
 }
+
 .footer-logo {
   width: 50px;
   height: 50px;
   object-fit: contain;
 }
 
-.footer-club-name h2 {
+.footer-club-text h2 {
   font-size: 1.3rem;
   font-weight: bold;
   margin: 0;
@@ -102,4 +103,105 @@
 
 .social-link:hover {
   color: white;
+}
+
+/* Mobile-only elements - hidden by default */
+.mobile-only {
+  display: none;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem 0 0;
+    margin-top: 2rem;
+    min-height: auto;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .footer-club-name {
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Hide club name and description on mobile */
+  .footer-club-text,
+  .footer-description {
+    display: none;
+  }
+
+  /* Show mobile-only links on mobile */
+  .mobile-only {
+    display: block;
+  }
+
+  /* Hide the second footer-center section on mobile */
+  .footer-center:nth-of-type(3) {
+    display: none;
+  }
+
+  .footer-center,
+  .footer-right {
+    text-align: center;
+  }
+
+  .footer-center h3,
+  .footer-right h3 {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-center a,
+  .footer-right a,
+  .social-link {
+    font-size: 0.85rem;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 0.8rem 0 0;
+    margin-top: 1.5rem;
+  }
+
+  .footer-content {
+    padding: 0 0.8rem;
+    gap: 1.2rem;
+  }
+
+  .footer-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .footer-center h3,
+  .footer-right h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-center a,
+  .footer-right a,
+  .social-link {
+    font-size: 0.8rem;
+  }
 }

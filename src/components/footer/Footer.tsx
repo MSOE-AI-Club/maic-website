@@ -10,7 +10,7 @@ function Footer() {
         <div className="footer-left">
           <span className="footer-club-name">
             <img src={MAICLogo} alt="MSOE AI Club" className="footer-logo" />
-            <span>
+            <span className="footer-club-text">
               <h2>MSOE AI CLUB</h2>
             </span>
           </span>
@@ -29,6 +29,9 @@ function Footer() {
             <li><a href="/library">Library</a></li>
             <li><a href="/learning-tree">Learning Tree</a></li>
             <li><a href="/events">Events</a></li>
+            <li className="mobile-only"><a href="/contact">Contact</a></li>
+            <li className="mobile-only"><a href="/merch">Merch</a></li>
+            <li className="mobile-only"><a href="/about">About</a></li>
           </ul>
         </div>
 
