@@ -30,6 +30,7 @@
   letter-spacing: -0.02em;
   position: relative;
   z-index: 2;
+  line-height: 1.1;
 }
 .achievements-intro-description {
   font-size: 1.1rem;
@@ -258,6 +259,13 @@
   
   .achievements-intro h1 {
     font-size: 2.5rem;
+    line-height: 1.3;
+    text-align: left;
+  }
+  
+  .achievements-intro-description {
+    font-size: 1rem;
+    margin: 0 auto 0 0;
   }
   
   .achievements-description {
@@ -292,6 +300,8 @@
 @media (max-width: 480px) {
   .achievements-intro h1 {
     font-size: 2rem;
+    line-height: 1.3;
+    text-align: center;
   }
   
   .achievement-card {
@@ -302,6 +312,10 @@
   
   .achievement-icon {
     align-self: center;
+  }
+  
+  .achievement-content {
+    text-align: center;
   }
 }
 

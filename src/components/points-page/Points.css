@@ -29,6 +29,7 @@
   letter-spacing: -0.02em;
   position: relative;
   z-index: 2;
+  line-height: 1.1;
 }
 
 .points-intro-description {
@@ -362,13 +363,13 @@
   }
   
   .points-intro h1 {
-    font-size: 2rem;
-    margin-top: 3rem;
-    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    line-height: 1.3;
   }
   
   .points-intro-description {
     font-size: 1rem;
+    margin: 0 auto 0 0;
   }
   
   .points-container {
@@ -419,7 +420,9 @@
 
 @media (max-width: 480px) {
   .points-intro h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
+    line-height: 1.3;
+    text-align: center;
   }
   
   .points-item {
@@ -432,12 +435,17 @@
     align-self: center;
   }
   
+  .points-item-right {
+    text-align: center;
+  }
+  
   .points-spend-container {
     padding: 3rem 1rem 2rem;
   }
   
   .points-spend-title {
     font-size: 1.6rem;
+    text-align: center;
   }
   
   .points-spend-cta h1 {
