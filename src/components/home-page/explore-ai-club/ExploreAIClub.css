@@ -1,16 +1,18 @@
 .explore-ai-club-section {
-  padding: 3rem 2rem;
-  margin: 2rem auto;
-  max-width: 1600px;
-  width: 100%;
+  padding: 4rem 2rem;
+  margin: 0 auto;
+  max-width: 1400px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .explore-intro {
   text-align: center;
-  padding: 2rem 2rem 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .explore-intro::before {
@@ -31,12 +33,14 @@
   font-size: 2.5rem;
   font-weight: 800;
   color: rgb(var(--text-1));
-  margin-top: 0;
-  margin-bottom: 4rem;
+  margin: 0 0 2rem 0;
   letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
   position: relative;
   z-index: 2;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .line {
@@ -50,31 +54,35 @@
     rgba(var(--purple-primary), 0.25) 75%,
     rgba(var(--purple-primary), 0.001) 100%
   );
-  margin: 0 auto 3rem;
+  margin: 0 auto 3rem auto;
+  position: relative;
+  z-index: 2;
 }
 
 .explore-item-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
+  gap: 3rem;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
 }
 
 .explore-item {
   background: var(--glass-primary);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
   backdrop-filter: var(--blur-glass);
   -webkit-backdrop-filter: var(--blur-glass);
   box-shadow: var(--shadow-glass);
   transition: var(--transition-smooth);
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
+  box-sizing: border-box;
 }
 
 .explore-item::before {
@@ -98,81 +106,102 @@
 .explore-item:hover {
   background: rgba(var(--purple-primary), 0.15);
   border-color: rgba(var(--purple-primary), 0.3);
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-glass-hover);
 }
 
-/* Default layout: Image left, content right */
 .item-image-section {
-  flex: 0 0 200px;
+  flex: none;
+  width: 200px;
+  height: 200px;
   position: relative;
   z-index: 2;
+  box-sizing: border-box;
 }
 
 .item-content-section {
   flex: 1;
   position: relative;
   z-index: 2;
+  box-sizing: border-box;
 }
 
-/* Reverse layout: Content left, image right */
 .explore-item-reverse {
   flex-direction: row-reverse;
 }
 
 .explore-item-image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
   border-radius: 12px;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
 .explore-item:hover {
+  background: rgba(var(--purple-primary), 0.15);
+  border-color: rgba(var(--purple-primary), 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-glass-hover);
+}
+
+.explore-item:hover .explore-item-image {
   transform: scale(1.05);
-  border-color: rgba(var(--purple-primary), 0.5);
-  box-shadow: 0 8px 24px rgba(var(--purple-primary), 0.2);
+  filter: drop-shadow(0 0 12px rgba(var(--purple-primary), 0.3));
 }
 
 .item-title {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 700;
   color: rgb(var(--text-1));
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 1rem 0;
   text-shadow: 0 1px 4px rgba(var(--purple-primary), 0.18);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .item-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  color: rgba(var(--text-1), 0.9);
   font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 1rem 0;
   text-shadow: 0 1px 2px rgba(var(--purple-primary), 0.13);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .item-description {
-  font-size: 1rem;
-  color: rgba(var(--text-1), 0.85);
+  font-size: 1.1rem;
+  color: rgba(var(--text-1), 0.8);
   line-height: 1.6;
   margin: 0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .explore-ai-club-section {
-    padding: 2rem 1.5rem;
+    padding: 3rem 1.5rem;
+    box-sizing: border-box;
   }
   
   .explore-title {
     font-size: 2rem;
     margin-bottom: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .explore-item {
     flex-direction: column !important;
     text-align: center;
-    gap: 1.5rem;
+    gap: 1rem;
     padding: 1.5rem;
+    box-sizing: border-box;
   }
   
   .explore-item-reverse {
@@ -182,58 +211,82 @@
   .item-image-section {
     flex: none;
     align-self: center;
-    max-width: 250px;
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    box-sizing: border-box;
   }
   
   .explore-item-image {
-    height: 120px;
+    height: 160px;
+    width: 100%;
+    object-fit: contain;
   }
   
   .item-title {
     font-size: 1.3rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .item-subtitle {
     font-size: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .item-description {
     font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
 
 @media (max-width: 480px) {
   .explore-ai-club-section {
-    padding: 1.5rem 1rem;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
   }
   
   .explore-title {
     font-size: 1.8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .explore-item {
     padding: 1rem;
-    gap: 1rem;
+    gap: 0.75rem;
+    box-sizing: border-box;
   }
   
   .item-image-section {
-    max-width: 200px;
+    max-width: 240px;
+    box-sizing: border-box;
   }
   
   .explore-item-image {
-    height: 100px;
+    height: 240px;
   }
   
   .item-title {
     font-size: 1.2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .item-subtitle {
     font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .item-description {
     font-size: 0.85rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: left;
   }
 }
 

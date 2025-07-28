@@ -1,34 +1,51 @@
 .line {
-width: 80vw;
-height: 1px;
-background: linear-gradient(
-  90deg,
-  rgba(var(--purple-primary), 0.001) 0%,
-  rgba(var(--purple-primary), 0.25) 25%,
-  rgba(var(--purple-primary), 1) 50%,
-  rgba(var(--purple-primary), 0.25) 75%,
-  rgba(var(--purple-primary), 0.001) 100%
-);
-  margin: 0 auto 3rem;
+  width: 80vw;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--purple-primary), 0.001) 0%,
+    rgba(var(--purple-primary), 0.25) 25%,
+    rgba(var(--purple-primary), 1) 50%,
+    rgba(var(--purple-primary), 0.25) 75%,
+    rgba(var(--purple-primary), 0.001) 100%
+  );
+  margin: 0 auto 3rem auto;
+  position: relative;
+  z-index: 2;
 }
 
 .ready-to-join-section {
+  position: relative;
   padding: 4rem 2rem;
-  margin: 3rem auto;
-  max-width: 1200px;
-  width: 100%;
+  margin: 0 auto;
+  max-width: 1400px;
+  overflow: hidden;
+  box-sizing: border-box;
   text-align: center;
 }
 
+.ready-to-join-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, 
+    rgba(var(--purple-primary), 0.04) 0%, 
+    transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .ready-to-join-container {
+  text-align: center;
   max-width: 800px;
   margin: 0 auto;
   padding: 3rem 2rem;
   position: relative;
-  overflow: hidden;
-  text-align: center;
-  /* background removed */
-  background: none;
+  z-index: 2;
+  box-sizing: border-box;
 }
 
 .ready-to-join-title {
@@ -37,32 +54,33 @@ background: linear-gradient(
   color: rgb(var(--text-1));
   margin: 0 0 1.5rem 0;
   letter-spacing: -0.02em;
-  position: relative;
-  z-index: 2;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
-
-/* No hover effect for .ready-to-join-title */
 
 .ready-to-join-description {
   font-size: 1.2rem;
   color: rgba(var(--text-1), 0.85);
   line-height: 1.6;
   margin: 0 0 2.5rem 0;
-  max-width: 600px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 2.5rem;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 2;
 }
 
-/* No hover effect for .ready-to-join-description */
-
 .ready-to-join-button-container {
-  position: relative;
-  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .ready-to-join-button-container a {
@@ -71,9 +89,9 @@ background: linear-gradient(
 }
 
 .ready-to-join-btn {
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.5rem;
   border-radius: 12px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -84,7 +102,7 @@ background: linear-gradient(
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 160px;
+  min-width: 180px;
   backdrop-filter: var(--blur-glass);
   -webkit-backdrop-filter: var(--blur-glass);
   user-select: none;
@@ -140,20 +158,32 @@ background: linear-gradient(
 @media (max-width: 768px) {
   .ready-to-join-section {
     padding: 3rem 1.5rem;
+    box-sizing: border-box;
   }
   
   .ready-to-join-container {
     padding: 2rem 1.5rem;
+    box-sizing: border-box;
   }
   
   .ready-to-join-title {
     font-size: 2rem;
     margin-bottom: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .ready-to-join-description {
     font-size: 1.1rem;
     margin-bottom: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .ready-to-join-btn {
@@ -166,19 +196,31 @@ background: linear-gradient(
 @media (max-width: 480px) {
   .ready-to-join-section {
     padding: 2rem 1rem;
+    box-sizing: border-box;
   }
   
   .ready-to-join-container {
     padding: 1.5rem 1rem;
+    box-sizing: border-box;
   }
   
   .ready-to-join-title {
     font-size: 1.8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .ready-to-join-description {
     font-size: 1rem;
     margin-bottom: 1.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .ready-to-join-btn {
