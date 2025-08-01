@@ -26,6 +26,7 @@
   margin-bottom: 1.5rem;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   letter-spacing: -0.02em;
+  margin-top: 3rem;
   position: relative;
   z-index: 2;
 }

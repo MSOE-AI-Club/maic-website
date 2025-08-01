@@ -7,6 +7,7 @@ function Event() {
 
   return (
     <div className="event-hosting-container">
+      <div className="event-line"></div>
       <h2 className="event-title">Interested In Hosting An Event?</h2>
       <div className="event-actions">
         <button
@@ -21,21 +22,7 @@ function Event() {
         >
           View Past Events
         </button>
-      </div>
-      <div className="event-stats-row">
-        <div className="event-stat">
-          <div className="event-stat-value">200+</div>
-          <div className="event-stat-label">Active Members</div>
-        </div>
-        <div className="event-stat">
-          <div className="event-stat-value">30+</div>
-          <div className="event-stat-label">Past Events</div>
-        </div>
-        <div className="event-stat">
-          <div className="event-stat-value">###+</div>
-          <div className="event-stat-label">Random Stat</div>
-        </div>
-      </div>
+      </div>  
     </div>
   );
 }
