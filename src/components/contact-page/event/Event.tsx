@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./Event.css"; // Assume you will create a CSS file for styling
+import "./Event.css";
 
 function Event() {
   const navigate = useNavigate();

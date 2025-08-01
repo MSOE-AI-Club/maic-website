@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import "../assets/css/navbar.css";
+import { Link } from "react-router-dom";
 
 /**
  * The NavBarProps interface represents the props that the NavBar component receives.
@@ -35,7 +36,7 @@ const NavBar = (props: NavBarProps) => {
   return (
     <div id="toolbar" style={{ textAlign: "center" }}>
       <h3>
-        <a href="/">
+        <Link to="/">
           <img
             className="logo"
             src="/Logo.png"
@@ -48,7 +49,7 @@ const NavBar = (props: NavBarProps) => {
               paddingBottom: "5px",
             }}
           />
-        </a>
+        </Link>
       </h3>
       
       {/* Desktop Navigation */}
