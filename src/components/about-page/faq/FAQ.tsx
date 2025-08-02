@@ -22,7 +22,9 @@ function FAQ() {
       question: "How do I join the club?",
       answer: (
         <>
-          You’re welcome to attend any of our events—held every other Thursday from 6:30pm to 7:30pm in the ITC Great Hall. To officially join and get updates, just click{" "}
+          You’re welcome to attend any of our events—held every other Thursday
+          from 6:30pm to 7:30pm in the ITC Great Hall. To officially join and
+          get updates, just click{" "}
           <a href="https://teams.microsoft.com/l/team/19%3A1910afef1d1d4e3b9bfd5f7938182f0b%40thread.tacv2/conversations?groupId=8f7bf1ac-c9b6-4bf0-b74a-407f088e74cc&tenantId=4046ceac-fdd3-46c9-ac80-b7c4a49bab70">
             this link
           </a>{" "}
@@ -34,8 +36,10 @@ function FAQ() {
       question: "How do I earn points?",
       answer: (
         <>
-          You can earn points by attending events, joining workshops, and participating in research groups. You’ll also get points for solving challenge problems and submitting them to us. For the full breakdown, check out{" "}
-          <a href="/points">this webpage</a>.
+          You can earn points by attending events, joining workshops, and
+          participating in research groups. You’ll also get points for solving
+          challenge problems and submitting them to us. For the full breakdown,
+          check out <a href="/points">this webpage</a>.
         </>
       ),
     },
@@ -43,7 +47,9 @@ function FAQ() {
       question: "How do I earn achievements?",
       answer: (
         <>
-          Achievements are awarded for completing specific milestones—like attending a set number of events or solving multiple challenge problems. For the full list, visit{" "}
+          Achievements are awarded for completing specific milestones—like
+          attending a set number of events or solving multiple challenge
+          problems. For the full list, visit{" "}
           <a href="/achievements">this webpage</a>.
         </>
       ),
@@ -76,7 +82,6 @@ function FAQ() {
                 margin: "0 auto 12px auto",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
-                transition: "all 0.3s ease",
                 "&::before": {
                   display: "none",
                 },
@@ -85,7 +90,6 @@ function FAQ() {
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                   boxShadow:
                     "0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-                  transform: "translateY(-2px)",
                 },
                 "&.Mui-expanded": {
                   backgroundColor: "rgba(255, 255, 255, 0.08)",

@@ -51,7 +51,7 @@
 
 .landing-maic-logo {
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   height: auto;
   opacity: 0.95;
   filter: drop-shadow(0 6px 30px rgba(var(--purple-primary), 0.4));
@@ -76,6 +76,7 @@
   font-weight: 800;
   color: rgb(var(--text-1));
   margin: 0;
+  margin-bottom: 2rem;
   letter-spacing: -0.02em;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   line-height: 1.1;
@@ -124,24 +125,29 @@
   backdrop-filter: var(--blur-glass);
   -webkit-backdrop-filter: var(--blur-glass);
   user-select: none;
-  background: linear-gradient(135deg, rgba(var(--purple-primary), 0.9) 0%, rgba(var(--purple-primary), 0.7) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--purple-primary), 0.9) 0%,
+    rgba(var(--purple-primary), 0.7) 100%
+  );
   color: rgb(var(--text-1));
-  box-shadow: 
-    0 4px 16px rgba(var(--purple-primary), 0.2),
+  box-shadow: 0 4px 16px rgba(var(--purple-primary), 0.2),
     0 2px 8px rgba(var(--purple-primary), 0.1);
 }
 
 .landing-learn-more-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(var(--text-1), 0.1) 50%, 
-    transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--text-1), 0.1) 50%,
+    transparent 100%
+  );
   transition: left 0.6s ease;
   z-index: 1;
 }
@@ -151,10 +157,13 @@
 }
 
 .landing-learn-more-btn:hover {
-  background: linear-gradient(135deg, rgba(var(--purple-primary), 1) 0%, rgba(40, 24, 80, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--purple-primary), 1) 0%,
+    rgba(40, 24, 80, 0.9) 100%
+  );
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 
-    0 6px 20px rgba(var(--purple-primary), 0.3),
+  box-shadow: 0 6px 20px rgba(var(--purple-primary), 0.3),
     0 3px 10px rgba(var(--purple-primary), 0.2);
 }
 
@@ -236,15 +245,15 @@
     gap: 3rem;
     padding: 0 1.5rem;
   }
-  
+
   .landing-title {
     font-size: 2.8rem;
   }
-  
+
   .landing-description {
     font-size: 1.2rem;
   }
-  
+
   .landing-maic-logo {
     max-width: 400px;
   }
@@ -253,64 +262,67 @@
 @media (max-width: 768px) {
   .landing-container {
     justify-content: center;
-    padding: 1rem;
+    padding: 2rem 1rem;
     box-sizing: border-box;
   }
-  
+
   .landing-content-wrapper {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: center;
     text-align: center;
     max-width: 100%;
     padding: 0 1rem;
     box-sizing: border-box;
   }
-  
+
   .landing-logo-section {
     justify-content: center;
     width: 100%;
     max-width: 350px;
   }
-  
+
   .landing-text-section {
     text-align: center;
     width: 100%;
     max-width: 600px;
   }
-  
+
   .landing-title {
     font-size: 2.4rem;
     text-align: center !important;
     line-height: 1.2;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-bottom: 1.5rem;
   }
-  
+
   .landing-description {
     font-size: 1.1rem;
     text-align: center;
     line-height: 1.6;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-bottom: 2rem;
   }
-  
+
   .landing-maic-logo {
     max-width: 300px;
   }
-  
+
   .landing-button-container {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-bottom: 2rem;
   }
-  
+
   .landing-learn-more-btn {
     padding: 1.1rem 2.2rem;
     font-size: 1.1rem;
     min-width: 160px;
   }
-  
+
   .landing-scroll-btn-container {
     bottom: 1.5rem;
     display: none;
@@ -319,20 +331,20 @@
 
 @media (max-width: 480px) {
   .landing-container {
-    padding: 0rem;
+    padding: 1rem 0.5rem;
     box-sizing: border-box;
   }
-  
+
   .landing-content-wrapper {
-    gap: 0;
+    gap: 1.5rem;
     padding: 0 0.5rem;
     box-sizing: border-box;
   }
-  
+
   .landing-text-section {
-    margin-top: -2rem;
+    margin-top: 0;
   }
-  
+
   .landing-title {
     font-size: 2rem;
     line-height: 1.3;
@@ -340,45 +352,45 @@
     overflow-wrap: break-word;
     margin-bottom: 1rem;
   }
-  
+
   .landing-description {
     font-size: 1rem;
     line-height: 1.5;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    margin-bottom: 0rem;
-    margin-top: 0rem;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 1.5rem;
   }
-  
+
   .landing-logo-section {
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0;
+    padding: 0;
   }
 
   .landing-maic-logo {
     max-width: 250px;
-    margin-top: 3rem;
-    margin-bottom: 0rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
   }
-  
+
+  .landing-button-container {
+    margin-bottom: 2rem;
+  }
+
   .landing-learn-more-btn {
     padding: 1rem 2rem;
     font-size: 1rem;
     min-width: 140px;
-    margin-bottom: 3rem;
   }
-  
+
   .landing-scroll-btn-container {
     bottom: 2rem;
     display: none;
   }
-  
+
   .landing-scroll-text {
     font-size: 0.9rem;
   }
-  
+
   .landing-scroll-arrow {
     font-size: 1.3rem;
   }
@@ -398,7 +410,7 @@
     animation: none;
     transition: none;
   }
-  
+
   .landing-learn-more-btn:hover {
     transform: none;
   }
