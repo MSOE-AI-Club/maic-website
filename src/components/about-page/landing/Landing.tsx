@@ -1,22 +1,20 @@
 import "./Landing.css";
 import SpotlightCard from "../../react-bits/spotlight-card/SpotlightCard";
-import { LuBrain } from "react-icons/lu";
-import { TbBrackets } from "react-icons/tb";
-import { FaLightbulb } from "react-icons/fa";
+import { Brain, Brackets, Lightbulb } from "lucide-react";  
 
 function Landing() {
   const spotlightCards = [
     {
       title: "Learning Community",
-      image: <LuBrain />,
+      image: <Brain size={36} />,
     },
     {
       title: "Workshops & Events",
-      image: <TbBrackets />,
+      image: <Brackets size={36} />,
     },
     {
       title: "Industry Partners",
-      image: <FaLightbulb />,
+      image: <Lightbulb size={36} />,
     },
   ];
 

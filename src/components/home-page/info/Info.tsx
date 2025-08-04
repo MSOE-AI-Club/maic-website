@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Leaderboard from "../leaderboard/Leaderboard";
 import "./Info.css";
 
 import EBOARD from "../../../assets/home-page/maic_eboard_25.jpg";
@@ -31,37 +32,26 @@ function Info() {
             innovation, inspiring a future driven by AI's
             transformative potential.
           </p>
-          <button
-            className="btn-glass contact-btn"
-            onClick={() => navigate("/contact")}
-          >
-            Contact Us
-          </button>
         </div>
 
         <div className="leaderboard-section">
           <h1 className="leaderboard-title">Leaderboard</h1>
-          <div className="leaderboard-mock-container">
-            <img
-              src={MOCK}
-              alt="MAIC Leaderboard Mock"
-              className="leaderboard-mock-image"
-              loading="lazy"
-            />
-          </div>
+          <Leaderboard />
           <div className="info-buttons">
             <div className="info-link-card">
               <button onClick={() => navigate("/points")}>
                 <h3>What Are Points?</h3>
               </button>
+              </div>
+              <div className="info-link-card">
               <button onClick={() => navigate("/achievements")}>
                 <h3>What Are Achievements?</h3>
               </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

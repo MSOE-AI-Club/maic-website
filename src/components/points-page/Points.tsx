@@ -1,7 +1,5 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Points.css";
-import Temp from "../../assets/maic_logo.png";
 import { FaTshirt } from "react-icons/fa";
 import { FaTicketAlt } from "react-icons/fa";
 

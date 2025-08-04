@@ -56,6 +56,10 @@
   margin-bottom: 4rem;
 }
 
+.spotlight-card-image {
+  font-size: 2rem;
+}
+
 /* Mobile-only Join Now button - hidden by default */
 .mobile-join-button {
   display: none;

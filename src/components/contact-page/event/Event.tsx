@@ -10,12 +10,14 @@ function Event() {
       <div className="event-line"></div>
       <h2 className="event-title">Interested In Hosting An Event?</h2>
       <div className="event-actions">
-        <button
+        <a
           className="event-btn event-btn-primary"
-          onClick={() => navigate("/contact")}
+          href="https://forms.office.com/Pages/ResponsePage.aspx?id=rM5GQNP9yUasgLfEpJurcGAyFplwhXJCtqB2wsxmGVlUMVNaRkVPUUtNOEsyS1oxMTIwRUpKQkoyNi4u"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Connect With Us
-        </button>
+        </a>
         <button
           className="event-btn event-btn-secondary"
           onClick={() => navigate("/events")}

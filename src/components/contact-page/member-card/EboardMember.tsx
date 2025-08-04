@@ -5,7 +5,7 @@ import Brett from "../../../assets/contact/brett_s.png";
 import AdamHaile from "../../../assets/contact/Adam Haile Portrait.png";
 import TygePlater from "../../../assets/contact/Tyge Plater Portrait.jpg";
 import MazenHamid from "../../../assets/contact/Mazen Hamid Portrait.jpg";
-import AdamSwedlund from "../../../assets/contact/Adam Swedlund Portrait.jpg";
+import AdamSwedlund from "../../../assets/contact/AdamS.png";
 import MadisonEngebose from "../../../assets/contact/Madison Engebose Portrait.jpg";
 import TravisJankowski from "../../../assets/contact/Travis Jankowski Portrait.png";
 import LeighGoetsch from "../../../assets/contact/Leigh_Goetsch.png";

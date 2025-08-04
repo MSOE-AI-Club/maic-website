@@ -385,21 +385,13 @@ const Events: React.FC = () => {
         {isModalOpen && selectedEvent && (
           <div className="events-modal">
             <div className="modal-content">
-              <span
+              <button
                 className="close-button"
                 onClick={closeModal}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    closeModal();
-                  }
-                }}
-                tabIndex={0}
-                role="button"
                 aria-label="Close modal"
               >
-                &times;
-              </span>
+                ×
+              </button>
               <div className="modal-content-body">
                 <div
                   className="modal-header"
