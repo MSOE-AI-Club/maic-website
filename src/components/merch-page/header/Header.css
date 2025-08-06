@@ -1,0 +1,60 @@
+.merch-header {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .merch-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, 
+  rgba(224, 132, 255, 0.02) 0%, 
+  transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.merch-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: rgb(var(--text-1));
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    position: relative;
+    z-index: 2;
+  }
+
+.merch-header-description {
+    font-size: 1.1rem;
+    color: rgba(var(--text-1), 0.85);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 1rem;
+    margin-bottom: -1rem;
+  }
+
+.merch-header-line {
+    width: 80vw;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(132, 67, 255, 0.001) 0%,
+      rgba(132, 67, 255, 0.25) 25%,
+      rgba(132, 67, 255, 1) 50%,
+      rgba(132, 67, 255, 0.25) 75%,
+      rgba(132, 67, 255, 0.001) 100%
+    );
+    margin-top: 0rem;
+    margin-bottom: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
