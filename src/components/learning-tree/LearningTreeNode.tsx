@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -223,19 +223,22 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
   if (state.raised) {
     // Big Node Content
     card.push(
-      <CardActionArea href={data.link}>
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <CardActionArea href={data.link} sx={{ 
+        color: `${textColor} !important`,
+        '& *': { color: `${textColor} !important` }
+      }}>
+        <Box sx={{ display: 'flex', gap: 0.5, height: '100%' }}>
           {/* Left Side: Image and Title */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', maxWidth: 200 }}>
-            <Box>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Box sx={{ flex: 1 }}>
               <CardMedia
                 component="img"
-                height="200"
+                height="100%"
                 image={
                   imageUrl
                 }
                 alt="Image"
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: 2, objectFit: 'cover', width: '100%' }}
               />
             </Box>
             <Box>
@@ -248,7 +251,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
           </Box>
 
           {/* Right Side: Description and Category */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', maxWidth: 200 }}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
               <CardContent>
                 <div>
@@ -281,7 +284,10 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
   } else {
     // Small Node Content
     card.push(
-      <CardActionArea href={data.link} sx = {{}}>
+      <CardActionArea href={data.link} sx={{ 
+        color: `${textColor} !important`,
+        '& *': { color: `${textColor} !important` }
+      }}>
         <CardMedia
           component="img"
           height="150"

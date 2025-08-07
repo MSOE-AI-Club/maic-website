@@ -6,6 +6,22 @@
   font-size: small;
   height: auto; /* Fixed height */
   display: flex;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Override global link styles for learning tree nodes */
+.learning-tree-card .MuiCardActionArea-root *,
+.learning-tree-card .MuiCardActionArea-root *:visited,
+.learning-tree-card .MuiCardActionArea-root *:hover,
+.learning-tree-card .MuiCardActionArea-root *:active {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+/* Force override for all text elements inside the card */
+.learning-tree-card * {
+  color: inherit !important;
 }
   /* transition: all 0.3s ease-in-out; Smooth transition for all properties */
 
