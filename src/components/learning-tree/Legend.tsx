@@ -5,6 +5,7 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import "./assets/css/legend.css";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { Link, useNavigate } from "react-router-dom";
+import { getFileContent } from "../../hooks/github-hook";
 
 /**
  * The LeftPanelProps interface represents the props that the LeftPanel component receives.
@@ -29,23 +30,18 @@ interface section {
 
 // Get node data from backend
 const get_all_nodes = async () => {
-
-  // Use correct url depending on environment
-  const parts: string[] = window.location.href.split("/");
-  let baseUrl: string = "";
-  if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-    baseUrl = `${parts[0]}//127.0.0.1:8000`;
-  } else {
-    baseUrl = `${parts[0]}//${parts[2]}`;
-  }
-
   try {
-    const response = await fetch(`${baseUrl}/api/v1/learning-tree/all-nodes`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch nodes");
+    // Fetch the tree.json file using the GitHub hook
+    const response = await getFileContent(
+      "data/learning-tree/tree.json"
+    );
+
+    if (!response) {
+      throw new Error("Failed to fetch tree.json");
     }
-    const data = await response.json();
-    return data.nodes || [];
+
+    const treeJsonContent = JSON.parse(response);
+    return treeJsonContent.categories || [];
   } catch (error) {
     console.error("Error fetching sections:", error);
     // Fallback to mock data if API fails
@@ -64,21 +60,21 @@ const get_all_nodes = async () => {
 // Create MUI X Tree View Object to display tree of dropdowns
 const create_MUI_X_TreeView = async () => {
   const treeView: TreeViewBaseItem[] = [];
-  const nodes = await get_all_nodes();
+  const categories = await get_all_nodes();
 
-  for (const sectionName of Object.keys(nodes)) {
-    const sectionNodes = nodes[sectionName];
+  for (const category of Object.keys(categories)) {
+    const categoryNodes = categories[category].nodes;
     let children = [];
-    for (const node of sectionNodes) {
+    for (const node of categoryNodes) {
       children.push({
-        id: node.title,
-        label: node.title,
-        linkToTree: node.linkToTree
+        id: node.name,
+        label: node.name,
+        linkToTree: `/learning-tree?node=${node.id}`
       });
     }
     treeView.push({
-      id: sectionName,
-      label: sectionName,
+      id: category,
+      label: category,
       children: children
     });
   }

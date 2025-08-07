@@ -256,7 +256,6 @@ const Tree = (props: TreeProps) => {
         console.log(
           "First 10 node positions:",
           transformedNodes
-            .slice(0, 10)
             .map((n) => ({ id: n.id, name: n.data.name, position: n.position }))
         );
         setNodes(transformedNodes);
