@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { getFileContent } from "../hooks/github-hook";
+import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
 import ReactMarkdown from "react-markdown";
 import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";
 import Footer from "../components/footer/Footer";
@@ -358,7 +358,7 @@ const Events: React.FC = () => {
                         </div>
                         <div className="event-preview-content-row">
                           <img
-                            src={event.image}
+                            src={getRawFileUrl(event.image)}
                             alt={`${event.title} event image`}
                             className="event-preview-image"
                           />
