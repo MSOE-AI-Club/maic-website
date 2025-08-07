@@ -1,0 +1,51 @@
+import React, { useEffect } from 'react';
+import './Landing.css';
+import { startAnimation } from '../../../pages/bg-animation';
+import { MdKeyboardArrowDown } from 'react-icons/md';
+import MAICLogo from '../../../assets/maic_logo.png';
+
+function Landing() {
+    useEffect(() => {
+        const cleanup = startAnimation('landing-bg');
+        if (cleanup) {
+            return cleanup;
+        }
+    }, []);
+
+    return (
+        <div className="landing-hero-section">
+            <canvas id="landing-bg" className="landing-bg-canvas"></canvas>
+            <div className="landing-container">
+                <div className="landing-content-wrapper">
+                    <div className="landing-logo-section">
+                        <img src={MAICLogo} alt="MAIC Brain Network" className="landing-maic-logo" />
+                    </div>
+                    <div className="landing-text-section">
+                        <h1 className="landing-title">MSOE AI CLUB (MAIC)</h1>
+                        <p className="landing-description">
+                        We are dedicated to making artificial intelligence accessible to everyone—regardless of background or experience. Our mission is to educate and inspire students by creating opportunities to explore the innovative world of AI. Through engaging Speaker Events, hands-on Innovation Labs, and collaborative Research Groups, we provide a welcoming space for learners of all levels to grow, experiment, and lead in the future of technology.
+                        </p>
+                        <div className="landing-button-container">
+                            <a href="/about" className="landing-learn-more-link">
+                                <button className="landing-learn-more-btn btn-glass btn-purple">
+                                    Learn More
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="landing-scroll-btn-container">
+                    <div className="landing-scroll-text">
+                        Scroll Down!
+                    </div>
+                    <div className="landing-scroll-arrow">
+                        <MdKeyboardArrowDown />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Landing;

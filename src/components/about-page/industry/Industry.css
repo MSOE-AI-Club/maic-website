@@ -1,0 +1,145 @@
+.industry-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.industry-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: rgb(var(--text-1));
+}
+
+.industry-container p {
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  color: rgb(var(--text-1));
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.industry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  margin-top: 3rem;
+}
+
+.industry-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 1rem;
+}
+
+.industry-logo-section {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.industry-text-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.industry-image {
+  min-width: 200px;
+  min-height: 200px;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: rgb(var(--text-1));
+  padding: 1rem;
+}
+
+.industry-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: rgb(var(--text-1));
+  text-align: left;
+  width: 100%;
+}
+
+.industry-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgb(var(--text-1));
+  text-align: left !important;
+  margin: 0;
+  width: 100%;
+}
+
+.line {
+  width: 80vw;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--purple-primary), 0.001) 0%,
+    rgba(var(--purple-primary), 0.25) 25%,
+    rgba(var(--purple-primary), 1) 50%,
+    rgba(var(--purple-primary), 0.25) 75%,
+    rgba(var(--purple-primary), 0.001) 100%
+  );
+  margin: 0 auto 3rem auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .industry-card-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .industry-container h1 {
+    line-height: 1.2;
+  }
+
+  .industry-logo-section {
+    order: 1;
+    height: auto;
+  }
+
+  .industry-text-section {
+    order: 2;
+    text-align: center;
+    align-items: center;
+  }
+
+  .industry-image {
+    width: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    max-height: 60px;
+  }
+
+  .industry-name {
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .industry-description {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
