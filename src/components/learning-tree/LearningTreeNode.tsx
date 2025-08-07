@@ -5,6 +5,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
+import Box from "@mui/material/Box";
 import { type Node, type NodeProps } from "@xyflow/react";
 import { Position, Handle } from "@xyflow/react";
 import { getRawFileUrl } from "../../hooks/github-hook";
@@ -223,102 +224,77 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     // Big Node Content
     card.push(
       <CardActionArea href={data.link}>
-        <div style={{ display: "flex", gap: "4px", padding: "4px" }}>
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
           {/* Left Side: Image and Title */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              width: "50%",
-              maxWidth: 200,
-            }}
-          >
-            <div>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', maxWidth: 200 }}>
+            <Box>
               <CardMedia
                 component="img"
                 height="200"
-                image={imageUrl}
+                image={
+                  imageUrl
+                }
                 alt="Image"
-                sx={{ borderRadius: 2, width: "100%", objectFit: "cover" }}
+                sx={{ borderRadius: 2 }}
               />
-            </div>
-            <div style={{ marginTop: "8px" }}>
-              <CardContent
-                sx={{ padding: "8px !important", textAlign: "center" }}
-              >
-                <div className="title">{data.name}</div>
+            </Box>
+            <Box>
+              <CardContent>
+                <div className="title">
+                  {data.name}
+                </div>
               </CardContent>
-            </div>
-          </div>
+            </Box>
+          </Box>
 
           {/* Right Side: Description and Category */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              width: "50%",
-              maxWidth: 200,
-              padding: "8px",
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <CardContent sx={{ padding: "8px !important" }}>
-                <div className="description">{data.description}</div>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', maxWidth: 200 }}>
+            <Box>
+              <CardContent>
+                <div>
+                  {data.description}
+                </div>
               </CardContent>
-            </div>
-            <div style={{ marginTop: "auto", padding: "8px" }}>
-              <Chip
-                sx={{
-                  backgroundColor: baseColor,
-                  color: textColor,
-                  borderRadius: 4,
-                  mb: 1,
-                  display: "block",
-                }}
-                size="medium"
-                label={data.category}
-              />
-              <Typography
-                variant="body2"
-                sx={{
-                  fontSize: 14,
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  mt: 1,
-                }}
-              >
-                Click to learn more!
-              </Typography>
-            </div>
-          </div>
-        </div>
+            </Box>
+            <Box>
+                <Chip
+                    sx={{
+                    backgroundColor: baseColor,
+                    color: textColor,
+                    borderRadius: 4,
+                    mb: 0 // Reduced margin-bottom to bring the text closer to the chip
+                    }}
+                    size="medium"
+                    label={data.category}
+                />
+                <Typography
+                    variant="body2" // Adjust this variant to change the font size and style
+                    sx={{ mb: 3, fontSize: 14, fontStyle: 'italic', fontWeight: 'bold' }}
+                >
+                    Click to learn more!
+                </Typography>
+            </Box>
+          </Box>
+        </Box>
       </CardActionArea>
     );
   } else {
     // Small Node Content
     card.push(
-      <CardActionArea href={data.link} sx={{}}>
+      <CardActionArea href={data.link} sx = {{}}>
         <CardMedia
           component="img"
-          height="140"
-          image={imageUrl}
+          height="150"
+          image={
+            imageUrl
+          }
           alt="Image"
-          sx={{ mb: 0, width: "100%", objectFit: "cover" }}
+          sx= {{mb: -1.5}}
         />
-        <CardContent
-          sx={{
-            padding: "12px 8px !important",
-            textAlign: "center",
-            minHeight: "50px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div className="title">{data.name}</div>
+        <CardContent>
+          <div className="title">
+            {data.name}
+          </div>
         </CardContent>
       </CardActionArea>
     );
@@ -334,7 +310,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         isConnectable={true}
       />
       <Card
-        className="card"
+        className="learning-tree-card"
         sx={{
           border: 2,
           borderRadius: 2,
