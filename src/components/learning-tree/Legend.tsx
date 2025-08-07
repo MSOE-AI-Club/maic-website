@@ -67,7 +67,7 @@ const create_MUI_X_TreeView = async () => {
     let children = [];
     for (const node of categoryNodes) {
       children.push({
-        id: node.name,
+        id: node.id,
         label: node.name,
         linkToTree: `/learning-tree?node=${node.id}`
       });
@@ -84,61 +84,18 @@ const create_MUI_X_TreeView = async () => {
   return treeView;
 }
 
-const createButtons = (sections: nodeData[]) => {
-  return sections.map((section, index) => (
-    <Tooltip 
-      key={index}
-      title={section.title}
-      placement="right"
-    >
-      <Button
-        component={Link}
-        to={section.linkToTree}
-        style={{ 
-          textAlign: "left", 
-          width: "100%",
-          color: "white",
-          justifyContent: "flex-start",
-          padding: "8px 16px",
-          margin: "4px 0",
-          transition: "all 0.2s ease-in-out",
-          borderRadius: "8px",
-        }}
-        sx={{
-          '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            transform: 'translateX(4px)',
-          }
-        }}
-        startIcon={<DescriptionIcon />}
-      >
-        {section.section}
-      </Button>
-    </Tooltip>
-  ));
-};
-
 /* 
 Reads all files within the 'learning-tree-nodes' directory and creates node objects for each 
 to eventually generate the Directory. 
 */
 const getSections = async (): Promise<nodeData[]> => {
   try {
-    const parts: string[] = window.location.href.split("/");
-    let baseUrl: string = "";
-    if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-      baseUrl = `${parts[0]}//127.0.0.1:8000`;
-    } else {
-      baseUrl = `${parts[0]}//${parts[2]}`;
-    }
-    
-    const response = await fetch(`${baseUrl}/api/v1/learning-tree/sections`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch sections");
-    }
-    
-    const data = await response.json();
-    return data.sections || [];
+    const categories = (await get_all_nodes());
+    return Object.keys(categories).map((category) => ({
+      title: category,
+      section: category,
+      linkToTree: `/learning-tree?node=${category}`
+    }));
   } catch (error) {
     console.error("Error fetching sections:", error);
     // Fallback to mock data if API fails
@@ -189,43 +146,6 @@ const Legend = (props: LeftPanelProps) => {
       setSections(treeSections);
     };
     fetchSections();
-
-    // Fetch categories from API
-    const parts: string[] = window.location.href.split("/");
-    let baseUrl: string = "";
-    if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-      baseUrl = `${parts[0]}//127.0.0.1:8000`;
-    } else {
-      baseUrl = `${parts[0]}//${parts[2]}`;
-    }
-    
-    fetch(`${baseUrl}/api/v1/library/tags/articles`)
-      .then((response: Response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text();
-      })
-      .then((data: string) => {
-        const json = JSON.parse(data)["response"];
-        let buttons: any[] = [];
-        Object.keys(json).forEach((key: string) => {
-          buttons.push(
-            <Button
-              key={key}
-              style={{ textAlign: "left", color: "white" }}
-              component={Link}
-              to={`/library?nav=Articles&type=${json[key]}`}
-            >
-              {json[key]}
-            </Button>
-          );
-        });
-        setCategories(buttons);
-      })
-      .catch((error: Error) => {
-        console.error("Error fetching categories:", error);
-      });
   }, []);
 
   console.log("Legend rendering with sections:", sections.length, "categories:", categories.length);
@@ -267,6 +187,7 @@ const Legend = (props: LeftPanelProps) => {
           defaultExpandedItems={[]}
           onItemClick={(event, itemId) => {
             const link = findItemLink(directory, itemId);
+            console.log("Link:", link);
             if (link) navigate(link);
           }}
           sx={{

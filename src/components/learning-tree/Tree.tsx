@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -8,6 +8,7 @@ import {
   type FitViewOptions,
   type NodeTypes,
   PanOnScrollMode,
+  type ReactFlowInstance,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import LearningTreeNode from "./LearningTreeNode.tsx";
@@ -179,8 +180,9 @@ const transformTreeNodes = (treeData: TreeJsonData): CustomNode[] => {
           horizontalDisplacement !== 0 ? horizontalDisplacement : averageX;
 
         // Calculate Y position: parent's Y + vertical displacement (default 500)
+        const verticalDisplacement = originalNode.position.y;
         const firstParent = nodeMap.get(parents[0]);
-        let y = firstParent ? firstParent.position.y : 0;
+        let y = firstParent ? firstParent.position.y : verticalDisplacement;
 
         // Use a default of 500 for vertical displacement if not specified
         // Since we don't have the original displacement values, we'll infer them
@@ -226,6 +228,7 @@ const Tree = (props: TreeProps) => {
   const [nodes, setNodes] = useState<CustomNode[]>(fallbackNodes);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const reactFlowInstance = useRef<ReactFlowInstance<CustomNode, Edge> | null>(null);
 
   useEffect(() => {
     const loadTreeData = async () => {
@@ -284,10 +287,18 @@ const Tree = (props: TreeProps) => {
     loadTreeData();
   }, []);
 
-  // Handle specific node focus
-  if (props.nodeID !== null) {
-    fitViewOptions.nodes = [{ id: props.nodeID }];
-  }
+  // Handle specific node focus when nodeID changes
+  useEffect(() => {
+    if (props.nodeID !== null && reactFlowInstance.current && nodes.length > 0) {
+      console.log("Fitting view to node:", props.nodeID);
+      reactFlowInstance.current.fitView({
+        nodes: [{ id: props.nodeID }],
+        minZoom: 0.001,
+        maxZoom: 0.7,
+        duration: 800, // 0.8 seconds in milliseconds
+      });
+    }
+  }, [props.nodeID, nodes]);
 
   return (
     <div className="tree">
@@ -318,6 +329,9 @@ const Tree = (props: TreeProps) => {
         maxZoom={2}
         panOnScroll={true}
         panOnScrollMode={PanOnScrollMode.Free}
+        onInit={(instance) => {
+          reactFlowInstance.current = instance;
+        }}
       >
         <Background />
         <Controls showInteractive={true} />
