@@ -1,11 +1,14 @@
 // Base URL for the MAIC Content CDN (configurable via env)
 const DEFAULT_CONTENT_BASE_URL = "/content";
-const ENV_CONTENT_BASE_URL = (import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined)
+const ENV_CONTENT_BASE_URL = (
+  import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined
+)
   ?.trim()
   .replace(/\/+$/, "");
-const CDN_BASE_URL = ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0
-  ? ENV_CONTENT_BASE_URL
-  : DEFAULT_CONTENT_BASE_URL;
+const CDN_BASE_URL =
+  ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0
+    ? ENV_CONTENT_BASE_URL
+    : DEFAULT_CONTENT_BASE_URL;
 // Interface for the manifest.json structure
 interface Manifest {
   generated_at: string;
@@ -52,7 +55,11 @@ export async function getManifest(): Promise<Manifest | null> {
     const manifestData = await response.json();
 
     // Validate manifest structure
-    if (!manifestData || !Array.isArray(manifestData.files) || typeof manifestData.generated_at !== "string") {
+    if (
+      !manifestData ||
+      !Array.isArray(manifestData.files) ||
+      typeof manifestData.generated_at !== "string"
+    ) {
       console.error("Invalid manifest format:", manifestData);
       return null;
     }
@@ -60,11 +67,13 @@ export async function getManifest(): Promise<Manifest | null> {
     cachedManifest = manifestData as Manifest;
     return cachedManifest;
   } catch (error) {
-    console.error("An unexpected error occurred while fetching manifest:", error);
+    console.error(
+      "An unexpected error occurred while fetching manifest:",
+      error
+    );
     return null;
   }
 }
-
 
 export async function getDirectoryContents(
   directoryPath: string
@@ -83,7 +92,12 @@ export async function getDirectoryContents(
   const normalizedPath = directoryPath.trim();
   // Ensure prefix ends with a slash if it's not the root path.
   // For root path (empty string or "."), prefix should be empty to match files at the root.
-  const prefix = (normalizedPath === "" || normalizedPath === ".") ? "" : (normalizedPath.endsWith("/") ? normalizedPath : normalizedPath + "/");
+  const prefix =
+    normalizedPath === "" || normalizedPath === "."
+      ? ""
+      : normalizedPath.endsWith("/")
+      ? normalizedPath
+      : normalizedPath + "/";
 
   for (const filePath of manifest.files) {
     if (filePath.startsWith(prefix)) {
@@ -92,15 +106,23 @@ export async function getDirectoryContents(
 
       const slashIndex = relativePath.indexOf("/");
 
-      if (slashIndex === -1) { // It's a file
+      if (slashIndex === -1) {
+        // It's a file
         items.push({
           name: relativePath,
           path: filePath,
           type: "file",
-          download_url: `${CDN_BASE_URL}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
-          html_url: `${CDN_BASE_URL}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+          download_url: `${CDN_BASE_URL}/${filePath
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/")}`,
+          html_url: `${CDN_BASE_URL}/${filePath
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/")}`,
         });
-      } else { // It's a directory or a file in a subdirectory
+      } else {
+        // It's a directory or a file in a subdirectory
         const dirName = relativePath.substring(0, slashIndex);
         if (!foundDirs.has(dirName)) {
           foundDirs.add(dirName);
@@ -110,7 +132,10 @@ export async function getDirectoryContents(
             path: dirFullPath,
             type: "dir",
             download_url: null,
-            html_url: `${CDN_BASE_URL}/${dirFullPath.split("/").map(encodeURIComponent).join("/")}/`,
+            html_url: `${CDN_BASE_URL}/${dirFullPath
+              .split("/")
+              .map(encodeURIComponent)
+              .join("/")}/`,
           });
         }
       }
@@ -120,10 +145,7 @@ export async function getDirectoryContents(
 }
 
 export async function getFileContent(filePath: string): Promise<string | null> {
-  const encodedFilePath = filePath
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/");
+  const encodedFilePath = filePath.split("/").map(encodeURIComponent).join("/");
 
   const rawContentUrl = `${CDN_BASE_URL}/${encodedFilePath}`;
 
