@@ -1,14 +1,15 @@
 import React from "react";
 import "./Footer.css";
-import MAICLogo from "../../assets/maic_logo.png";
+import { getRawFileUrl } from "../../hooks/github-hook";
 
 function Footer() {
+  const logoUrl = getRawFileUrl('images/general/Logo.png');
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-left">
           <span className="footer-club-name">
-            <img src={MAICLogo} alt="MSOE AI Club" className="footer-logo" />
+            <img src={logoUrl} alt="MSOE AI Club" className="footer-logo" />
             <span className="footer-club-text">
               <h2>MSOE AI CLUB</h2>
             </span>

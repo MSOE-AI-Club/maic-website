@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import './Landing.css';
 import { startAnimation } from '../../../pages/bg-animation';
 import { MdKeyboardArrowDown } from 'react-icons/md';
-import MAICLogo from '../../../assets/maic_logo.png';
+import { getRawFileUrl } from '../../../hooks/github-hook';
 
 function Landing() {
+    const logoUrl = getRawFileUrl('images/general/Logo.png');
     useEffect(() => {
         const cleanup = startAnimation('landing-bg');
         if (cleanup) {
@@ -18,7 +19,7 @@ function Landing() {
             <div className="landing-container">
                 <div className="landing-content-wrapper">
                     <div className="landing-logo-section">
-                        <img src={MAICLogo} alt="MAIC Brain Network" className="landing-maic-logo" />
+                        <img src={logoUrl} alt="MAIC Brain Network" className="landing-maic-logo" />
                     </div>
                     <div className="landing-text-section">
                         <h1 className="landing-title">MSOE AI CLUB (MAIC)</h1>

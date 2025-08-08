@@ -1,17 +1,7 @@
 import React, { useState } from "react";
 import "./EboardMember.css";
 import { FaEnvelope } from "react-icons/fa";
-import Brett from "../../../assets/contact/brett_s.png";
-import AdamHaile from "../../../assets/contact/Adam Haile Portrait.png";
-import TygePlater from "../../../assets/contact/Tyge Plater Portrait.jpg";
-import MazenHamid from "../../../assets/contact/Mazen Hamid Portrait.jpg";
-import AdamSwedlund from "../../../assets/contact/AdamS.png";
-import MadisonEngebose from "../../../assets/contact/Madison Engebose Portrait.jpg";
-import TravisJankowski from "../../../assets/contact/Travis Jankowski Portrait.png";
-import LeighGoetsch from "../../../assets/contact/Leigh_Goetsch.png";
-import ReaganBurkemper from "../../../assets/contact/Reagan Burkemper Portrait.jpg";
-import AndrewNeedham from "../../../assets/contact/Andrew Needham Portrait.jpg";
-import DrRiley from "../../../assets/contact/Dr Riley.png";
+import { getRawFileUrl } from "../../../hooks/github-hook";
 
 interface EboardMemberInfo {
   name: string;
@@ -26,70 +16,70 @@ const members: EboardMemberInfo[] = [
     name: "Brett Storoe",
     title: "President",
     subtitle: "Overall Management of Events & Wider-Community Outreach",
-    imageSrc: Brett,
+    imageSrc: getRawFileUrl('images/contact/Brett Storoe Portrait.png'),
     email: "storoeb@msoe.edu",
   },
   {
     name: "Adam Haile",
     title: "Vice President",
     subtitle: "Internal Organizational Maintenance & Lead Workshop Developer",
-    imageSrc: AdamHaile,
+    imageSrc: getRawFileUrl('images/contact/Adam Haile Portrait.png'),
     email: "hailea@msoe.edu",
   },
   {
     name: "Tyge Plater",
     title: "Head of Research",
     subtitle: "Lead Researcher & Research Coordinator",
-    imageSrc: TygePlater,
+    imageSrc: getRawFileUrl('images/contact/Tyge Plater Portrait.jpg'),
     email: "platert@msoe.edu",
   },
   {
     name: "Mazen Hamid",
     title: "Treasurer",
     subtitle: "Campus-Life Relations & Finances",
-    imageSrc: MazenHamid,
+    imageSrc: getRawFileUrl('images/contact/Mazen Hamid Portrait.jpg'),
     email: "hamidm@msoe.edu",
   },
   {
     name: "Adam Swedlund",
     title: "Campus Outreach",
     subtitle: "Campus-Community Outreach & Marketing",
-    imageSrc: AdamSwedlund,
+    imageSrc: getRawFileUrl('images/contact/Adam Swedlund Portrait.jpg'),
     email: "swedlunda@msoe.edu",
   },
   {
     name: "Madison Engebose",
     title: "K 12 Outreach",
     subtitle: "Head of K-12 Communications",
-    imageSrc: MadisonEngebose,
+    imageSrc: getRawFileUrl('images/contact/Madison Engebose Portrait.jpg'),
     email: "engebosem@msoe.edu",
   },
   {
     name: "Travis Jankowski",
     title: "Web Master",
     subtitle: "Lead Website Developer & Maintainer",
-    imageSrc: TravisJankowski,
+    imageSrc: getRawFileUrl('images/contact/Travis Jankowski Portrait.png'),
     email: "jankowskit@msoe.edu",
   },
   {
     name: "Leigh Goetsch",
     title: "Technical Strategist",
     subtitle: "Workshop Developer Strategist",
-    imageSrc: LeighGoetsch,
+    imageSrc: getRawFileUrl('images/contact/Leigh_Goetsch.jpg'),
     email: "goetschm@msoe.edu",
   },
   {
     name: "Reagan Burkemper",
     title: "Technical Strategist",
     subtitle: "Workshop Developer Strategist",
-    imageSrc: ReaganBurkemper,
+    imageSrc: getRawFileUrl('images/contact/Reagan Burkemper Portrait.jpg'),
     email: "burkemperr@msoe.edu",
   },
   {
     name: "Andrew Needham",
     title: "Technical Strategist",
     subtitle: "Workshop Developer Strategist",
-    imageSrc: AndrewNeedham,
+    imageSrc: getRawFileUrl('images/contact/Andrew Needham Portrait.jpg'),
     email: "needhama@msoe.edu",
   },
   {
@@ -97,7 +87,7 @@ const members: EboardMemberInfo[] = [
     title: "Faculty Advisor",
     subtitle:
       "Expert in Machine/Deep Learning, AI, Simulation, and High-Performance Computing.",
-    imageSrc: DrRiley,
+    imageSrc: getRawFileUrl('images/contact/Dr Riley.jpg'),
     email: "riley@msoe.edu",
   },
 ];
