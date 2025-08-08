@@ -181,12 +181,14 @@ const transformTreeNodes = (treeData: TreeJsonData): CustomNode[] => {
 
         // Calculate Y position: parent's Y + vertical displacement (default 500)
         const verticalDisplacement = originalNode.position.y;
-        const firstParent = nodeMap.get(parents[0]);
-        let y = firstParent ? firstParent.position.y : verticalDisplacement;
-
-        // Use a default of 500 for vertical displacement if not specified
-        // Since we don't have the original displacement values, we'll infer them
-        y += 500; // Default vertical displacement
+        let y = 0;
+        if (verticalDisplacement === 0) {
+          const firstParent = nodeMap.get(parents[0]);
+          y = firstParent ? firstParent.position.y : 0;
+          y += 500; // Default vertical displacement
+        } else {
+          y = verticalDisplacement;
+        }
 
         node.position = { x, y };
       }
