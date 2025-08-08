@@ -1,5 +1,11 @@
-// Base URL for the MAIC Content CDN
-const CDN_BASE_URL = "https://msoe-ai-club.github.io/maic-content";
+// Base URL for the MAIC Content CDN (configurable via env)
+const DEFAULT_CONTENT_BASE_URL = "/content";
+const ENV_CONTENT_BASE_URL = (import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined)
+  ?.trim()
+  .replace(/\/+$/, "");
+const CDN_BASE_URL = ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0
+  ? ENV_CONTENT_BASE_URL
+  : DEFAULT_CONTENT_BASE_URL;
 // Interface for the manifest.json structure
 interface Manifest {
   generated_at: string;
