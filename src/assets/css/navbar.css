@@ -34,11 +34,11 @@
     font-size: 1em;
   }
 
-  #toolbar > a.active {
+  #toolbar a.active {
     background-color: rgb(52, 31, 105); 
   }
 
-  #toolbar > a:hover {
+  #toolbar a:hover {
     background-color: rgb(71, 46, 134); 
   }
 

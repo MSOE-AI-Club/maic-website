@@ -10,13 +10,18 @@ interface ContentMetadata {
   authors: string;
   type: string;
   img: string;
+  date?: string;
+  description?: string;
+  tags?: string[];
+  categories?: string[];
+  link?: string;
 }
 
 export interface ModalContent {
   [key: string]: ContentMetadata;
 }
 
-const contentRootFolders = ["articles", "data"];
+const contentRootFolders = ["articles", "data", "videos", "workshops"];
 let allFiles: string[] | null = null;
 
 async function getAllFiles() {
@@ -24,8 +29,8 @@ async function getAllFiles() {
     return allFiles;
   }
   const manifestResult = await getManifest();
-  if (manifestResult?.manifest.files) {
-    allFiles = manifestResult.manifest.files;
+  if (manifestResult?.files) {
+    allFiles = manifestResult.files;
     return allFiles;
   }
   return [];
@@ -37,6 +42,50 @@ async function findFilePath(contentId: string): Promise<string | null> {
   return filePath || null;
 }
 
+function parseDateToMillis(dateStr?: string): number {
+  if (!dateStr) return 0;
+  const s = String(dateStr).trim();
+  // ISO-like
+  const iso = Date.parse(s);
+  if (!Number.isNaN(iso)) return iso;
+  // dd/mm/yyyy or d/m/yyyy
+  const m1 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m1) {
+    const d = parseInt(m1[1], 10);
+    const m = parseInt(m1[2], 10) - 1;
+    const y = parseInt(m1[3], 10);
+    return new Date(y, m, d).getTime();
+  }
+  // mm/dd/yyyy
+  const m2 = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+  if (m2) {
+    const m = parseInt(m2[1], 10) - 1;
+    const d = parseInt(m2[2], 10);
+    const y = parseInt(m2[3], 10);
+    return new Date(y, m, d).getTime();
+  }
+  return 0;
+}
+
+function normalizeImageAssetPath(rawPath: string): string {
+  let path = rawPath.trim();
+  // Remove common wrappers or labels
+  path = path.replace(/^\[?\s*Image URL:\s*/i, "");
+  path = path.replace(/^\[|^\(|\]$|\)$/g, "");
+  // Remove quotes
+  path = path.replace(/^['\"]|['\"]$/g, "");
+  // Drop leading ./ or /
+  path = path.replace(/^\.\//, "").replace(/^\//, "");
+  // Map legacy img/ paths to images/
+  if (path.startsWith("img/thumbnails/")) {
+    path = path.replace(/^img\//, "images/");
+  }
+  if (path.startsWith("img/")) {
+    path = path.replace(/^img\//, "images/");
+  }
+  return path;
+}
+
 export async function getContentMetadata(
   contentId: string
 ): Promise<ContentMetadata | null> {
@@ -45,6 +94,58 @@ export async function getContentMetadata(
     return null;
   }
 
+  // Prefer metadata.json in the same directory as the markdown file
+  const dir = filePath.substring(0, filePath.lastIndexOf("/"));
+  const sameDirMetadataPath = `${dir}/metadata.json`;
+  let metaFromJson: any | null = null;
+  const metaJsonContent = await getFileContent(sameDirMetadataPath);
+  if (metaJsonContent) {
+    try {
+      metaFromJson = JSON.parse(metaJsonContent);
+    } catch (_) {
+      metaFromJson = null;
+    }
+  } else {
+    // Some content stores metadata.json in the parent directory
+    const parentDir = dir.substring(0, dir.lastIndexOf("/"));
+    const parentMetadataPath = `${parentDir}/metadata.json`;
+    const parentMetaContent = await getFileContent(parentMetadataPath);
+    if (parentMetaContent) {
+      try {
+        metaFromJson = JSON.parse(parentMetaContent);
+      } catch (_) {
+        metaFromJson = null;
+      }
+    }
+  }
+
+  if (metaFromJson) {
+    const imageValue: string | undefined = metaFromJson.image || metaFromJson.img;
+    const categories: string[] | undefined = Array.isArray(metaFromJson.categories)
+      ? metaFromJson.categories.map((c: any) => String(c).trim()).filter((s: string) => s.length > 0)
+      : (typeof metaFromJson.categories === 'string'
+          ? String(metaFromJson.categories)
+              .split(/[;,]/)
+              .map((s: string) => s.trim())
+              .filter((s: string) => s.length > 0)
+          : undefined);
+    const metadata: ContentMetadata = {
+      title: (metaFromJson.title || "").toString(),
+      authors: (metaFromJson.authors || "").toString(),
+      type: (metaFromJson.type || "md").toString(),
+      img: imageValue ? getRawFileUrl(normalizeImageAssetPath(imageValue)) : "",
+      date: metaFromJson.date ? String(metaFromJson.date) : undefined,
+      description: metaFromJson.summary || metaFromJson.description || undefined,
+      tags: Array.isArray(metaFromJson.tags)
+        ? metaFromJson.tags.map((t: any) => String(t))
+        : (typeof metaFromJson.tags === 'string' ? String(metaFromJson.tags).split(',').map((t: string) => t.trim()) : undefined),
+      categories,
+      link: typeof metaFromJson.link === 'string' ? metaFromJson.link : undefined,
+    };
+    return metadata;
+  }
+
+  // Fallback: parse simple key: value lines from the markdown file
   const content = await getFileContent(filePath);
   if (!content) {
     return null;
@@ -61,11 +162,36 @@ export async function getContentMetadata(
     } else if (line.startsWith("type:")) {
       metadata.type = line.substring(5).trim();
     } else if (line.startsWith("image:")) {
-      const imgPath = line.substring(6).trim();
-      metadata.img = (await getRawFileUrl(imgPath)) || "";
+      const imgRaw = line.substring(6).trim();
+      const imgPath = normalizeImageAssetPath(imgRaw);
+      metadata.img = getRawFileUrl(imgPath) || "";
+    } else if (line.toLowerCase().startsWith("date:")) {
+      metadata.date = line.substring(5).trim();
+    } else if (line.toLowerCase().startsWith("summary:") || line.toLowerCase().startsWith("description:")) {
+      const text = line.split(":")[1];
+      if (text) metadata.description = text.trim();
+    } else if (line.toLowerCase().startsWith("tags:")) {
+      const raw = line.substring(5).trim();
+      metadata.tags = raw.split(',').map((t) => t.trim());
+    } else if (line.toLowerCase().startsWith("link:") || line.toLowerCase().startsWith("url:")) {
+      const url = line.split(":")[1];
+      if (url) metadata.link = url.trim();
+    } else if (line.toLowerCase().startsWith("categories:")) {
+      const raw = line.substring(11).trim();
+      metadata.categories = raw.split(',').map((c) => c.trim());
     }
   }
 
+  // Default type if not found
+  if (!metadata.type) metadata.type = "md";
+  // Derive brief description if still missing: grab first non-empty paragraph
+  if (!metadata.description) {
+    const body = lines.join("\n");
+    const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+    if (paragraphs.length > 0) {
+      metadata.description = paragraphs[0].replace(/^#+\s*/g, "").slice(0, 240);
+    }
+  }
   return metadata as ContentMetadata;
 }
 
@@ -167,66 +293,156 @@ export async function getSubsectionModals(subsectionName: string) {
   }
 
   if (subsectionName === "Research") {
-    const researchFiles = (await getDirectoryContents("articles/research"))?.filter(
-      (item) => item.type === "file" && item.path.endsWith(".md")
+    const files = await getAllFiles();
+    // Support legacy (Anchor/Markdown) and new (flat per-project) structures
+    const legacyAnchorPaths = files.filter(
+      (p) => p.startsWith("articles/research/") && p.endsWith("/Anchor/metadata.json")
     );
-    if (!researchFiles) {
-      return [];
-    }
+    const flatProjectAnchors = files.filter(
+      (p) =>
+        p.startsWith("articles/research/") &&
+        p.endsWith("/metadata.json") &&
+        !p.includes("/Anchor/") &&
+        !p.includes("/Markdown/") &&
+        !/\/Team-\d+\//.test(p)
+    );
+    const anchorMetadataPaths = [...legacyAnchorPaths, ...flatProjectAnchors];
 
     const researchModals = await Promise.all(
-      researchFiles.map(async (file) => {
-        const content = await getFileContent(file.path);
-        if (!content) return null;
+      anchorMetadataPaths.map(async (metadataPath) => {
+        const metaContent = await getFileContent(metadataPath);
+        if (!metaContent) return null;
+        let meta: any;
+        try {
+          meta = JSON.parse(metaContent);
+        } catch {
+          return null;
+        }
 
-        const lines = content.split("\n");
-        const title = lines.find(l => l.startsWith("title:"))?.replace("title:", "").trim() || "";
-        const imgPath = lines.find(l => l.startsWith("image:"))?.replace("image:", "").trim() || "";
-        const date = lines.find(l => l.startsWith("date:"))?.replace("date:", "").trim() || "";
-        const description = lines.find(l => l.startsWith("summary:"))?.replace("summary:", "").trim() || "";
-        const authors = lines.find(l => l.startsWith("authors:"))?.replace("authors:", "").trim() || "";
-        const filesLine = lines.find(l => l.startsWith("files:"))?.replace("files:", "").trim() || "";
-        const contentIds = filesLine ? filesLine.split(",").map(f => f.trim()) : [];
-        
+        // Discover associated Markdown files
+        let markdownIds: string[] = [];
+        if (metadataPath.includes("/Anchor/metadata.json")) {
+          const markdownDir = metadataPath.replace("/Anchor/metadata.json", "/Markdown/");
+          markdownIds = files
+            .filter((p) => p.startsWith(markdownDir) && p.endsWith(".md"))
+            .map((p) => p.split("/").pop() as string)
+            .map((name) => name.replace(/\.md$/i, ""));
+        } else {
+          const projectDir = metadataPath.replace(/\/metadata\.json$/, "");
+          markdownIds = files
+            .filter((p) => p.startsWith(projectDir + "/") && p.endsWith(".md"))
+            .map((p) => p.split("/").pop() as string)
+            .map((name) => name.replace(/\.md$/i, ""));
+        }
+
+        // Try to find a Team-*/*/metadata.json that likely holds a paper link
+        let discoveredPaperUrl: string | undefined;
+        const parts = metadataPath.split("/");
+        const yearDir = metadataPath.includes("/Anchor/")
+          ? parts.slice(0, -3).join("/")
+          : parts.slice(0, -2).join("/"); // .../<Year>
+        const teamMetaFiles = files.filter((p) => p.startsWith(yearDir + "/Team-") && p.endsWith("/metadata.json"));
+        // Titles in the anchor that can help us match (meta.files may list associated paper titles)
+        const filesList: string[] = Array.isArray(meta.files)
+          ? meta.files
+          : (typeof meta.files === 'string' ? [meta.files] : []);
+        const norm = (s: string) => s.toLowerCase().trim();
+        for (const metaPath of teamMetaFiles) {
+          const c = await getFileContent(metaPath);
+          if (!c) continue;
+          try {
+            const j = JSON.parse(c);
+            const candidateUrl: string | undefined = j.pdf || j.link || j.url;
+            const title: string = String(j.title || '');
+            if (!candidateUrl) continue;
+            if (filesList.length === 0) {
+              // Weak match: title contains project title
+              if (norm(title).includes(norm(meta.title || ''))) {
+                discoveredPaperUrl = candidateUrl; break;
+              }
+            } else {
+              // Strong match: team title matches one of files listed in anchor
+              const matched = filesList.some((f) => norm(title) === norm(String(f)) || norm(title).includes(norm(String(f))));
+              if (matched) { discoveredPaperUrl = candidateUrl; break; }
+            }
+          } catch { /* ignore and continue */ }
+        }
+
         const contentWithMetadata = await Promise.all(
-          contentIds.map(async (id) => {
-            const metadata = await getContentMetadata(id);
-            return { [id]: metadata };
+          markdownIds.map(async (id) => {
+            const itemMeta = await getContentMetadata(id);
+            return { [id]: itemMeta } as ModalContent;
           })
         );
-        
-        const imageUrl = await getRawFileUrl(imgPath);
+
+        // Optional fields from anchor metadata.json
+        const tagsFromMeta: string[] = Array.isArray(meta.tags)
+          ? meta.tags
+          : (typeof meta.tags === 'string' ? meta.tags.split(',').map((t: string) => t.trim()) : []);
+        const technologies: string[] = Array.isArray(meta.technologies) ? meta.technologies : [];
+        const tags = (tagsFromMeta.length ? tagsFromMeta : technologies);
+        const progressRaw = meta.progress ?? meta.completion ?? meta.percentComplete;
+        const progress = typeof progressRaw === 'number' ? progressRaw : (typeof progressRaw === 'string' ? parseFloat(progressRaw) : undefined);
+        const status = meta.status || (meta.active ? 'Active' : undefined);
+        const featured = !!meta.featured;
+        const team: string[] = Array.isArray(meta.team) ? meta.team : (Array.isArray(meta.members) ? meta.members : []);
+        const repoUrl: string | undefined = meta.repo || meta.github || meta.code || undefined;
+        let paperUrlVal: string | undefined = meta.paper || meta.publication || meta.paperUrl || undefined;
+        const membersCount: number | undefined = typeof meta.memberCount === 'number' ? meta.memberCount : (team?.length || undefined);
+        const publicationsCount: number | undefined = typeof meta.publications === 'number' ? meta.publications : (contentWithMetadata.length || undefined);
+
+        // Derive a paper URL from first child markdown's link or explicit field
+        if (!paperUrlVal && discoveredPaperUrl) {
+          paperUrlVal = discoveredPaperUrl;
+        }
+        if (!paperUrlVal && contentWithMetadata.length > 0) {
+          const firstId = Object.keys(contentWithMetadata[0])[0];
+          const firstMeta = contentWithMetadata[0][firstId];
+          if (firstMeta?.link) paperUrlVal = firstMeta.link;
+        }
 
         return {
-          title,
-          tags: [],
+          title: meta.title || "",
+          tags,
           type: "descriptive",
           content_ids: contentWithMetadata,
-          img: imageUrl,
-          date,
-          description,
-          authors,
+          img: meta.image ? getRawFileUrl(normalizeImageAssetPath(meta.image)) : "",
+          date: meta.date || "",
+          description: meta.summary || "",
+          authors: meta.authors || "",
+          progress,
+          status,
+          featured,
+          team,
+          repoUrl,
+          paperUrl: paperUrlVal,
+          membersCount,
+          publicationsCount,
         };
       })
     );
+
     return researchModals.filter(Boolean);
   }
 
   // Handle other subsections
-  const files = await getDirectoryContents(`${subsectionName.toLowerCase()}`);
-  const tags = files?.filter(item => item.type === 'dir');
+  const top = await getDirectoryContents(`${subsectionName.toLowerCase()}`);
+  const tags = top?.filter((item) => item.type === "dir");
+  if (!tags) return [];
 
-  if(!tags) return [];
+  const allFiles = await getAllFiles();
 
   const subsectionModals = await Promise.all(
     tags.map(async (tag) => {
-      const contentItems = await getDirectoryContents(tag.path);
-      const contentIds = contentItems?.filter(item => item.type === 'file' && item.path.endsWith('.md')).map(item => item.name.replace('.md', '')) || [];
-      
+      const contentIds = allFiles
+        .filter((p) => p.startsWith(`${tag.path}/`) && p.endsWith(".md"))
+        .map((p) => p.split("/").pop() as string)
+        .map((name) => name.replace(/\.md$/i, ""));
+
       const contentWithMetadata = await Promise.all(
         contentIds.map(async (id) => {
           const metadata = await getContentMetadata(id);
-          return { [id]: metadata };
+          return { [id]: metadata } as ModalContent;
         })
       );
 
@@ -234,12 +450,119 @@ export async function getSubsectionModals(subsectionName: string) {
         title: tag.name,
         tags: [],
         content_ids: contentWithMetadata,
-        type: 'default'
-      }
+        type: "default",
+      };
     })
   );
 
   return subsectionModals;
 }
 
-// ... (rest of the content will be added in subsequent steps) 
+// ---------- Aggregation helpers for Library landing ----------
+
+export async function getTotalResourceCount(): Promise<number> {
+  const files = await getAllFiles();
+  // Count all markdown content items
+  return files.filter((p) => p.endsWith(".md")).length;
+}
+
+// Articles helpers
+export async function getArticlesByType(type: string): Promise<ModalContent[]> {
+  if (!type) return [];
+  const files = await getAllFiles();
+  const filtered = files.filter((p) => p.startsWith(`articles/${type}/`) && p.endsWith('.md'));
+  const out: ModalContent[] = [];
+  for (const p of filtered) {
+    const id = p.split('/').pop()?.replace(/\.md$/i, '') || '';
+    if (!id) continue;
+    const meta = await getContentMetadata(id);
+    if (meta) out.push({ [id]: meta });
+  }
+  // Sort by date desc when available
+  out.sort((a, b) => {
+    const aId = Object.keys(a)[0];
+    const bId = Object.keys(b)[0];
+    const ad = parseDateToMillis(a[aId]?.date);
+    const bd = parseDateToMillis(b[bId]?.date);
+    return bd - ad;
+  });
+  return out;
+}
+
+export async function getAllArticles(): Promise<ModalContent[]> {
+  const files = await getAllFiles();
+  const filtered = files.filter((p) =>
+    p.startsWith("articles/") &&
+    !p.startsWith("articles/research/") &&
+    p.endsWith(".md")
+  );
+  const out: ModalContent[] = [];
+  for (const p of filtered) {
+    const id = p.split('/').pop()?.replace(/\.md$/i, '') || '';
+    if (!id) continue;
+    const meta = await getContentMetadata(id);
+    if (meta) out.push({ [id]: meta });
+  }
+  out.sort((a, b) => {
+    const aId = Object.keys(a)[0];
+    const bId = Object.keys(b)[0];
+    const ad = parseDateToMillis(a[aId]?.date);
+    const bd = parseDateToMillis(b[bId]?.date);
+    return bd - ad;
+  });
+  return out;
+}
+
+async function countMarkdownUnder(prefix: string): Promise<number> {
+  const files = await getAllFiles();
+  return files.filter((p) => p.startsWith(prefix) && p.endsWith(".md")).length;
+}
+
+export async function getVideosCount(): Promise<number> {
+  return countMarkdownUnder("videos/");
+}
+
+export async function getWorkshopsCount(): Promise<number> {
+  return countMarkdownUnder("workshops/");
+}
+
+export async function getEventArticlesCount(): Promise<number> {
+  // Event articles are stored under articles/news
+  return countMarkdownUnder("articles/news/");
+}
+
+export async function getMemberLearningsCount(): Promise<number> {
+  const files = await getAllFiles();
+  return files.filter((p) =>
+    p.startsWith("articles/") &&
+    p.endsWith(".md") &&
+    !p.startsWith("articles/research/") &&
+    !p.startsWith("articles/news/")
+  ).length;
+}
+
+export async function getResearchProjectCount(): Promise<number> {
+  const files = await getAllFiles();
+  // Research projects have an Anchor/metadata.json
+  return files.filter((p) => p.startsWith("articles/research/") && p.endsWith("/Anchor/metadata.json")).length;
+}
+
+export interface ClubEventItem {
+  title: string;
+  type: string;
+  date: string; // ISO date string
+}
+
+export async function getRecentEvents(limit = 3): Promise<ClubEventItem[]> {
+  try {
+    const content = await getFileContent("data/events/events.json");
+    if (!content) return [];
+    const json = JSON.parse(content) as ClubEventItem[];
+    return json
+      .filter((e) => !!e.date)
+      .sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()))
+      .slice(0, limit);
+  } catch (_) {
+    return [];
+  }
+}

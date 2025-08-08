@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import "../assets/css/navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 /**
  * The NavBarProps interface represents the props that the NavBar component receives.
@@ -19,6 +19,12 @@ interface NavBarProps {
 const NavBar = (props: NavBarProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { pathname } = useLocation();
+
+  const isActive = (to: string): boolean => {
+    if (to === "/") return pathname === "/";
+    return pathname === to || pathname.startsWith(`${to}/`);
+  };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -28,10 +34,8 @@ const NavBar = (props: NavBarProps) => {
     setAnchorEl(null);
   };
 
-  const handleNavigation = (href: string) => {
-    handleClose();
-    window.location.href = href;
-  };
+  // Links handle navigation; just close the menu on click
+  const handleNavigation = () => handleClose();
 
   return (
     <div id="toolbar" style={{ textAlign: "center" }}>
@@ -54,48 +58,27 @@ const NavBar = (props: NavBarProps) => {
       
       {/* Desktop Navigation */}
       <div className="desktop-nav">
-        <a
-          className={`${props.page === "Home" ? "active" : ""}`}
-          href="/"
-        >
+        <Link className={`${isActive("/") ? "active" : ""}`} to="/">
           <p>Home</p>
-        </a>
-        <a
-          className={`${props.page === "Library" ? "active" : ""}`}
-          href="/library"
-        >
+        </Link>
+        <Link className={`${isActive("/library") ? "active" : ""}`} to="/library">
           <p>Library</p>
-        </a>
-        <a
-          className={`${props.page === "Learning Tree" ? "active" : ""}`}
-          href="/learning-tree"
-        >
+        </Link>
+        <Link className={`${isActive("/learning-tree") ? "active" : ""}`} to="/learning-tree">
           <p>Learning Tree</p>
-        </a>
-        <a
-          className={`${props.page === "Events" ? "active" : ""}`}
-          href="/events"
-        >
+        </Link>
+        <Link className={`${isActive("/events") ? "active" : ""}`} to="/events">
           <p>Events</p>
-        </a>
-        <a
-          className={`${props.page === "Merch" ? "active" : ""}`}
-          href="/merch"
-        >
+        </Link>
+        <Link className={`${isActive("/merch") ? "active" : ""}`} to="/merch">
           <p>Merch</p>
-        </a>
-        <a
-          className={`${props.page === "Contact" ? "active" : ""}`}
-          href="/contact"
-        >
+        </Link>
+        <Link className={`${isActive("/contact") ? "active" : ""}`} to="/contact">
           <p>Contact</p>
-        </a>
-        <a
-          className={`${props.page === "About" ? "active" : ""}`}
-          href="/about"
-        >
+        </Link>
+        <Link className={`${isActive("/about") ? "active" : ""}`} to="/about">
           <p>About</p>
-        </a>
+        </Link>
       </div>
 
       {/* Mobile Navigation */}
@@ -122,48 +105,13 @@ const NavBar = (props: NavBarProps) => {
           }}
           className="mobile-menu-dropdown"
         >
-          <MenuItem 
-            onClick={() => handleNavigation('/')}
-            className={props.page === "Home" ? "active" : ""}
-          >
-            Home
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/library')}
-            className={props.page === "Library" ? "active" : ""}
-          >
-            Library
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/learning-tree')}
-            className={props.page === "Learning Tree" ? "active" : ""}
-          >
-            Learning Tree
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/events')}
-            className={props.page === "Events" ? "active" : ""}
-          >
-            Events
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/merch')}
-            className={props.page === "Merch" ? "active" : ""}
-          >
-            Merch
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/contact')}
-            className={props.page === "Contact" ? "active" : ""}
-          >
-            Contact
-          </MenuItem>
-          <MenuItem 
-            onClick={() => handleNavigation('/about')}
-            className={props.page === "About" ? "active" : ""}
-          >
-            About
-          </MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/" className={isActive("/") ? "active" : ""}>Home</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/library" className={isActive("/library") ? "active" : ""}>Library</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/learning-tree" className={isActive("/learning-tree") ? "active" : ""}>Learning Tree</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/events" className={isActive("/events") ? "active" : ""}>Events</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/merch" className={isActive("/merch") ? "active" : ""}>Merch</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/contact" className={isActive("/contact") ? "active" : ""}>Contact</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/about" className={isActive("/about") ? "active" : ""}>About</MenuItem>
         </Menu>
       </div>
     </div>

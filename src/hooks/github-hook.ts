@@ -1,11 +1,55 @@
 // Base URL for the MAIC Content CDN (configurable via env)
 const DEFAULT_CONTENT_BASE_URL = "/content";
+const FALLBACK_LOCAL_CONTENT_BASE_URL = "/maic-content"; // helpful for local dev where content folder isn't mounted at /content
+
 const ENV_CONTENT_BASE_URL = (import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined)
   ?.trim()
   .replace(/\/+$/, "");
-const CDN_BASE_URL = ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0
-  ? ENV_CONTENT_BASE_URL
-  : DEFAULT_CONTENT_BASE_URL;
+
+// Lazily resolved and cached content base URL
+let resolvedContentBaseUrl: string | null = null;
+
+async function resolveContentBaseUrl(): Promise<string> {
+  if (resolvedContentBaseUrl) return resolvedContentBaseUrl;
+
+  // 1) Honor explicit env override first
+  if (ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0) {
+    resolvedContentBaseUrl = ENV_CONTENT_BASE_URL;
+    return resolvedContentBaseUrl;
+  }
+
+  // 2) Try default "/content"
+  try {
+    const res = await fetch(`${DEFAULT_CONTENT_BASE_URL}/manifest.json`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      resolvedContentBaseUrl = DEFAULT_CONTENT_BASE_URL;
+      return resolvedContentBaseUrl;
+    }
+  } catch (_) {
+    // ignore and try fallback
+  }
+
+  // 3) Try local fallback "/maic-content" (useful in development where content is a sibling folder)
+  try {
+    const res = await fetch(`${FALLBACK_LOCAL_CONTENT_BASE_URL}/manifest.json`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      resolvedContentBaseUrl = FALLBACK_LOCAL_CONTENT_BASE_URL;
+      return resolvedContentBaseUrl;
+    }
+  } catch (_) {
+    // ignore
+  }
+
+  // 4) Fall back to default; callers will still see errors if not actually reachable
+  resolvedContentBaseUrl = DEFAULT_CONTENT_BASE_URL;
+  return resolvedContentBaseUrl;
+}
 // Interface for the manifest.json structure
 interface Manifest {
   generated_at: string;
@@ -31,7 +75,8 @@ export async function getManifest(): Promise<Manifest | null> {
     return cachedManifest;
   }
 
-  const manifestUrl = `${CDN_BASE_URL}/manifest.json`;
+  const baseUrl = await resolveContentBaseUrl();
+  const manifestUrl = `${baseUrl}/manifest.json`;
 
   try {
     const response = await fetch(manifestUrl, {
@@ -69,6 +114,7 @@ export async function getManifest(): Promise<Manifest | null> {
 export async function getDirectoryContents(
   directoryPath: string
 ): Promise<GitHubContentItem[] | null> {
+  const baseUrl = await resolveContentBaseUrl();
   const manifest = await getManifest();
   if (!manifest) {
     console.error(
@@ -97,8 +143,8 @@ export async function getDirectoryContents(
           name: relativePath,
           path: filePath,
           type: "file",
-          download_url: `${CDN_BASE_URL}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
-          html_url: `${CDN_BASE_URL}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+          download_url: `${baseUrl}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+          html_url: `${baseUrl}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
         });
       } else { // It's a directory or a file in a subdirectory
         const dirName = relativePath.substring(0, slashIndex);
@@ -110,7 +156,7 @@ export async function getDirectoryContents(
             path: dirFullPath,
             type: "dir",
             download_url: null,
-            html_url: `${CDN_BASE_URL}/${dirFullPath.split("/").map(encodeURIComponent).join("/")}/`,
+            html_url: `${baseUrl}/${dirFullPath.split("/").map(encodeURIComponent).join("/")}/`,
           });
         }
       }
@@ -120,12 +166,13 @@ export async function getDirectoryContents(
 }
 
 export async function getFileContent(filePath: string): Promise<string | null> {
+  const baseUrl = await resolveContentBaseUrl();
   const encodedFilePath = filePath
     .split("/")
     .map(encodeURIComponent)
     .join("/");
 
-  const rawContentUrl = `${CDN_BASE_URL}/${encodedFilePath}`;
+  const rawContentUrl = `${baseUrl}/${encodedFilePath}`;
 
   try {
     const response = await fetch(rawContentUrl, {
@@ -154,10 +201,15 @@ export async function getFileContent(filePath: string): Promise<string | null> {
 }
 
 export function getRawFileUrl(filePath: string): string {
+  const baseUrl = resolvedContentBaseUrl || ENV_CONTENT_BASE_URL || DEFAULT_CONTENT_BASE_URL;
   const encodedFilePath = filePath
     .split("/")
     .map((segment) => encodeURIComponent(segment))
     .join("/");
 
-  return `${CDN_BASE_URL}/${encodedFilePath}`;
+  return `${baseUrl}/${encodedFilePath}`;
 }
+
+// Kick off async resolution early (non-blocking) so cache populates quickly
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+resolveContentBaseUrl();

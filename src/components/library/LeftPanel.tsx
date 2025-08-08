@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import "./assets/library/css/left-panel.css";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ScienceIcon from "@mui/icons-material/Science";
@@ -9,6 +9,7 @@ import Movie from "@mui/icons-material/Movie";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { Link } from "react-router-dom";
+import { getDirectoryContents } from "../../hooks/github-hook";
 
 /**
  * The LeftPanelProps interface represents the props that the LeftPanel component receives.
@@ -26,6 +27,15 @@ interface LeftPanelProps {
  */
 const LeftPanel = (props: LeftPanelProps) => {
   const [categories, setCategories] = useState<any[]>([]);
+  const toTitleCase = (label: string): string => {
+    return label
+      .replace(/[\-_]+/g, " ")
+      .split(/\s+/)
+      .filter(Boolean)
+      // Only uppercase the first letter if needed; keep the rest untouched (e.g., NLP remains NLP)
+      .map((w) => (w.length > 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+      .join(" ");
+  };
   /**
    * The state of the articles dropdown based on the query.
    */
@@ -45,36 +55,26 @@ const LeftPanel = (props: LeftPanelProps) => {
   }, [props.query.get("nav")]);
 
   useEffect(() => {
-    const parts: string[] = window.location.href.split("/");
-    let baseUrl: string = "";
-    if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-      baseUrl = `${parts[0]}//127.0.0.1:8000`;
-    } else {
-      baseUrl = `${parts[0]}//${parts[2]}`;
-    }
-    fetch(`${baseUrl}/api/v1/library/tags/articles`)
-      .then((response: Response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text();
-      })
-      .then((data: string) => {
-        const json = JSON.parse(data)["response"];
-        let buttons: any[] = [];
-        Object.keys(json).forEach((key: string) => {
-          buttons.push(
-            <Button
-              style={{ textAlign: "left" }}
-              component={Link}
-              to={`/library?nav=Articles&type=${json[key]}`}
-            >
-              {json[key]}
-            </Button>
-          );
-        });
-        setCategories(buttons);
-      })
+    // Build article type list from content manifest instead of backend API
+    (async () => {
+      const articleRoot = await getDirectoryContents("articles");
+      console.log(articleRoot);
+      const articleDirs = articleRoot?.filter(item => item.type === 'dir') || [];
+      const sorted = [...articleDirs].sort((a: any, b: any) =>
+        toTitleCase(a.name).localeCompare(toTitleCase(b.name), undefined, { sensitivity: 'base' })
+      );
+      const links = sorted.map(dir => (
+        <Link
+          key={dir.name}
+          style={{ textAlign: "left" }}
+          to={`/library?nav=Articles&type=${dir.name}`}
+          className="left-nav-link"
+        >
+          {toTitleCase(dir.name)}
+        </Link>
+      ));
+      setCategories(links);
+    })();
   }, []);
 
   /**
@@ -83,46 +83,40 @@ const LeftPanel = (props: LeftPanelProps) => {
   return (
     <div className="left-panel">
       <h1 className="header">
-        <a href="/library">MArXiv</a>
+        <Link to="/library">MArXiv</Link>
       </h1>
       <div className="navigation">
-        <Button
-          component={Link}
-          to="/library?nav=Featured"
-          startIcon={<AutoAwesomeIcon />}
-        >
-          Featured
-        </Button>
-        <Button
-          component={Link}
-          to="/library?nav=Research"
-          startIcon={<ScienceIcon />}
-        >
-          Research
-        </Button>
-        <Button
-          component={Link}
+        <Link to="/library?nav=Featured" className="left-nav-link">
+          <AutoAwesomeIcon />
+          <span>Featured</span>
+        </Link>
+        <Link to="/library?nav=Research" className="left-nav-link">
+          <ScienceIcon />
+          <span>Research</span>
+        </Link>
+        <Link
           to="/library?nav=Articles"
-          startIcon={<DescriptionIcon />}
-          onClick={() => props.forceRefresh("Articles")}
+          className="left-nav-link"
         >
-          Articles
-        </Button>
-        <Button
-          component={Link}
+          <DescriptionIcon />
+          <span>Articles</span>
+        </Link>
+        {articlesDropdown && <div className="articles-sublist">{categories}</div>}
+        <Link
           to="/library?nav=Workshops"
-          startIcon={<ConstructionIcon />}
-          onClick={() => props.forceRefresh("Workshops")}
+          className="left-nav-link"
         >
-          Workshops
-        </Button>
-        {articlesDropdown && <div>{categories}</div>}
-        <Button component={Link} to="/library?nav=Videos" startIcon={<Movie />}>
-          Videos
-        </Button>
-        <Button component={Link} to="/library?nav=Competitions" startIcon={<EmojiEventsIcon />}>
-          Competitions
-        </Button>
+          <ConstructionIcon />
+          <span>Workshops</span>
+        </Link>
+        <Link to="/library?nav=Videos" className="left-nav-link">
+          <Movie />
+          <span>Videos</span>
+        </Link>
+        <Link to="/library?nav=Competitions" className="left-nav-link">
+          <EmojiEventsIcon />
+          <span>Competitions</span>
+        </Link>
         {/* <Button
           component={Link}
           to="/library?nav=Favorites"
@@ -134,13 +128,10 @@ const LeftPanel = (props: LeftPanelProps) => {
           sx={{ borderColor: "white", margin: "1rem 1rem" }}
           aria-hidden="true"
         />
-        <Button
-          component={Link}
-          to="https://forms.office.com/r/STYXQ1FPMn"
-          startIcon={<NoteAddIcon />}
-        >
-          Submit
-        </Button>
+        <Link to="https://forms.office.com/r/STYXQ1FPMn" className="left-nav-link">
+          <NoteAddIcon />
+          <span>Submit</span>
+        </Link>
         {/* <Button
           component={Link}
           to="/About.html"
