@@ -75,7 +75,7 @@ const create_MUI_X_TreeView = async () => {
     treeView.push({
       id: category,
       label: category,
-      children: children
+      children: children.sort((a, b) => a.id.localeCompare(b.id))
     });
   }
 
