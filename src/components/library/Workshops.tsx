@@ -7,6 +7,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupIcon from "@mui/icons-material/Group";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useNavigate } from "react-router-dom";
+import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 import { getDirectoryContents, getFileContent, getRawFileUrl } from "../../hooks/github-hook";
 
 interface WorkshopMeta {
@@ -183,7 +184,9 @@ const Workshops = () => {
       />
       <div className="workshops-list">
         {loading && (
-          <div className="workshop-card"><Skeleton variant="rectangular" height={120} /></div>
+          <SpotlightCard className="workshop-spotlight" style={{ padding: 0 }}>
+            <div className="workshop-card"><Skeleton variant="rectangular" height={120} /></div>
+          </SpotlightCard>
         )}
         {!loading && pageItems.map((w) => {
           const started = !!localStorage.getItem(getWorkshopStorageKey(w.id, "started"));
@@ -194,7 +197,8 @@ const Workshops = () => {
           const fillPercent = stage === 0 ? 0 : stage === 1 ? 50 : 100;
 
           return (
-            <div key={w.id} className="workshop-card">
+            <SpotlightCard key={w.id} className="workshop-spotlight" style={{ padding: 0 }}>
+            <div className="workshop-card">
               <div className="ws-left">
                 <div className="ws-title-row">
                   <button className="triangle" aria-label="expand" />
@@ -269,6 +273,7 @@ const Workshops = () => {
                 </div>
               </div>
             </div>
+            </SpotlightCard>
           );
         })}
       </div>

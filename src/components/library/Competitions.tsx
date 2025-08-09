@@ -6,6 +6,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useNavigate } from "react-router-dom";
 import { getDirectoryContents, getFileContent, getRawFileUrl } from "../../hooks/github-hook";
+import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
 interface CompetitionMeta {
   title: string;
@@ -96,7 +97,9 @@ const Competitions = () => {
 
       <div className="competition-grid">
         {loading && Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="comp-card"><Skeleton variant="rectangular" height={180} /></div>
+          <SpotlightCard key={i} className="competition-spotlight" style={{ padding: 0 }}>
+            <div className="comp-card"><Skeleton variant="rectangular" height={180} /></div>
+          </SpotlightCard>
         ))}
         {!loading && items.map((c) => {
           const img = c.meta.image || c.meta.img;
@@ -104,36 +107,38 @@ const Competitions = () => {
           const link = c.meta.link || c.meta.url;
           const status = c.meta.status || "Completed";
           return (
-            <div key={c.id} className="comp-card">
-              <div className="comp-header">
-                <div className="comp-icon"><EmojiEventsIcon /></div>
-                <div className="comp-title">{c.meta.title || c.id}</div>
-                <span className="status">{status}</span>
+            <SpotlightCard key={c.id} className="competition-spotlight" style={{ padding: 0 }}>
+              <div className="comp-card">
+                <div className="comp-header">
+                  <div className="comp-icon"><EmojiEventsIcon /></div>
+                  <div className="comp-title">{c.meta.title || c.id}</div>
+                  <span className="status">{status}</span>
+                </div>
+                <div className="comp-body">
+                  <div className="badges">
+                    <span className="badge">{typeBadge}</span>
+                  </div>
+                  <p className="summary">{c.meta.summary || ""}</p>
+                  <div className="meta-row">
+                    {c.meta.date && (
+                      <span className="muted"><CalendarMonthIcon fontSize="small" /> {c.meta.date}</span>
+                    )}
+                    {typeof c.meta.participants === "number" && (
+                      <span className="muted"><GroupIcon fontSize="small" /> {c.meta.participants} participants</span>
+                    )}
+                  </div>
+                  <div className="links-row">
+                    {link && (
+                      <a className="purple-link" href={link} target="_blank" rel="noreferrer">
+                        <OpenInNewIcon fontSize="small" /> Learn more
+                      </a>
+                    )}
+                    <button className="btn" onClick={() => openItem(c.id)}>View Certificate</button>
+                  </div>
+                </div>
+                {img && (<img className="comp-thumb" alt="thumb" src={getRawFileUrl(img.replace(/^\.\//, "").replace(/^\//, ""))} />)}
               </div>
-              <div className="comp-body">
-                <div className="badges">
-                  <span className="badge">{typeBadge}</span>
-                </div>
-                <p className="summary">{c.meta.summary || ""}</p>
-                <div className="meta-row">
-                  {c.meta.date && (
-                    <span className="muted"><CalendarMonthIcon fontSize="small" /> {c.meta.date}</span>
-                  )}
-                  {typeof c.meta.participants === "number" && (
-                    <span className="muted"><GroupIcon fontSize="small" /> {c.meta.participants} participants</span>
-                  )}
-                </div>
-                <div className="links-row">
-                  {link && (
-                    <a className="purple-link" href={link} target="_blank" rel="noreferrer">
-                      <OpenInNewIcon fontSize="small" /> Learn more
-                    </a>
-                  )}
-                  <button className="btn" onClick={() => openItem(c.id)}>View Certificate</button>
-                </div>
-              </div>
-              {img && (<img className="comp-thumb" alt="thumb" src={getRawFileUrl(img.replace(/^\.\//, "").replace(/^\//, ""))} />)}
-            </div>
+            </SpotlightCard>
           );
         })}
       </div>

@@ -26,6 +26,7 @@ import ResearchProjects from "../../components/library/ResearchProjects";
 import Workshops from "../../components/library/Workshops";
 import Videos from "../../components/library/Videos";
 import Competitions from "../../components/library/Competitions";
+import SpotlightCard from "../../components/react-bits/spotlight-card/SpotlightCard";
 import {
   getFeaturedModals,
   getTaggedContent,
@@ -361,97 +362,179 @@ const Library = () => {
                 {(query.get("nav") === null || query.get("nav") === "Featured") && (
                   <div className="library-landing">
                     <div className="library-stats">
-                      <div className="stat-card">
-                        <LibraryBooksIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{resourceCount}</span>
-                          <span className="stat-label">Total Resources</span>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <LibraryBooksIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{resourceCount}</span>
+                            <span className="stat-label">Total Resources</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="stat-card">
-                        <ConstructionIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{workshopsCount}</span>
-                          <span className="stat-label">Workshops</span>
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <ConstructionIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{workshopsCount}</span>
+                            <span className="stat-label">Workshops</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="stat-card">
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
                         <QueryBuilderIcon />
                         <div className="stat-text">
                           <span className="stat-number">{videosCount}</span>
                           <span className="stat-label">Videos</span>
                         </div>
-                      </div>
-                      <div className="stat-card">
-                        <RocketLaunchIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{researchProjectsCount}</span>
-                          <span className="stat-label">Recent Research Projects</span>
                         </div>
-                      </div>
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <RocketLaunchIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{researchProjectsCount}</span>
+                            <span className="stat-label">Recent Research Projects</span>
+                          </div>
+                        </div>
+                      </SpotlightCard>
                     </div>
 
                     <div className="library-categories">
-                      <Link className="category-card" to="/library?nav=Articles">
-                        <div className="category-icon"><DescriptionIcon /></div>
-                        <div className="category-content">
-                          <h3>Articles</h3>
-                          <p>Guides, tutorials, and club write-ups across AI topics.</p>
-                          <span className="category-meta">{articlesCount} articles</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="/library?nav=Articles" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><DescriptionIcon /></div>
+                            <div className="category-content">
+                              <h3>Articles</h3>
+                              <p>Guides, tutorials, and club write-ups across AI topics.</p>
+                              <span className="category-meta">{articlesCount} articles</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
 
-                      <Link className="category-card" to="/library?nav=Videos">
-                        <div className="category-icon"><MovieIcon /></div>
-                        <div className="category-content">
-                          <h3>Video Library</h3>
-                          <p>Educational videos covering AI concepts, tutorials, and discussions.</p>
-                          <span className="category-meta">{videosCount} videos</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="/library?nav=Videos" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><MovieIcon /></div>
+                            <div className="category-content">
+                              <h3>Video Library</h3>
+                              <p>Educational videos covering AI concepts, tutorials, and discussions.</p>
+                              <span className="category-meta">{videosCount} videos</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
 
-                      <Link className="category-card" to="/library?nav=Workshops">
-                        <div className="category-icon"><ConstructionIcon /></div>
-                        <div className="category-content">
-                          <h3>Interactive Workshops</h3>
-                          <p>Hands-on coding workshops you can complete right in your browser.</p>
-                          <span className="category-meta">{workshopsCount} workshops</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="/library?nav=Workshops" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><ConstructionIcon /></div>
+                            <div className="category-content">
+                              <h3>Interactive Workshops</h3>
+                              <p>Hands-on coding workshops you can complete right in your browser.</p>
+                              <span className="category-meta">{workshopsCount} workshops</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
 
-                      
-
-                      <Link className="category-card" to="/library?nav=Research">
-                        <div className="category-icon"><ScienceIcon /></div>
-                        <div className="category-content">
-                          <h3>Research Projects</h3>
-                          <p>Current research initiatives and projects from our club members.</p>
-                          <span className="category-meta">{researchProjectsTotalCount} projects</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="/library?nav=Research" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><ScienceIcon /></div>
+                            <div className="category-content">
+                              <h3>Research Projects</h3>
+                              <p>Current research initiatives and projects from our club members.</p>
+                              <span className="category-meta">{researchProjectsTotalCount} projects</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
 
-                      <Link className="category-card" to="/library?nav=Competitions">
-                        <div className="category-icon"><EmojiEventsIcon /></div>
-                        <div className="category-content">
-                          <h3>Competitions</h3>
-                          <p>Hackathons and competitions hosted or joined by the club.</p>
-                          <span className="category-meta">{competitionsCount} entries</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="/library?nav=Competitions" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><EmojiEventsIcon /></div>
+                            <div className="category-content">
+                              <h3>Competitions</h3>
+                              <p>Hackathons and competitions hosted or joined by the club.</p>
+                              <span className="category-meta">{competitionsCount} entries</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
 
-                      <Link className="category-card" to="https://forms.office.com/r/STYXQ1FPMn" target="_blank" rel="noreferrer">
-                        <div className="category-icon"><NoteAddIcon /></div>
-                        <div className="category-content">
-                          <h3>Submit</h3>
-                          <p>Share an article, workshop, video, or research with the community.</p>
-                          <span className="category-meta">Opens form</span>
-                        </div>
-                        <span className="category-arrow">→</span>
+                      <Link to="https://forms.office.com/r/STYXQ1FPMn" target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
+                          <div className="category-card">
+                            <div className="category-icon"><NoteAddIcon /></div>
+                            <div className="category-content">
+                              <h3>Submit</h3>
+                              <p>Share an article, workshop, video, or research with the community.</p>
+                              <span className="category-meta">Opens form</span>
+                            </div>
+                            <span className="category-arrow">→</span>
+                          </div>
+                        </SpotlightCard>
                       </Link>
                     </div>
 

@@ -4,6 +4,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { getSubsectionModals } from "../../hooks/library-helper";
 import { Skeleton } from "@mui/material";
+import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
 interface ResearchModalLike {
   title: string;
@@ -108,23 +109,25 @@ const ResearchProjects = () => {
           </div>
           <div className="research-grid">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="research-card">
-                <div className="card-top">
-                  <Skeleton variant="rectangular" width={160} height={120} />
-                  <div className="left" style={{ width: '100%' }}>
-                    <Skeleton width="20%" height={18} />
-                    <Skeleton width="70%" height={28} />
-                    <Skeleton width="100%" height={16} />
-                    <Skeleton width="95%" height={16} />
-                    <Skeleton width="60%" height={16} />
-                    <Skeleton width="40%" height={16} />
+              <SpotlightCard key={i} className="research-spotlight" style={{ padding: 0 }}>
+                <div className="research-card">
+                  <div className="card-top">
+                    <Skeleton variant="rectangular" width={160} height={120} />
+                    <div className="left" style={{ width: '100%' }}>
+                      <Skeleton width="20%" height={18} />
+                      <Skeleton width="70%" height={28} />
+                      <Skeleton width="100%" height={16} />
+                      <Skeleton width="95%" height={16} />
+                      <Skeleton width="60%" height={16} />
+                      <Skeleton width="40%" height={16} />
+                    </div>
+                  </div>
+                  <div className="card-footer">
+                    <Skeleton variant="rectangular" width={80} height={30} />
+                    <Skeleton variant="rectangular" width={80} height={30} />
                   </div>
                 </div>
-                <div className="card-footer">
-                  <Skeleton variant="rectangular" width={80} height={30} />
-                  <Skeleton variant="rectangular" width={80} height={30} />
-                </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </>
@@ -176,8 +179,9 @@ const ResearchProjects = () => {
             return (first + last).toUpperCase();
           };
           return (
-            <div key={slug} className="research-card">
-              <div className="card-top">
+            <SpotlightCard key={slug} className="research-spotlight" style={{ padding: 0 }}>
+              <div className="research-card">
+                <div className="card-top">
                 {p.img && (
                   <img className="thumb" src={p.img} alt={p.title} loading="lazy" />
                 )}
@@ -253,6 +257,7 @@ const ResearchProjects = () => {
                 )}
               </div>
             </div>
+            </SpotlightCard>
           );
         })}
       </div>
