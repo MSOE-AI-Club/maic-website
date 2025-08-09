@@ -5,6 +5,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useNavigate } from "react-router-dom";
 import { getDirectoryContents, getFileContent, getRawFileUrl } from "../../hooks/github-hook";
+import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
 interface VideoMeta {
   title: string;
@@ -150,35 +151,39 @@ const Videos = () => {
 
       <div className="video-grid">
         {loading && Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="video-card"><Skeleton variant="rectangular" height={170} /></div>
+          <SpotlightCard key={i} className="video-spotlight" style={{ padding: 0 }}>
+            <div className="video-card"><Skeleton variant="rectangular" height={170} /></div>
+          </SpotlightCard>
         ))}
         {!loading && filtered.map((v) => {
           const img = v.meta.image || v.meta.img;
           const cats = normalizeCategories(v.meta.categories).filter((c) => c.toLowerCase() !== "videos");
           return (
-            <div key={v.id} className="video-card" onClick={() => openVideo(v)}>
-              <div className="thumb-wrap">
-                {img && (<img className="thumb" alt="thumbnail" src={getRawFileUrl(img.replace(/^\.\//, "").replace(/^\//, ""))} />)}
-                {v.meta.duration && (
-                  <span className="duration"><AccessTimeIcon /> {v.meta.duration}</span>
-                )}
-              </div>
-              <div className="video-body">
-                <div className="badge-row">
-                  {cats.slice(0, 1).map((c) => (<span key={c} className="badge">{c}</span>))}
-                </div>
-                <div className="title">{v.meta.title || v.id}</div>
-                <div className="desc">{v.meta.summary || ""}</div>
-                <div className="meta-row">
-                  <span className="platform muted" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><YouTubeIcon fontSize="small" /> YouTube</span>
-                </div>
-                <div className="meta-row end">
-                  {typeof v.meta.views !== "undefined" && (
-                    <span className="muted"><VisibilityIcon fontSize="small" /> {v.meta.views}</span>
+            <SpotlightCard key={v.id} className="video-spotlight" style={{ padding: 0 }}>
+              <div className="video-card" onClick={() => openVideo(v)}>
+                <div className="thumb-wrap">
+                  {img && (<img className="thumb" alt="thumbnail" src={getRawFileUrl(img.replace(/^\.\//, "").replace(/^\//, ""))} />)}
+                  {v.meta.duration && (
+                    <span className="duration"><AccessTimeIcon /> {v.meta.duration}</span>
                   )}
                 </div>
+                <div className="video-body">
+                  <div className="badge-row">
+                    {cats.slice(0, 1).map((c) => (<span key={c} className="badge">{c}</span>))}
+                  </div>
+                  <div className="title">{v.meta.title || v.id}</div>
+                  <div className="desc">{v.meta.summary || ""}</div>
+                  <div className="meta-row">
+                    <span className="platform muted" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><YouTubeIcon fontSize="small" /> YouTube</span>
+                  </div>
+                  <div className="meta-row end">
+                    {typeof v.meta.views !== "undefined" && (
+                      <span className="muted"><VisibilityIcon fontSize="small" /> {v.meta.views}</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            </SpotlightCard>
           );
         })}
       </div>

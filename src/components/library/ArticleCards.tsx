@@ -3,6 +3,7 @@ import { Skeleton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getCategoryColors } from "./categoryColors";
 import { getArticlesByType, getAllArticles, type ModalContent } from "../../hooks/library-helper";
+import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
 interface ArticleCardMeta {
   id: string;
@@ -174,17 +175,22 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
         {featured.map((a) => (
           <Link
             key={a.id}
-            className="article-featured-card"
             to={`/library?nav=Articles&article=${a.id}`}
+            className="article-card-link"
+            style={{ textDecoration: "none" }}
           >
-            <h3>{a.title}</h3>
-            <p className="desc">{a.description}</p>
-            <div className="meta">
-              <span className="muted">{a.authors}</span>
-              <span className="muted">{formatDate(a.date)}</span>
-            </div>
+            <SpotlightCard className="article-spotlight" style={{ padding: 0 }}>
+              <div className="article-featured-card">
+                <h3>{a.title}</h3>
+                <p className="desc">{a.description}</p>
+                <div className="meta">
+                  <span className="muted">{a.authors}</span>
+                  <span className="muted">{formatDate(a.date)}</span>
+                </div>
+              </div>
+            </SpotlightCard>
             {a.tags && a.tags.length > 0 && (
-              <div className="bottom-tags">
+              <div className="featured-tags-outside">
                 {a.tags.map((t) => {
                   const c = getCategoryColors(t);
                   return (
@@ -211,18 +217,23 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
         {pageItems.map((a) => (
           <Link
             key={a.id}
-            className="article-row"
             to={`/library?nav=Articles&article=${a.id}`}
+            className="article-card-link"
+            style={{ textDecoration: "none" }}
           >
-            <div className="row-left">
-              <div className="title">{a.title}</div>
-            </div>
-            <div className="row-right">
-              <span className="author muted">{a.authors}</span>
-              <span className="date muted">{formatDate(a.date)}</span>
-            </div>
+            <SpotlightCard className="article-spotlight" style={{ padding: 0 }}>
+              <div className="article-row">
+                <div className="row-left">
+                  <div className="title">{a.title}</div>
+                </div>
+                <div className="row-right">
+                  <span className="author muted">{a.authors}</span>
+                  <span className="date muted">{formatDate(a.date)}</span>
+                </div>
+              </div>
+            </SpotlightCard>
             {a.tags && a.tags.length > 0 && (
-              <div className="row-tags" style={{ gridColumn: "1 / -1" }}>
+              <div className="row-tags-outside">
                 {a.tags.slice(0, 4).map((t) => {
                   const c = getCategoryColors(t);
                   return (
