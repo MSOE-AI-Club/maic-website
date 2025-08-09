@@ -26,6 +26,7 @@ import ResearchProjects from "../../components/library/ResearchProjects";
 import Workshops from "../../components/library/Workshops";
 import Videos from "../../components/library/Videos";
 import Competitions from "../../components/library/Competitions";
+import SpotlightCard from "../../components/react-bits/spotlight-card/SpotlightCard";
 import {
   getFeaturedModals,
   getTaggedContent,
@@ -361,34 +362,94 @@ const Library = () => {
                 {(query.get("nav") === null || query.get("nav") === "Featured") && (
                   <div className="library-landing">
                     <div className="library-stats">
-                      <div className="stat-card">
-                        <LibraryBooksIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{resourceCount}</span>
-                          <span className="stat-label">Total Resources</span>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <LibraryBooksIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{resourceCount}</span>
+                            <span className="stat-label">Total Resources</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="stat-card">
-                        <ConstructionIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{workshopsCount}</span>
-                          <span className="stat-label">Workshops</span>
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <ConstructionIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{workshopsCount}</span>
+                            <span className="stat-label">Workshops</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="stat-card">
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
                         <QueryBuilderIcon />
                         <div className="stat-text">
                           <span className="stat-number">{videosCount}</span>
                           <span className="stat-label">Videos</span>
                         </div>
-                      </div>
-                      <div className="stat-card">
-                        <RocketLaunchIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{researchProjectsCount}</span>
-                          <span className="stat-label">Recent Research Projects</span>
                         </div>
-                      </div>
+                      </SpotlightCard>
+                      <SpotlightCard
+                        className="stat-card"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          textAlign: "left",
+                          gap: 12,
+                          padding: 16,
+                          minHeight: 0,
+                          minWidth: 0
+                        }}
+                      >
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
+                          <RocketLaunchIcon />
+                          <div className="stat-text">
+                            <span className="stat-number">{researchProjectsCount}</span>
+                            <span className="stat-label">Recent Research Projects</span>
+                          </div>
+                        </div>
+                      </SpotlightCard>
                     </div>
 
                     <div className="library-categories">
