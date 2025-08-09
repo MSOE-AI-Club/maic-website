@@ -133,7 +133,7 @@ const CanvasBackground = () => {
         top: "0",
         left: "0",
         zIndex: "-1000",
-        background: "linear-gradient(to bottom, rgb(153, 136, 204), #6492bb)"
+        background: "linear-gradient(180deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 6%))"
       }}
       ref={canvasRef}
       id="splash-bg"

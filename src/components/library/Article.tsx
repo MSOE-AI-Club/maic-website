@@ -6,6 +6,7 @@ import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CheckIcon from "@mui/icons-material/Check";
 import { createRoot } from "react-dom/client";
 import { useNavigate } from "react-router-dom";
+import { getRawFileUrl, getManifest, getFileContent } from "../../hooks/github-hook";
 
 /**
  * The ArticleProps interface represents the props that the Article component receives.
@@ -59,46 +60,57 @@ const Article = (props: ArticleProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const parts: string[] = window.location.href.split("/");
-    let baseUrl: string = "";
-    if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-      baseUrl = `${parts[0]}//127.0.0.1:8000`;
-    } else {
-      baseUrl = `${parts[0]}//${parts[2]}`;
-    }
-    if (props.articleId) {
-      fetch(`${baseUrl}/api/v1/library/${props.articleId}/content-type`)
-        .then((response: Response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
+    // Resolve content type and any external link/video/pdf from local metadata
+    (async () => {
+      if (!props.articleId) return;
+      const manifest = await getManifest();
+      const files = manifest?.files || [];
+      const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
+      if (!mdPath) {
+        setType("md");
+        return;
+      }
+      const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
+      const metaPathsToTry = [
+        `${dir}/metadata.json`,
+        `${dir.substring(0, dir.lastIndexOf("/"))}/metadata.json`,
+      ];
+      let meta: any = null;
+      for (const mp of metaPathsToTry) {
+        const raw = await getFileContent(mp);
+        if (raw) {
+          try {
+            meta = JSON.parse(raw);
+            break;
+          } catch {
+            // ignore
           }
-          return response.text();
-        })
-        .then((data: string) => {
-          const json = JSON.parse(data)["response"];
-          if (json["type"] === "link") {
-            const link = json["link"];
-            window.open(link, "_blank");
-            navigate("/library");
-            props.closeArticle();
-          }
-          if (json["type"] === "pdf") {
-            setPdfUrl(json["pdf"]);
-          }
-          if (json["type"] === "video") {
-            setVideoId(json["id"]);
-          }
-          if (json["type"] === "marimo") {
-            setMarimoUrl(json["url"]);
-          }
-          window.scrollTo(0, 0);
-          setType(json["type"]);
-        })
-        .catch((error: Error) => {
-          // pass
-        });
-    }
-  }, [props.articleId]);
+        }
+      }
+      if (meta) {
+        const detectedType = (meta.type || "md").toString().toLowerCase();
+        if (detectedType === "link" && meta.link) {
+          window.open(meta.link.toString(), "_blank");
+          navigate("/library");
+          props.closeArticle();
+          return;
+        }
+        if (detectedType === "pdf" && meta.pdf) {
+          setPdfUrl(getRawFileUrl(meta.pdf.toString()));
+        }
+        if (detectedType === "video" && meta.id) {
+          setVideoId(meta.id.toString());
+        }
+        if (detectedType === "marimo" && meta.url) {
+          setMarimoUrl(meta.url.toString());
+        }
+        setType(detectedType);
+        window.scrollTo(0, 0);
+      } else {
+        setType("md");
+      }
+    })();
+  }, [props.articleId, navigate, props]);
 
   useEffect(() => {
     const parts: string[] = window.location.href.split("/");
@@ -114,7 +126,13 @@ const Article = (props: ArticleProps) => {
         !img.classList.contains("modal-item-preview-image") &&
         !img.classList.contains("logo")
       ) {
-        img.src = `https://maic-fastapi-lambda.s3.amazonaws.com/${img.src.split("/").slice(-3).join("/")}`;
+        try {
+          const tail = img.src.split("/").slice(-3).map(decodeURIComponent).join("/");
+          // Prefer the CDN/content base URL, never fall back to S3 (deprecated)
+          img.src = getRawFileUrl(tail);
+        } catch (_) {
+          // If we can't parse/update, leave as-is
+        }
       }
     });
 
@@ -160,36 +178,43 @@ const Article = (props: ArticleProps) => {
   }, [contents]);
 
   useEffect(() => {
-    if (props.articleId !== "") {
-      const parts: string[] = window.location.href.split("/");
-      let baseUrl: string = "";
-      if (parts[2] === "127.0.0.1:3000" || parts[2] === "localhost:3000") {
-        baseUrl = `${parts[0]}//127.0.0.1:8000`;
-      } else {
-        baseUrl = `${parts[0]}//${parts[2]}`;
+    // Load markdown content and metadata locally
+    (async () => {
+      if (!props.articleId) return;
+      const manifest = await getManifest();
+      const files = manifest?.files || [];
+      const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
+      if (!mdPath) return;
+      const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
+      const metaPathsToTry = [
+        `${dir}/metadata.json`,
+        `${dir.substring(0, dir.lastIndexOf("/"))}/metadata.json`,
+      ];
+      let meta: any = null;
+      for (const mp of metaPathsToTry) {
+        const raw = await getFileContent(mp);
+        if (raw) {
+          try {
+            meta = JSON.parse(raw);
+            break;
+          } catch {
+            // ignore
+          }
+        }
       }
-
-      if (props.articleId) {
-        fetch(`${baseUrl}/api/v1/library/${props.articleId}`)
-          .then((response: Response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.text();
-          })
-          .then((data: string) => {
-            const elements = data.split("\\n");
-            setSummary(elements[0].split("summary: ")[1]);
-            setDate(convertDateToTextual(elements[2].split("date: ")[1]));
-            setTitle(elements[3].split("title: ")[1]);
-            setAuthors(elements[6].split("authors: ")[1].split(",").join(", "));
-            setContents(elements.slice(9).join("\n").slice(0, -1));
-          })
-          .catch((error: Error) => {
-            // pass
-          });
+      if (meta) {
+        if (meta.summary) setSummary(meta.summary.toString());
+        if (meta.date && /\d+\/\d+\/\d+/.test(meta.date.toString())) {
+          setDate(convertDateToTextual(meta.date.toString()));
+        } else if (meta.date) {
+          setDate(meta.date.toString());
+        }
+        if (meta.title) setTitle(meta.title.toString());
+        if (meta.authors) setAuthors(meta.authors.toString());
       }
-    }
+      const content = await getFileContent(mdPath);
+      if (content) setContents(content);
+    })();
   }, [props.articleId]);
 
   return (

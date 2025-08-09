@@ -7,15 +7,34 @@ import Modal from "../../components/library/Modal";
 import ModalItem from "../../components/library/ModalItem";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowForward } from "@mui/icons-material";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import MovieIcon from "@mui/icons-material/Movie";
+import ConstructionIcon from "@mui/icons-material/Construction";
+import ScienceIcon from "@mui/icons-material/Science";
+import GroupIcon from "@mui/icons-material/Group";
+import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ModalItemPreview from "../../components/library/ModalItemPreview";
 import Article from "../../components/library/Article";
 import NavBar from "../../components/Navbar";
 import CanvasBackground from "../../components/library/Background";
+import ArticleCards from "../../components/library/ArticleCards";
+import ResearchProjects from "../../components/library/ResearchProjects";
+import Workshops from "../../components/library/Workshops";
+import Videos from "../../components/library/Videos";
+import Competitions from "../../components/library/Competitions";
 import {
   getFeaturedModals,
-  getTags,
   getTaggedContent,
   getSubsectionModals,
+  getTotalResourceCount,
+  getVideosCount,
+  getWorkshopsCount,
+  getEventArticlesCount,
+  getMemberLearningsCount,
+  getResearchProjectCount,
+  getRecentEvents,
 } from "../../hooks/library-helper";
 import type { ModalContent } from "../../hooks/library-helper";
 
@@ -70,13 +89,18 @@ const Library = () => {
    * The states of the Library component, including the current article, previewed article, and whether to show the preview.
    */
   useScrollToLocation();
-  const [categoryItems, setCategoryItems] = useState<any[]>([]);
-  const [categoryTags, setCategoryTags] = useState<any[]>([]);
   const [currentArticle, setCurrentArticle] = useState("");
   const [previewedArticle, setPreviewedArticle] = useState<string>("");
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(6);
   const [width, setWidth] = useState(window.innerWidth);
+  const [resourceCount, setResourceCount] = useState<number>(0);
+  const [videosCount, setVideosCount] = useState<number>(0);
+  const [workshopsCount, setWorkshopsCount] = useState<number>(0);
+  const [eventArticlesCount, setEventArticlesCount] = useState<number>(0);
+  const [memberLearningsCount, setMemberLearningsCount] = useState<number>(0);
+  const [researchProjectsCount, setResearchProjectsCount] = useState<number>(0);
+  const [recentActivity, setRecentActivity] = useState<{ title: string; date: string }[]>([]);
 
   useEffect(() => {
     document.title = "MAIC - Library";
@@ -156,7 +180,6 @@ const Library = () => {
   const [query, setQuery] = useState<URLSearchParams>(
     new URLSearchParams(location.search)
   );
-  const [category, setCategory] = useState<string>("All");
   const [modals, setModals] = useState<any[] | undefined>(undefined);
 
   /**
@@ -173,12 +196,35 @@ const Library = () => {
     setCurrentArticle(query.get("article") ?? "");
   }, [query]);
 
+  // Fetch live counts for landing page
   useEffect(() => {
-    const fetchTags = async () => {
-      const tags = await getTags();
-      setCategoryTags(["All", ...tags]);
-    };
-    fetchTags();
+    (async () => {
+      try {
+        const [total, vid, ws, ev, ml, rp] = await Promise.all([
+          getTotalResourceCount(),
+          getVideosCount(),
+          getWorkshopsCount(),
+          getEventArticlesCount(),
+          getMemberLearningsCount(),
+          getResearchProjectCount(),
+        ]);
+        setResourceCount(total);
+        setVideosCount(vid);
+        setWorkshopsCount(ws);
+        setEventArticlesCount(ev);
+        setMemberLearningsCount(ml);
+        setResearchProjectsCount(rp);
+      } catch (_) {
+        // leave defaults
+      }
+
+      try {
+        const events = await getRecentEvents(3);
+        setRecentActivity(events.map((e) => ({ title: e.title, date: e.date })));
+      } catch (_) {
+        setRecentActivity([]);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -213,17 +259,7 @@ const Library = () => {
     fetchContent();
   }, [query, currentArticle]);
 
-  useEffect(() => {
-    const fetchCategoryItems = async () => {
-      if (category === "All") {
-        setCategoryItems([]);
-        return;
-      }
-      const items = await getTaggedContent(category);
-      setCategoryItems(transformTaggedContent(items));
-    };
-    fetchCategoryItems();
-  }, [category]);
+  // no-op: removed category chips on landing
 
   const transformTaggedContent = (items: ModalContent[]) => {
     return items.map((item) => {
@@ -312,30 +348,142 @@ const Library = () => {
           {query.get("article") === null && (
             <section
               className="modals"
-              style={{ maxWidth: "93.25vw", paddingTop: "40px" }}
+              style={{ maxWidth: "93.25vw", paddingTop: "40px", width: "100%" }}
             >
               <div>
-                {modals}
-                {(query.get("nav") === "Featured" ||
-                  query.get("nav") === null) && (
-                  <Modal
-                    title="Categories"
-                    chips={categoryTags.slice(0, 6).map((tag, index) => {
-                      return (
-                        <Chip
-                          key={index + 1}
-                          variant={category === tag ? "filled" : "outlined"}
-                          component={Link}
-                          color="primary"
-                          label={tag}
-                          onClick={() => setCategory(tag)}
-                          to="/library?nav=Featured"
-                          clickable
-                        />
-                      );
-                    })}
-                    items={categoryItems}
-                  />
+                {(query.get("nav") === null || query.get("nav") === "Featured") && (
+                  <div className="library-landing">
+                    <div className="library-stats">
+                      <div className="stat-card">
+                        <LibraryBooksIcon />
+                        <div className="stat-text">
+                          <span className="stat-number">{resourceCount > 0 ? `${resourceCount}+` : "40+"}</span>
+                          <span className="stat-label">Total Resources</span>
+                        </div>
+                      </div>
+                      <div className="stat-card">
+                        <GroupIcon />
+                        <div className="stat-text">
+                          <span className="stat-number">120+</span>
+                          <span className="stat-label">Club Members</span>
+                        </div>
+                      </div>
+                      <div className="stat-card">
+                        <QueryBuilderIcon />
+                        <div className="stat-text">
+                          <span className="stat-number">25+</span>
+                          <span className="stat-label">Hours Content</span>
+                        </div>
+                      </div>
+                      <div className="stat-card">
+                        <RocketLaunchIcon />
+                        <div className="stat-text">
+                          <span className="stat-number">4</span>
+                          <span className="stat-label">Active Projects</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="library-categories">
+                      <a className="category-card" href="/library?nav=Articles">
+                        <div className="category-icon"><EventNoteIcon /></div>
+                        <div className="category-content">
+                          <h3>Event Articles</h3>
+                          <p>Stay updated with the latest club events, meetups, and announcements.</p>
+                          <span className="category-meta">{eventArticlesCount} articles</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </a>
+
+                      <a className="category-card" href="/library?nav=Videos">
+                        <div className="category-icon"><MovieIcon /></div>
+                        <div className="category-content">
+                          <h3>Video Library</h3>
+                          <p>Educational videos covering AI concepts, tutorials, and discussions.</p>
+                          <span className="category-meta">{videosCount} videos</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </a>
+
+                      <a className="category-card" href="/library?nav=Workshops">
+                        <div className="category-icon"><ConstructionIcon /></div>
+                        <div className="category-content">
+                          <h3>Interactive Workshops</h3>
+                          <p>Hands-on coding workshops you can complete right in your browser.</p>
+                          <span className="category-meta">{workshopsCount} workshops</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </a>
+
+                      <a className="category-card" href="/library?nav=Articles&type=Member%20Learnings">
+                        <div className="category-icon"><LibraryBooksIcon /></div>
+                        <div className="category-content">
+                          <h3>Member Learnings</h3>
+                          <p>Knowledge sharing from club members about their AI journey.</p>
+                          <span className="category-meta">{memberLearningsCount} posts</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </a>
+
+                      <a className="category-card" href="/library?nav=Research">
+                        <div className="category-icon"><ScienceIcon /></div>
+                        <div className="category-content">
+                          <h3>Research Projects</h3>
+                          <p>Current research initiatives and projects from our club members.</p>
+                          <span className="category-meta">{researchProjectsCount} projects</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </a>
+                    </div>
+
+                    <div className="recent-activity">
+                      <h3>Recent Activity</h3>
+                      <ul>
+                        {recentActivity.map((a, idx) => (
+                          <li key={idx}>
+                            <span className="dot" />
+                            <span className="activity-text">{a.title}</span>
+                            <span className="time">{new Date(a.date).toLocaleDateString()}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                {query.get("nav") === "Articles" && !query.get("type") && (
+                  <div className="library-landing">
+                    <ArticleCards type="" />
+                  </div>
+                )}
+                {query.get("nav") === "Articles" && query.get("type") && (
+                  <div className="library-landing">
+                    <ArticleCards type={query.get("type") as string} />
+                  </div>
+                )}
+                {query.get("nav") === "Research" && (
+                  <div className="library-landing">
+                    <ResearchProjects />
+                  </div>
+                )}
+                {query.get("nav") === "Videos" && (
+                  <div className="library-landing">
+                    <Videos />
+                  </div>
+                )}
+                {query.get("nav") === "Workshops" && (
+                  <div className="library-landing">
+                    <Workshops />
+                  </div>
+                )}
+                {query.get("nav") === "Competitions" && (
+                  <div className="library-landing">
+                    <Competitions />
+                  </div>
+                )}
+                {query.get("nav") && !["Featured","Articles","Research","Workshops","Videos","Competitions"].includes(query.get("nav") as string) && (
+                  <div>
+                    {modals}
+                  </div>
                 )}
               </div>
             </section>
