@@ -541,10 +541,87 @@ export async function getMemberLearningsCount(): Promise<number> {
   ).length;
 }
 
+// Count of top-level articles (non-news, non-research)
+// Total markdown articles across all article sections including research publications
+export async function getArticlesCount(): Promise<number> {
+  const files = await getAllFiles();
+  return files.filter((p) => p.startsWith("articles/") && p.endsWith(".md")).length;
+}
+
+// Count of competition markdowns under competitions/*/*
+export async function getCompetitionsCount(): Promise<number> {
+  const files = await getAllFiles();
+  return files.filter((p) => p.startsWith("competitions/") && p.endsWith(".md")).length;
+}
+
 export async function getResearchProjectCount(): Promise<number> {
   const files = await getAllFiles();
-  // Research projects have an Anchor/metadata.json
-  return files.filter((p) => p.startsWith("articles/research/") && p.endsWith("/Anchor/metadata.json")).length;
+  // Count both legacy Anchor-style projects and flat per-project metadata.json entries
+  const legacyAnchorPaths = files.filter(
+    (p) => p.startsWith("articles/research/") && p.endsWith("/Anchor/metadata.json")
+  );
+  const flatProjectAnchors = files.filter(
+    (p) =>
+      p.startsWith("articles/research/") &&
+      p.endsWith("/metadata.json") &&
+      !p.includes("/Anchor/") &&
+      !p.includes("/Markdown/") &&
+      !/\/Team-\d+\//.test(p)
+  );
+  return legacyAnchorPaths.length + flatProjectAnchors.length;
+}
+
+// Count research projects for the most recent school year found in metadata
+export async function getLatestSchoolYearResearchProjectCount(): Promise<number> {
+  const files = await getAllFiles();
+  const anchorMetadataPaths = files.filter(
+    (p) => p.startsWith("articles/research/") && p.endsWith("/Anchor/metadata.json")
+  );
+  if (anchorMetadataPaths.length === 0) return 0;
+
+  const yearToCount = new Map<number, number>();
+
+  function extractStartYear(dateStr?: string, fallbackPath?: string): number {
+    if (typeof dateStr === "string" && dateStr.trim().length > 0) {
+      const s = dateStr.trim();
+      const mRange = s.match(/(\d{4})\s*-\s*(\d{4})/);
+      if (mRange) {
+        return parseInt(mRange[1], 10);
+      }
+      const mYear = s.match(/(\d{4})/);
+      if (mYear) return parseInt(mYear[1], 10);
+    }
+    // Fallback: try to infer a year segment from path e.g., articles/research/2024-2025/... or /2024/
+    if (typeof fallbackPath === 'string') {
+      const pr = fallbackPath.match(/articles\/research\/(\d{4})(?:\s*-\s*(\d{4}))?\//);
+      if (pr) return parseInt(pr[1], 10);
+      const yr = fallbackPath.match(/(\d{4})/);
+      if (yr) return parseInt(yr[1], 10);
+    }
+    return 0;
+  }
+
+  for (const metaPath of anchorMetadataPaths) {
+    const raw = await getFileContent(metaPath);
+    if (!raw) continue;
+    try {
+      const meta = JSON.parse(raw);
+      const startYear = extractStartYear(meta?.date, metaPath);
+      if (startYear > 0) {
+        yearToCount.set(startYear, (yearToCount.get(startYear) || 0) + 1);
+      }
+    } catch {
+      // ignore malformed json
+    }
+  }
+
+  if (yearToCount.size === 0) {
+    // Fallback to total if we couldn't extract any years
+    return anchorMetadataPaths.length;
+  }
+
+  const latestStartYear = Array.from(yearToCount.keys()).sort((a, b) => b - a)[0];
+  return yearToCount.get(latestStartYear) || 0;
 }
 
 export interface ClubEventItem {
@@ -564,5 +641,17 @@ export async function getRecentEvents(limit = 3): Promise<ClubEventItem[]> {
       .slice(0, limit);
   } catch (_) {
     return [];
+  }
+}
+
+// Count of E-Board members from data/contact/eboard.json
+export async function getEboardMembersCount(): Promise<number> {
+  try {
+    const content = await getFileContent("data/contact/eboard.json");
+    if (!content) return 0;
+    const arr = JSON.parse(content);
+    return Array.isArray(arr) ? arr.length : 0;
+  } catch (_) {
+    return 0;
   }
 }

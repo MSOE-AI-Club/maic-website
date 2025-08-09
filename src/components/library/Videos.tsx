@@ -170,8 +170,7 @@ const Videos = () => {
                 <div className="title">{v.meta.title || v.id}</div>
                 <div className="desc">{v.meta.summary || ""}</div>
                 <div className="meta-row">
-                  <span className="author muted">By {v.meta.authors || "YouTube"}</span>
-                  <span className="platform muted"><YouTubeIcon fontSize="small" /> YouTube</span>
+                  <span className="platform muted" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><YouTubeIcon fontSize="small" /> YouTube</span>
                 </div>
                 <div className="meta-row end">
                   {typeof v.meta.views !== "undefined" && (

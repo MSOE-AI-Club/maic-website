@@ -55,7 +55,8 @@
 /* Category cards */
 .library-categories {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Max 3 columns, but auto-fit down to 2 or 1 and expand cards to fill row */
+  grid-template-columns: repeat(auto-fit, minmax(max(280px, calc(100%/4)), 1fr));
   gap: 16px;
 }
 .category-card {

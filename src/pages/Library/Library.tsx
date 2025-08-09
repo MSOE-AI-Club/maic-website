@@ -7,11 +7,13 @@ import Modal from "../../components/library/Modal";
 import ModalItem from "../../components/library/ModalItem";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowForward } from "@mui/icons-material";
-import EventNoteIcon from "@mui/icons-material/EventNote";
+import DescriptionIcon from "@mui/icons-material/Description";
 import MovieIcon from "@mui/icons-material/Movie";
 import ConstructionIcon from "@mui/icons-material/Construction";
 import ScienceIcon from "@mui/icons-material/Science";
-import GroupIcon from "@mui/icons-material/Group";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+// Group icon removed from stats; using Construction for Workshops
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
@@ -31,10 +33,11 @@ import {
   getTotalResourceCount,
   getVideosCount,
   getWorkshopsCount,
-  getEventArticlesCount,
-  getMemberLearningsCount,
   getResearchProjectCount,
   getRecentEvents,
+    getArticlesCount,
+    getCompetitionsCount,
+    getLatestSchoolYearResearchProjectCount,
 } from "../../hooks/library-helper";
 import type { ModalContent } from "../../hooks/library-helper";
 
@@ -97,10 +100,12 @@ const Library = () => {
   const [resourceCount, setResourceCount] = useState<number>(0);
   const [videosCount, setVideosCount] = useState<number>(0);
   const [workshopsCount, setWorkshopsCount] = useState<number>(0);
-  const [eventArticlesCount, setEventArticlesCount] = useState<number>(0);
-  const [memberLearningsCount, setMemberLearningsCount] = useState<number>(0);
-  const [researchProjectsCount, setResearchProjectsCount] = useState<number>(0);
+  // Removed unused event and member learnings counts on landing
+  const [researchProjectsCount, setResearchProjectsCount] = useState<number>(0); // latest school year
+  const [researchProjectsTotalCount, setResearchProjectsTotalCount] = useState<number>(0);
   const [recentActivity, setRecentActivity] = useState<{ title: string; date: string }[]>([]);
+  const [articlesCount, setArticlesCount] = useState<number>(0);
+  const [competitionsCount, setCompetitionsCount] = useState<number>(0);
 
   useEffect(() => {
     document.title = "MAIC - Library";
@@ -200,20 +205,22 @@ const Library = () => {
   useEffect(() => {
     (async () => {
       try {
-        const [total, vid, ws, ev, ml, rp] = await Promise.all([
+        const [total, vid, ws, rp, ac, cc, rpTotal] = await Promise.all([
           getTotalResourceCount(),
           getVideosCount(),
           getWorkshopsCount(),
-          getEventArticlesCount(),
-          getMemberLearningsCount(),
+          getLatestSchoolYearResearchProjectCount(),
+          getArticlesCount(),
+          getCompetitionsCount(),
           getResearchProjectCount(),
         ]);
         setResourceCount(total);
         setVideosCount(vid);
         setWorkshopsCount(ws);
-        setEventArticlesCount(ev);
-        setMemberLearningsCount(ml);
         setResearchProjectsCount(rp);
+        setArticlesCount(ac);
+        setCompetitionsCount(cc);
+        setResearchProjectsTotalCount(rpTotal);
       } catch (_) {
         // leave defaults
       }
@@ -357,45 +364,45 @@ const Library = () => {
                       <div className="stat-card">
                         <LibraryBooksIcon />
                         <div className="stat-text">
-                          <span className="stat-number">{resourceCount > 0 ? `${resourceCount}+` : "40+"}</span>
+                          <span className="stat-number">{resourceCount}</span>
                           <span className="stat-label">Total Resources</span>
                         </div>
                       </div>
                       <div className="stat-card">
-                        <GroupIcon />
+                        <ConstructionIcon />
                         <div className="stat-text">
-                          <span className="stat-number">120+</span>
-                          <span className="stat-label">Club Members</span>
+                          <span className="stat-number">{workshopsCount}</span>
+                          <span className="stat-label">Workshops</span>
                         </div>
                       </div>
                       <div className="stat-card">
                         <QueryBuilderIcon />
                         <div className="stat-text">
-                          <span className="stat-number">25+</span>
-                          <span className="stat-label">Hours Content</span>
+                          <span className="stat-number">{videosCount}</span>
+                          <span className="stat-label">Videos</span>
                         </div>
                       </div>
                       <div className="stat-card">
                         <RocketLaunchIcon />
                         <div className="stat-text">
-                          <span className="stat-number">4</span>
-                          <span className="stat-label">Active Projects</span>
+                          <span className="stat-number">{researchProjectsCount}</span>
+                          <span className="stat-label">Recent Research Projects</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="library-categories">
-                      <a className="category-card" href="/library?nav=Articles">
-                        <div className="category-icon"><EventNoteIcon /></div>
+                      <Link className="category-card" to="/library?nav=Articles">
+                        <div className="category-icon"><DescriptionIcon /></div>
                         <div className="category-content">
-                          <h3>Event Articles</h3>
-                          <p>Stay updated with the latest club events, meetups, and announcements.</p>
-                          <span className="category-meta">{eventArticlesCount} articles</span>
+                          <h3>Articles</h3>
+                          <p>Guides, tutorials, and club write-ups across AI topics.</p>
+                          <span className="category-meta">{articlesCount} articles</span>
                         </div>
                         <span className="category-arrow">→</span>
-                      </a>
+                      </Link>
 
-                      <a className="category-card" href="/library?nav=Videos">
+                      <Link className="category-card" to="/library?nav=Videos">
                         <div className="category-icon"><MovieIcon /></div>
                         <div className="category-content">
                           <h3>Video Library</h3>
@@ -403,9 +410,9 @@ const Library = () => {
                           <span className="category-meta">{videosCount} videos</span>
                         </div>
                         <span className="category-arrow">→</span>
-                      </a>
+                      </Link>
 
-                      <a className="category-card" href="/library?nav=Workshops">
+                      <Link className="category-card" to="/library?nav=Workshops">
                         <div className="category-icon"><ConstructionIcon /></div>
                         <div className="category-content">
                           <h3>Interactive Workshops</h3>
@@ -413,27 +420,39 @@ const Library = () => {
                           <span className="category-meta">{workshopsCount} workshops</span>
                         </div>
                         <span className="category-arrow">→</span>
-                      </a>
+                      </Link>
 
-                      <a className="category-card" href="/library?nav=Articles&type=Member%20Learnings">
-                        <div className="category-icon"><LibraryBooksIcon /></div>
-                        <div className="category-content">
-                          <h3>Member Learnings</h3>
-                          <p>Knowledge sharing from club members about their AI journey.</p>
-                          <span className="category-meta">{memberLearningsCount} posts</span>
-                        </div>
-                        <span className="category-arrow">→</span>
-                      </a>
+                      
 
-                      <a className="category-card" href="/library?nav=Research">
+                      <Link className="category-card" to="/library?nav=Research">
                         <div className="category-icon"><ScienceIcon /></div>
                         <div className="category-content">
                           <h3>Research Projects</h3>
                           <p>Current research initiatives and projects from our club members.</p>
-                          <span className="category-meta">{researchProjectsCount} projects</span>
+                          <span className="category-meta">{researchProjectsTotalCount} projects</span>
                         </div>
                         <span className="category-arrow">→</span>
-                      </a>
+                      </Link>
+
+                      <Link className="category-card" to="/library?nav=Competitions">
+                        <div className="category-icon"><EmojiEventsIcon /></div>
+                        <div className="category-content">
+                          <h3>Competitions</h3>
+                          <p>Hackathons and competitions hosted or joined by the club.</p>
+                          <span className="category-meta">{competitionsCount} entries</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </Link>
+
+                      <Link className="category-card" to="https://forms.office.com/r/STYXQ1FPMn" target="_blank" rel="noreferrer">
+                        <div className="category-icon"><NoteAddIcon /></div>
+                        <div className="category-content">
+                          <h3>Submit</h3>
+                          <p>Share an article, workshop, video, or research with the community.</p>
+                          <span className="category-meta">Opens form</span>
+                        </div>
+                        <span className="category-arrow">→</span>
+                      </Link>
                     </div>
 
                     <div className="recent-activity">
