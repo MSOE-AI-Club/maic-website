@@ -171,7 +171,7 @@
 .research-spotlight:hover { background: #0b0f1a; }
 .spotlight-card::before { background: none !important; }
 .research-card .card-top { display: grid; grid-template-columns: 160px 1fr auto; gap: 16px; align-items: start; }
-.research-card .thumb { min-width: 160px; min-height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: #0f172a; }
+.research-card .thumb { width: 160px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: #0f172a; }
 
 /* Workshops page */
 .workshops { display: flex; flex-direction: column; gap: 18px; }
