@@ -2,7 +2,9 @@
 const DEFAULT_CONTENT_BASE_URL = "/content";
 const FALLBACK_LOCAL_CONTENT_BASE_URL = "/maic-content"; // helpful for local dev where content folder isn't mounted at /content
 
-const ENV_CONTENT_BASE_URL = (import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined)
+const ENV_CONTENT_BASE_URL = (
+  import.meta?.env?.VITE_CONTENT_BASE_URL as string | undefined
+)
   ?.trim()
   .replace(/\/+$/, "");
 
@@ -34,10 +36,13 @@ async function resolveContentBaseUrl(): Promise<string> {
 
   // 3) Try local fallback "/maic-content" (useful in development where content is a sibling folder)
   try {
-    const res = await fetch(`${FALLBACK_LOCAL_CONTENT_BASE_URL}/manifest.json`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const res = await fetch(
+      `${FALLBACK_LOCAL_CONTENT_BASE_URL}/manifest.json`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      }
+    );
     if (res.ok) {
       resolvedContentBaseUrl = FALLBACK_LOCAL_CONTENT_BASE_URL;
       return resolvedContentBaseUrl;
@@ -97,7 +102,11 @@ export async function getManifest(): Promise<Manifest | null> {
     const manifestData = await response.json();
 
     // Validate manifest structure
-    if (!manifestData || !Array.isArray(manifestData.files) || typeof manifestData.generated_at !== "string") {
+    if (
+      !manifestData ||
+      !Array.isArray(manifestData.files) ||
+      typeof manifestData.generated_at !== "string"
+    ) {
       console.error("Invalid manifest format:", manifestData);
       return null;
     }
@@ -105,11 +114,13 @@ export async function getManifest(): Promise<Manifest | null> {
     cachedManifest = manifestData as Manifest;
     return cachedManifest;
   } catch (error) {
-    console.error("An unexpected error occurred while fetching manifest:", error);
+    console.error(
+      "An unexpected error occurred while fetching manifest:",
+      error
+    );
     return null;
   }
 }
-
 
 export async function getDirectoryContents(
   directoryPath: string
@@ -129,7 +140,12 @@ export async function getDirectoryContents(
   const normalizedPath = directoryPath.trim();
   // Ensure prefix ends with a slash if it's not the root path.
   // For root path (empty string or "."), prefix should be empty to match files at the root.
-  const prefix = (normalizedPath === "" || normalizedPath === ".") ? "" : (normalizedPath.endsWith("/") ? normalizedPath : normalizedPath + "/");
+  const prefix =
+    normalizedPath === "" || normalizedPath === "."
+      ? ""
+      : normalizedPath.endsWith("/")
+      ? normalizedPath
+      : normalizedPath + "/";
 
   for (const filePath of manifest.files) {
     if (filePath.startsWith(prefix)) {
@@ -138,15 +154,23 @@ export async function getDirectoryContents(
 
       const slashIndex = relativePath.indexOf("/");
 
-      if (slashIndex === -1) { // It's a file
+      if (slashIndex === -1) {
+        // It's a file
         items.push({
           name: relativePath,
           path: filePath,
           type: "file",
-          download_url: `${baseUrl}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
-          html_url: `${baseUrl}/${filePath.split("/").map(encodeURIComponent).join("/")}`,
+          download_url: `${baseUrl}/${filePath
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/")}`,
+          html_url: `${baseUrl}/${filePath
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/")}`,
         });
-      } else { // It's a directory or a file in a subdirectory
+      } else {
+        // It's a directory or a file in a subdirectory
         const dirName = relativePath.substring(0, slashIndex);
         if (!foundDirs.has(dirName)) {
           foundDirs.add(dirName);
@@ -156,7 +180,10 @@ export async function getDirectoryContents(
             path: dirFullPath,
             type: "dir",
             download_url: null,
-            html_url: `${baseUrl}/${dirFullPath.split("/").map(encodeURIComponent).join("/")}/`,
+            html_url: `${baseUrl}/${dirFullPath
+              .split("/")
+              .map(encodeURIComponent)
+              .join("/")}/`,
           });
         }
       }
@@ -167,10 +194,7 @@ export async function getDirectoryContents(
 
 export async function getFileContent(filePath: string): Promise<string | null> {
   const baseUrl = await resolveContentBaseUrl();
-  const encodedFilePath = filePath
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/");
+  const encodedFilePath = filePath.split("/").map(encodeURIComponent).join("/");
 
   const rawContentUrl = `${baseUrl}/${encodedFilePath}`;
 
@@ -201,7 +225,8 @@ export async function getFileContent(filePath: string): Promise<string | null> {
 }
 
 export function getRawFileUrl(filePath: string): string {
-  const baseUrl = resolvedContentBaseUrl || ENV_CONTENT_BASE_URL || DEFAULT_CONTENT_BASE_URL;
+  const baseUrl =
+    resolvedContentBaseUrl || ENV_CONTENT_BASE_URL || DEFAULT_CONTENT_BASE_URL;
   const encodedFilePath = filePath
     .split("/")
     .map((segment) => encodeURIComponent(segment))
