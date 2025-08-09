@@ -136,13 +136,10 @@ const Leaderboard: React.FC = () => {
 
     return uniqueAwards.map((awardName) => {
       let achievement = achievements.find(
-        (a) =>
-          a.title.trim().toLowerCase() === awardName.trim().toLowerCase() ||
-          a.name.trim().toLowerCase() === awardName.trim().toLowerCase()
+        (a) => a.title === awardName || a.name === awardName
       );
 
       if (!achievement) {
-        console.warn("No achievement found for:", JSON.stringify(awardName));
         const eboardMatch = awardName.match(/^eboard(\d{4})$/);
         if (eboardMatch) {
           achievement = achievements.find((a) => a.name === "Eboard");
