@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Leaderboard from "../leaderboard/Leaderboard";
 import "./Info.css";
@@ -8,7 +8,6 @@ import { getRawFileUrl } from "../../../hooks/github-hook";
 function Info() {
   const navigate = useNavigate();
   const EBOARD = getRawFileUrl('images/home/maic_eboard_25.jpg');
-  const MOCK = getRawFileUrl('images/home/mock_leaderboard.png');
 
   return (
     <div className="info-section">

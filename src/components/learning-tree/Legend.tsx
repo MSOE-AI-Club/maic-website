@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Divider, Tooltip } from "@mui/material";
+import { Divider } from "@mui/material";
 import type { TreeViewBaseItem } from '@mui/x-tree-view/models';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import "./assets/css/legend.css";
-import DescriptionIcon from "@mui/icons-material/Description";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getFileContent } from "../../hooks/github-hook";
 
 /**

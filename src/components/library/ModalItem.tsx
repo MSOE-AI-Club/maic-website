@@ -1,6 +1,5 @@
 import { Button, Skeleton } from "@mui/material";
 import "./assets/library/css/modal.css";
-import tempImage from "./assets/library/images/temp-image.jpg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 

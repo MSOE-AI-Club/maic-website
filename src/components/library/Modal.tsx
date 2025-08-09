@@ -54,9 +54,7 @@ const Modal = (props: ModalProps) => {
   );
   const [authors, setAuthors] = useState<string>("Members: ");
   const location = useLocation();
-  const [query, setQuery] = useState<URLSearchParams>(
-    new URLSearchParams(location.search)
-  );
+  const [query] = useState<URLSearchParams>(new URLSearchParams(location.search));
   const [typeCheck, setTypeCheck] = useState<string>("initial");
 
   useEffect(() => {

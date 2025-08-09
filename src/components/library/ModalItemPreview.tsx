@@ -1,7 +1,6 @@
 import { Button, Chip, Divider } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import tempImage from "./assets/library/images/temp-image.jpg";
-import favoriteImage from "./assets/library/images/favorite.png";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import React, { useRef, useEffect } from "react";
@@ -59,11 +58,11 @@ const ModalItemPreview = (props: ModalItemPreviewProps) => {
   );
   const [readingTime, setReadingTime] = React.useState<string>("0 minute read");
   const [pageLength, setPageLength] = React.useState<string>("0 pages");
-  const [tags, setTags] = React.useState<JSX.Element | undefined>();
+  const [tags, setTags] = React.useState<React.ReactElement | undefined>();
   const [img, setImg] = React.useState<string>(tempImage);
   const [liked, isLiked] = React.useState<boolean>(false);
   const location = useLocation();
-  const [query, setQuery] = React.useState<URLSearchParams>(
+  const [query] = React.useState<URLSearchParams>(
     new URLSearchParams(location.search)
   );
   const [forceHide, setForceHide] = React.useState<boolean>(false);

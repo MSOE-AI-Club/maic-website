@@ -82,16 +82,6 @@ const Competitions = () => {
     })();
   }, []);
 
-  const total = items.length;
-  const categories = useMemo(() => {
-    const s = new Set<string>();
-    items.forEach((i) => {
-      toArray(i.meta.categories).forEach((c) => s.add(c));
-      s.add(i.parentFolder);
-    });
-    return Array.from(s);
-  }, [items]);
-
   function openItem(id: string) {
     navigate(`/library?nav=Competitions&article=${encodeURIComponent(id)}`);
   }
