@@ -170,7 +170,11 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
+  transform: translateX(100%);
+  opacity: 0.01;
+  transition: transform 250ms ease, opacity 250ms ease;
 }
+.article-preview-panel.open { transform: translateX(0); opacity: 1; }
 .article-preview-panel .preview-inner {
   padding: 16px;
   display: flex;

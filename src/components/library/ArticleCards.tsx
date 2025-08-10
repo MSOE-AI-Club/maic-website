@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { getCategoryColors } from "./categoryColors";
@@ -52,7 +52,10 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
   const [query, setQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [preview, setPreview] = useState<ArticleCardMeta | null>(null);
+  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
   function formatDate(raw?: string): string {
     if (!raw) return "";
@@ -107,6 +110,34 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
+  function closePreview() {
+    setPreviewOpen(false);
+    const TRANSITION_MS = 250;
+    window.setTimeout(() => {
+      setPreview(null);
+    }, TRANSITION_MS);
+  }
+
+  // Close preview when clicking outside the panel, unless clicking a card link (which opens/navigates)
+  useEffect(() => {
+    if (!preview) return;
+    function onDocClick(ev: MouseEvent) {
+      const target = ev.target as HTMLElement | null;
+      if (!target) return;
+      // If click is inside the preview panel, ignore
+      if (panelRef.current && panelRef.current.contains(target)) return;
+      // If click is on an article card link, ignore (card handler will manage open/navigate)
+      let el: HTMLElement | null = target;
+      while (el) {
+        if (el.classList && el.classList.contains("article-card-link")) return;
+        el = el.parentElement;
+      }
+      closePreview();
+    }
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, [preview]);
+
   function openArticle(articleId: string) {
     navigate(`/library?nav=Articles&article=${articleId}`);
   }
@@ -121,6 +152,7 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
     // Otherwise open the preview
     e.preventDefault();
     setPreview(article);
+    setPreviewOpen(true);
   }
 
   if (loading) {
@@ -309,7 +341,7 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
       )}
 
       {preview && (
-        <div className="article-preview-panel">
+        <div className={`article-preview-panel ${previewOpen ? "open" : ""}`} ref={panelRef}>
           <div className="preview-inner">
             {preview.img && (
               <div className="preview-thumb-wrap">
