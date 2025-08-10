@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getCategoryColors } from "./categoryColors";
 import { getArticlesByType, getAllArticles, type ModalContent } from "../../hooks/library-helper";
 import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
@@ -12,6 +12,7 @@ interface ArticleCardMeta {
   date?: string;
   authors?: string;
   tags?: string[];
+  img?: string;
 }
 
 function mapModalToMeta(items: ModalContent[]): ArticleCardMeta[] {
@@ -33,6 +34,7 @@ function mapModalToMeta(items: ModalContent[]): ArticleCardMeta[] {
       description: meta.description,
       date: meta.date,
       authors: meta.authors,
+      img: (meta as any).img,
       // Use categories from metadata when available; fallback to any legacy tags
       tags: meta.tags ?? categories,
     } as ArticleCardMeta;
@@ -49,6 +51,8 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
   const pageSize = 10;
   const [query, setQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [preview, setPreview] = useState<ArticleCardMeta | null>(null);
+  const navigate = useNavigate();
 
   function formatDate(raw?: string): string {
     if (!raw) return "";
@@ -102,6 +106,22 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
+
+  function openArticle(articleId: string) {
+    navigate(`/library?nav=Articles&article=${articleId}`);
+  }
+
+  function handleCardClick(e: React.MouseEvent, article: ArticleCardMeta) {
+    // If preview already open for this article, navigate to it
+    if (preview && preview.id === article.id) {
+      e.preventDefault();
+      openArticle(article.id);
+      return;
+    }
+    // Otherwise open the preview
+    e.preventDefault();
+    setPreview(article);
+  }
 
   if (loading) {
     return (
@@ -189,6 +209,7 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
             to={`/library?nav=Articles&article=${a.id}`}
             className="article-card-link"
             style={{ textDecoration: "none" }}
+            onClick={(e) => handleCardClick(e, a)}
           >
             <SpotlightCard className="article-spotlight" style={{ padding: 0 }}>
               <div className="article-featured-card">
@@ -231,6 +252,7 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
             to={`/library?nav=Articles&article=${a.id}`}
             className="article-card-link"
             style={{ textDecoration: "none" }}
+            onClick={(e) => handleCardClick(e, a)}
           >
             <SpotlightCard className="article-spotlight" style={{ padding: 0 }}>
               <div className="article-row">
@@ -283,6 +305,39 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
           >
             Next
           </button>
+        </div>
+      )}
+
+      {preview && (
+        <div className="article-preview-panel">
+          <div className="preview-inner">
+            {preview.img && (
+              <div className="preview-thumb-wrap">
+                <img src={preview.img} alt={preview.title} className="preview-thumb" />
+              </div>
+            )}
+            <h3 className="preview-title">{preview.title}</h3>
+            <div className="preview-meta">
+              <span className="muted">{preview.authors}</span>
+              <span className="muted">{formatDate(preview.date)}</span>
+            </div>
+            {preview.description && <p className="preview-desc">{preview.description}</p>}
+            {preview.tags && preview.tags.length > 0 && (
+              <div className="preview-tags">
+                {preview.tags.map((t) => {
+                  const c = getCategoryColors(t);
+                  return (
+                    <span key={t} className="tag" style={{ color: c.text, background: c.bg, border: `1px solid ${c.border}` }}>
+                      {formatLabel(t)}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div className="preview-footer">
+            <button className="btn primary" onClick={() => openArticle(preview.id)}>Read more</button>
+          </div>
         </div>
       )}
     </div>
