@@ -1,5 +1,5 @@
 // Base URL for the MAIC Content CDN (configurable via env)
-const DEFAULT_CONTENT_BASE_URL = "https://msoe-ai-club.github.io/maic-content/";
+const DEFAULT_CONTENT_BASE_URL = "/content";
 const FALLBACK_LOCAL_CONTENT_BASE_URL = "/maic-content"; // helpful for local dev where content folder isn't mounted at /content
 
 const ENV_CONTENT_BASE_URL = (

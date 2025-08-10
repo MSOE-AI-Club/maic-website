@@ -328,7 +328,8 @@
 
 @media (max-width: 768px) {
   .leaderboard-section {
-    display: none;
+    display: block;
+    margin-top: 2rem;
   }
 
   .info-main-content {
@@ -369,7 +370,8 @@
   }
 
   .leaderboard-section {
-    display: none;
+    display: block;
+    margin-top: 1.5rem;
   }
 
   .info-main-content {
@@ -443,7 +445,8 @@
   }
 
   .leaderboard-section {
-    display: none;
+    display: block;
+    margin-top: 1.25rem;
   }
 
   .info-main-content {

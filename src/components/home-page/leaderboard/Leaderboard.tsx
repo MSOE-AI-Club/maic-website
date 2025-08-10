@@ -19,6 +19,7 @@ const Leaderboard: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [images, setImages] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,19 +167,48 @@ const Leaderboard: React.FC = () => {
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
+  const filteredUsers = leaderboardData.filter((user) =>
+    user.User.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div style={{ marginTop: "2rem", color: "white" }}>
+    <div style={{ marginTop: "2rem", color: "white", width: "100%", overflowX: "hidden" }}>
+      <div style={{ marginBottom: "8px" }}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by name..."
+          aria-label="Search leaderboard by name"
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: "6px",
+            border: "1px solid rgba(255,255,255,0.4)",
+            background: "#1e1e1e",
+            color: "#fff",
+            outline: "none",
+            boxSizing: "border-box",
+            maxWidth: "100%",
+            WebkitAppearance: "none",
+          }}
+        />
+      </div>
       <div
         style={{
           maxHeight: "550px",
           overflowY: "auto",
+          overflowX: "auto",
           marginTop: "10px",
           border: "1px solid white",
+          width: "100%",
+          boxSizing: "border-box",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         <table
           className="leaderboard-table"
-          style={{ width: "100%", borderCollapse: "collapse" }}
+          style={{ width: "100%", minWidth: 0, borderCollapse: "collapse", tableLayout: "fixed" }}
         >
           <thead>
             <tr
@@ -189,17 +219,25 @@ const Leaderboard: React.FC = () => {
                 zIndex: 1,
               }}
             >
-              <th style={{ padding: "8px" }}>User</th>
-              <th style={{ padding: "8px" }}>All-Time</th>
-              <th style={{ padding: "8px" }}>Current</th>
+              <th style={{ padding: "8px", wordBreak: "break-word" }}>User</th>
+              <th style={{ padding: "8px", width: "30%" }}>All-Time</th>
+              <th style={{ padding: "8px", width: "30%" }}>Current</th>
             </tr>
           </thead>
           <tbody>
-            {leaderboardData.map((user, index) => {
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan={3} style={{ padding: "12px", textAlign: "center" }}>
+                  No matching users
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map((user, index) => {
               const rowStyle: React.CSSProperties = {
                 background: index % 2 === 0 ? "#282828" : "#303030",
                 fontWeight: "bold",
                 fontSize: "1em",
+                  wordBreak: "break-word",
               };
               if (index === 0) {
                 rowStyle.background = "gold";
@@ -214,16 +252,17 @@ const Leaderboard: React.FC = () => {
                 rowStyle.color = "#5c340c";
               }
               return (
-                <tr key={index} style={rowStyle}>
-                  <td style={{ padding: "8px" }}>
+                <tr key={user.User + index} style={rowStyle}>
+                  <td style={{ padding: "8px", wordBreak: "break-word" }}>
                     {getTrophy(index)}
                     {user.User} {renderAwards(user.Awards)}
                   </td>
-                  <td style={{ padding: "8px" }}>{user["All-Time Points"]}</td>
-                  <td style={{ padding: "8px" }}>{user["Current Points"]}</td>
+                  <td style={{ padding: "8px", textAlign: "left" }}>{user["All-Time Points"]}</td>
+                  <td style={{ padding: "8px", textAlign: "left" }}>{user["Current Points"]}</td>
                 </tr>
               );
-            })}
+              })
+            )}
           </tbody>
         </table>
       </div>

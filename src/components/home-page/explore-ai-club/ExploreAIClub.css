@@ -100,7 +100,7 @@
     rgba(var(--purple-primary), 0.08) 50%,
     transparent 100%
   );
-  transition: left 0.6s ease;
+  transition: left 0.6s ease !important;
 }
 
 .explore-item:hover::before {
@@ -108,7 +108,7 @@
 }
 
 .explore-item:hover {
-  background: rgba(var(--purple-primary), 0.15);
+  background: color-mix(in srgb, var(--explore-card-accent, rgb(var(--purple-primary))), transparent 85%);
   border-color: rgba(var(--purple-primary), 0.3);
   transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-glass-hover);
@@ -145,7 +145,7 @@
 }
 
 .explore-item:hover {
-  background: rgba(var(--purple-primary), 0.15);
+  background: color-mix(in srgb, var(--explore-card-accent, rgb(var(--purple-primary))), transparent 85%);
   border-color: rgba(var(--purple-primary), 0.3);
   transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-glass-hover);

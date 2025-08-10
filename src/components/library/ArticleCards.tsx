@@ -110,23 +110,34 @@ const ArticleCards = ({ type }: ArticleCardsProps) => {
           {type.charAt(0).toUpperCase() + type.slice(1)} Articles
         </h1>
         <p style={{ marginTop: 0, opacity: 0.8 }}>Stay updated with the latest from our AI club community</p>
+        <h2 style={{ marginTop: "1rem" }}>Featured Articles</h2>
         <div className="article-featured-grid">
           {[0, 1].map((i) => (
-            <div key={i} className="article-featured-card">
-              <Skeleton variant="rectangular" height={110} />
-              <Skeleton width="60%" height={24} />
-              <Skeleton width="90%" height={16} />
-              <Skeleton width="40%" height={16} />
-            </div>
+            <SpotlightCard key={i} className="article-spotlight" style={{ padding: 0 }}>
+              <div className="article-featured-card">
+                <Skeleton variant="rectangular" height={110} />
+                <Skeleton width="60%" height={28} />
+                <Skeleton width="95%" height={16} />
+                <Skeleton width="55%" height={16} />
+              </div>
+            </SpotlightCard>
           ))}
         </div>
         <h2>All Articles</h2>
         <Skeleton variant="rectangular" height={40} />
         <div className="article-list">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="article-row">
-              <Skeleton variant="rectangular" height={28} width="100%" />
-            </div>
+            <SpotlightCard key={i} className="article-spotlight" style={{ padding: 0 }}>
+              <div className="article-row">
+                <div className="row-left" style={{ width: "70%" }}>
+                  <Skeleton height={24} width="90%" />
+                </div>
+                <div className="row-right" style={{ width: "30%", display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+                  <Skeleton height={16} width={120} />
+                  <Skeleton height={16} width={90} />
+                </div>
+              </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>
