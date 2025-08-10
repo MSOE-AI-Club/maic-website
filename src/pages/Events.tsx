@@ -94,6 +94,15 @@ const Events: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Set page title on mount
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = "MAIC - Events";
+    return () => {
+      document.title = previousTitle;
+    };
+  }, []);
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
