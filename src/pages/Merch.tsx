@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/navbar/Navbar';
 import MerchGrid from '../components/merch-page/merch-grid/MerchGrid';
 import Header from '../components/merch-page/header/Header';
 import Footer from '../components/footer/Footer';

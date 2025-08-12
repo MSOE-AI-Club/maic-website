@@ -258,11 +258,6 @@ const Tree = (props: TreeProps) => {
 
         // Transform and set the nodes
         const transformedNodes = transformTreeNodes(treeData);
-        console.log(
-          "First 10 node positions:",
-          transformedNodes
-            .map((n) => ({ id: n.id, name: n.data.name, position: n.position }))
-        );
         setNodes(transformedNodes);
 
         // Generate edges from the children relationships
