@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 .legend {
-  padding-top: 1rem;
+  padding-top: 50px;
   width: max(200px, 12.5%);
   height: 100vh;
   background: linear-gradient(180deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 6%));
@@ -10,23 +10,6 @@
   overflow: hidden;
   box-sizing: border-box;
   padding-bottom: 1rem;
-}
-
-.legend-header-card {
-  background: #0b0f1a !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
-  min-height: unset !important;
-  min-width: unset !important;
-  transition: all 0.3s ease-in-out;
-  backdrop-filter: blur(10px);
-}
-
-.legend-header-card:hover {
-  background: #0b0f1a !important;
-  border-color: rgba(167, 139, 250, 0.45) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.15);
 }
 
 .header {
@@ -48,7 +31,7 @@
 }
 
 .header > a:hover {
-  color: #a78bfa;
+  color: #fff;
   text-shadow: 0 2px 4px rgba(167, 139, 250, 0.3);
 }
 
@@ -232,24 +215,6 @@
   font-weight: 400;
   font-style: italic;
   opacity: 0.8;
-}
-
-/* Enhanced visual effects */
-.legend-header-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(167, 139, 250, 0.05));
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  pointer-events: none;
 }
 
 /* Smooth transitions for all interactive elements */

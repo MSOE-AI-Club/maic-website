@@ -238,13 +238,11 @@ const Legend = (props: LeftPanelProps) => {
       <SpotlightCard 
         className="legend-header-card"
         style={{
-          padding: "20px",
+          padding: "5px",
           minHeight: "unset",
           minWidth: "unset",
           margin: "20px 16px 16px 16px",
-          background: "#0b0f1a",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
-          boxShadow: "none"
+          background: "#0b0f1a"
         }}
       >
         <h2 className="header">
