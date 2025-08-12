@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
+.legend {
+  padding-top: 4rem;
+  width: max(200px, 12.5%);
+  height: 100vh;
+  background: linear-gradient(180deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 6%));
+  box-shadow: 1px 0px 3px 1px #000;
+  position: fixed;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-bottom: 2rem;
+}
+
 .header {
   padding: 1rem 0;
   font-family: "Roboto", sans-serif;

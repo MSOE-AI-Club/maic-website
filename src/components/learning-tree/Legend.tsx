@@ -166,7 +166,7 @@ const Legend = (props: LeftPanelProps) => {
    * The Legend component.
    */
   return (
-    <div className="left-panel" style={{ zIndex: 0 }}>
+    <div className="legend" style={{ zIndex: 0 }}>
       <h2 className="header">
         <a href="/learning-tree">Learning Tree</a>
       </h2>
