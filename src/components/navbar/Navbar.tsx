@@ -3,7 +3,6 @@ import { Menu, MenuItem, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import "./css/navbar.css";
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 /**
  * The NavBarProps interface represents the props that the NavBar component receives.
@@ -78,12 +77,6 @@ const NavBar = (props: NavBarProps) => {
         <Link className={`${isActive("/about") ? "active" : ""}`} to="/about">
           <p>About</p>
         </Link>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
       </div>
       
       {/* Mobile Navigation */}
@@ -117,12 +110,6 @@ const NavBar = (props: NavBarProps) => {
           <MenuItem onClick={handleNavigation} component={Link} to="/merch" className={isActive("/merch") ? "active" : ""}>Merch</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/contact" className={isActive("/contact") ? "active" : ""}>Contact</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/about" className={isActive("/about") ? "active" : ""}>About</MenuItem>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
         </Menu>
       </div>
     </div>
