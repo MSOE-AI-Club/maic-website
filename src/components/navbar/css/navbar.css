@@ -9,14 +9,15 @@
   padding: 10px;
   font-family: Arial, Helvetica, sans-serif;
   backdrop-filter: blur(5px);
+  justify-content: center;
+  display: flex;
 }
 
 #toolbar h3 {
-  display: inline;
-}
-
-#toolbar > h3 > a {
-  display: inline;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(-35%) translateX(-25%);
 }
 
 #toolbar a {
@@ -34,17 +35,20 @@
   font-size: 1em;
 }
 
-#toolbar a.active {
+.desktop-nav a.active {
   background-color: rgb(52, 31, 105); 
 }
 
-#toolbar a:hover {
+.desktop-nav a:hover {
   background-color: rgb(71, 46, 134); 
 }
 
 /* Desktop Navigation */
 .desktop-nav {
-display: inline-block;
+display: flex !important;
+align-items: center;
+justify-content: center;
+width: fit-content;
 }
 
 /* Mobile Navigation */
@@ -61,6 +65,27 @@ min-width: 40px !important;
 height: 40px !important;
 position: relative !important;
 z-index: 101 !important;
+}
+
+.cl-rootBox {
+margin-left: 10px !important;
+width: 0.5rem;
+height: 0.5rem;
+}
+
+.desktop-nav > button {
+background-color: rgb(52, 31, 105);
+color: white;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 0.5rem;
+margin-left: 10px;
+font-family: Arial, Helvetica, sans-serif;
+cursor: pointer;
+}
+
+.desktop-nav > button:hover {
+background-color: rgb(71, 46, 134);
 }
 
 .mobile-menu-button:hover {

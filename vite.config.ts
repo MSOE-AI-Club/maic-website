@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Explicitly set envDir to the project root where this config lives
+  envDir: '.',
   server: {
     proxy: {
       // Proxy relative content requests to local content server to avoid CORS in dev
