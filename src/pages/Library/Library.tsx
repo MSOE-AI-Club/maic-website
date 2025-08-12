@@ -19,7 +19,7 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ModalItemPreview from "../../components/library/ModalItemPreview";
 import Article from "../../components/library/Article";
-import NavBar from "../../components/Navbar";
+import NavBar from "../../components/navbar/Navbar";
 import CanvasBackground from "../../components/library/Background";
 import ArticleCards from "../../components/library/ArticleCards";
 import ResearchProjects from "../../components/library/ResearchProjects";

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
 import ReactMarkdown from "react-markdown";
 import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";

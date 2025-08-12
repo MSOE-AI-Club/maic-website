@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { type Node, type NodeProps } from "@xyflow/react";
 import { Position, Handle } from "@xyflow/react";
 import { getRawFileUrl } from "../../hooks/github-hook";
+import { getColorScheme } from "./colorUtils";
 import "./assets/css/learningTreeNode.css";
 
 //This type, defines the props that are able to be passed down to the treeNode
@@ -78,141 +79,9 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     loadImageUrl();
   }, [data.api_image_path, data.image_path, data.name]);
 
-  // Default colors to use if nothing is specified
-  let baseColor = "#fff";
-  let gradientTop = "#fff";
-  let gradientBottom = "#0c0d0e";
-  let textColor = "#fff";
-
-  // Colors
-  switch (data.category_color) {
-    case "red": {
-      baseColor = "#9A031E";
-      gradientTop = "#650000";
-      gradientBottom = "#380000";
-      textColor = "#fff";
-      break;
-    }
-    case "orange": {
-      baseColor = "#FB8B24";
-      gradientTop = "#C85A00";
-      gradientBottom = "#7A3100";
-      textColor = "#fff";
-      break;
-    }
-    case "yellow": {
-      baseColor = "#F7B801";
-      gradientTop = "#C79500";
-      gradientBottom = "#7A5A00";
-      textColor = "#fff";
-      break;
-    }
-    case "limegreen": {
-      baseColor = "#32CD32"; // Brighter lime green
-      gradientTop = "#2EB82E"; // Lighter lime green for the top gradient
-      gradientBottom = "#28A428"; // Slightly darker lime green for the bottom gradient
-      textColor = "#fff"; // White text for better readability
-      break;
-    }
-    case "blue": {
-      baseColor = "#005F73";
-      gradientTop = "#004257";
-      gradientBottom = "#002638";
-      textColor = "#fff";
-      break;
-    }
-    case "indigo": {
-      baseColor = "#1A365D";
-      gradientTop = "#122446";
-      gradientBottom = "#0A122F";
-      textColor = "#fff";
-      break;
-    }
-    case "violet": {
-      baseColor = "#6A0572";
-      gradientTop = "#49004F";
-      gradientBottom = "#2A002D";
-      textColor = "#fff";
-      break;
-    }
-    case "gray": {
-      baseColor = "#B5B5B5";
-      gradientTop = "#636363";
-      gradientBottom = "#636363";
-      textColor = "#fff";
-      break;
-    }
-    case "cyan": {
-      baseColor = "#00A6A6";
-      gradientTop = "#007474";
-      gradientBottom = "#004242";
-      textColor = "#fff";
-      break;
-    }
-    case "pink": {
-      baseColor = "#FFC0CB";
-      gradientTop = "#FFA07A";
-      gradientBottom = "#FF6347";
-      textColor = "#fff";
-      break;
-    }
-    case "lime": {
-      baseColor = "#00FF00";
-      gradientTop = "#00FF00";
-      gradientBottom = "#00FF00";
-      textColor = "#fff";
-      break;
-    }
-    case "teal": {
-      baseColor = "#008080";
-      gradientTop = "#008080";
-      gradientBottom = "#008080";
-      textColor = "#fff";
-      break;
-    }
-    case "brown": {
-      baseColor = "#8B4513";
-      gradientTop = "#5C2E06";
-      gradientBottom = "#2E1A03";
-      textColor = "#fff";
-      break;
-    }
-    case "beige": {
-      baseColor = "#F5F5DC";
-      gradientTop = "#E1DAB6";
-      gradientBottom = "#C7B899";
-      textColor = "#000";
-      break;
-    }
-    case "black": {
-      baseColor = "#000000";
-      gradientTop = "#2C2C2C";
-      gradientBottom = "#1A1A1A";
-      textColor = "#fff";
-      break;
-    }
-    case "white": {
-      baseColor = "#FFFFFF";
-      gradientTop = "#E5E5E5";
-      gradientBottom = "#CCCCCC";
-      textColor = "#000";
-      break;
-    }
-    case "olive": {
-      baseColor = "#808000";
-      gradientTop = "#6B6B00";
-      gradientBottom = "#4C4C00";
-      textColor = "#fff";
-      break;
-    }
-    default: {
-      baseColor = "#fff";
-      gradientTop = "#fff";
-      gradientBottom = "#0c0d0e";
-      textColor = "#fff";
-      break;
-    }
-  }
+  // Get color scheme using utility function
+  const colorScheme = getColorScheme(data.category_color);
+  const { baseColor, gradientTop, gradientBottom, textColor } = colorScheme;
 
   const [state, setState] = useState({
     raised: false,
