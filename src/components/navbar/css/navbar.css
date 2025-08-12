@@ -17,7 +17,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(-35%) translateX(-25%);
+  transform: translateY(-35%) translateX(-5%);
 }
 
 #toolbar a {
