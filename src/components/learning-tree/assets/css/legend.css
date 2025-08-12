@@ -1,32 +1,55 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 .legend {
-  padding-top: 4rem;
+  padding-top: 1rem;
   width: max(200px, 12.5%);
   height: 100vh;
   background: linear-gradient(180deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 6%));
-  box-shadow: 1px 0px 3px 1px #000;
+  box-shadow: 2px 0px 8px 2px rgba(0, 0, 0, 0.3);
   position: fixed;
   overflow: hidden;
   box-sizing: border-box;
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+.legend-header-card {
+  background: #0b0f1a !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  min-height: unset !important;
+  min-width: unset !important;
+  transition: all 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
+}
+
+.legend-header-card:hover {
+  background: #0b0f1a !important;
+  border-color: rgba(167, 139, 250, 0.45) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.15);
 }
 
 .header {
-  padding: 1rem 0;
+  padding: 0;
+  margin: 0;
   font-family: "Roboto", sans-serif;
-  font-weight: 500;
+  font-weight: 700;
   font-style: normal;
+  font-size: 1.375rem;
+  text-align: center;
+  letter-spacing: -0.025em;
 }
 
 .header > a {
   text-decoration: none;
-  color: white;
-  transition: all 0.1s ease-in-out;
+  color: #ffffff;
+  transition: all 0.3s ease-in-out;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .header > a:hover {
-  color: #0578ff;
+  color: #a78bfa;
+  text-shadow: 0 2px 4px rgba(167, 139, 250, 0.3);
 }
 
 .navigation {
@@ -43,26 +66,27 @@
 }
 
 .navigation::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .navigation::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
 }
 
 .navigation::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navigation::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .navigation > a {
   justify-content: left;
-  color: white;
+  color: #e5e7eb;
   font-size: 1rem;
   margin: 0 1rem;
 }
@@ -77,8 +101,8 @@
 .navigation > div > a {
   justify-content: left;
   padding-left: 0.5rem;
-  color: white;
-  font-size: 0.75rem;
+  color: #e5e7eb;
+  font-size: 0.875rem;
   margin: 0 1rem;
 }
 
@@ -92,63 +116,102 @@
 
 /* Enhanced Tree View Styles */
 .navigation .MuiTreeView-root {
-  color: white !important;
+  color: #e5e7eb !important;
   background: transparent;
+  width: 100%;
+  overflow: hidden;
 }
 
 .navigation .MuiTreeItem-root {
-  color: white !important;
+  color: #e5e7eb !important;
+  width: 100%;
+  min-width: 0;
+}
+
+.navigation .MuiTreeItem-group {
+  margin-left: 20px;
+  padding-right: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .navigation .MuiTreeItem-content {
-  color: white !important;
-  border-radius: 8px;
-  margin: 2px 0;
-  transition: all 0.2s ease-in-out;
+  color: #e5e7eb !important;
+  border-radius: 10px;
+  margin: 6px 0;
+  transition: all 0.25s ease-in-out;
+  position: relative;
+  padding-left: 24px !important;
+  padding-right: 8px !important;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .navigation .MuiTreeItem-content:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  transform: translateX(4px);
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  transform: translateX(6px);
 }
 
 .navigation .MuiTreeItem-content.Mui-focused,
 .navigation .MuiTreeItem-content.Mui-selected {
-  background-color: rgba(5, 120, 255, 0.2) !important;
-  border: 1px solid rgba(5, 120, 255, 0.5);
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  border: 1px solid rgba(99, 102, 241, 0.4);
 }
 
 .navigation .MuiTreeItem-label {
-  color: white !important;
-  font-family: 'Roboto', sans-serif;
+  color: #e5e7eb !important;
+  font-family: 'Roboto, sans-serif';
   font-weight: 500;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  letter-spacing: 0.025em;
 }
 
 .navigation .MuiTreeItem-iconContainer {
-  color: white !important;
+  color: #a78bfa !important;
 }
 
 .navigation .MuiTreeItem-iconContainer svg {
-  color: white !important;
+  color: #a78bfa !important;
+}
+
+/* Category color indicators */
+.navigation .MuiTreeItem-content::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--category-color, #a78bfa);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Custom scrollbar for tree view */
 .navigation .MuiTreeView-root::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Button enhancements */
@@ -159,14 +222,43 @@
 }
 
 .navigation .MuiButton-root:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  transform: translateX(4px);
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  transform: translateX(6px);
 }
 
 /* Loading state */
-.navigation div[style*="color: white"] {
+.navigation div[style*="color: #e5e7eb"] {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-style: italic;
   opacity: 0.8;
+}
+
+/* Enhanced visual effects */
+.legend-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(167, 139, 250, 0.05));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* Smooth transitions for all interactive elements */
+.navigation * {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus states for accessibility */
+.navigation .MuiTreeItem-content:focus-visible {
+  outline: 2px solid rgba(167, 139, 250, 0.6);
+  outline-offset: 2px;
 }

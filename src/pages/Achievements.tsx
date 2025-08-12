@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Achievements from "../components/achievements-page/Achievements";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import Footer from "../components/footer/Footer";
 
 function AchievementsPage() {

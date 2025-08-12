@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import PointsSystem from "../components/points-page/Points";
 import Footer from "../components/footer/Footer";
 

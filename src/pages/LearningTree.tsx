@@ -1,5 +1,5 @@
 import Tree from "../components/learning-tree/Tree";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/navbar/Navbar";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import Legend from "../components/learning-tree/Legend";
