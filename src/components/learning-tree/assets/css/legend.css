@@ -43,6 +43,8 @@
   margin-top: 1rem;
   padding-left: 5%;
   padding-right: 5%;
+  height: calc(100vh - 18vh);
+  overflow-y: auto;
   /* Custom scrollbar styling */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
@@ -102,7 +104,7 @@
   color: #e5e7eb !important;
   background: transparent;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .navigation .MuiTreeItem-root {
@@ -128,8 +130,6 @@
   padding-right: 8px !important;
   min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .navigation .MuiTreeItem-content:hover {
@@ -148,9 +148,6 @@
   font-family: 'Roboto, sans-serif';
   font-weight: 500;
   font-size: 0.9rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   max-width: 100%;
   letter-spacing: 0.025em;
 }
@@ -173,7 +170,7 @@
   width: 4px;
   height: 18px;
   border-radius: 2px;
-  background: var(--category-color, #a78bfa);
+  background: var(--category-color);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 

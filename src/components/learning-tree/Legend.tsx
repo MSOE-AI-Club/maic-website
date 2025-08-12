@@ -5,6 +5,7 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import "./assets/css/legend.css";
 import { useNavigate } from "react-router-dom";
 import { getFileContent } from "../../hooks/github-hook";
+import { getBaseColor } from "./colorUtils";
 import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
 /**
@@ -207,27 +208,9 @@ const Legend = (props: LeftPanelProps) => {
     return null;
   };
 
+  // Use shared color utility function
   const getColorValue = (colorName: string): string => {
-    const colorMap: { [key: string]: string } = {
-      'red': '#9A031E',
-      'orange': '#FB8B24',
-      'yellow': '#F7B801',
-      'limegreen': '#32CD32',
-      'blue': '#005F73',
-      'indigo': '#1A365D',
-      'violet': '#6A0572',
-      'gray': '#B5B5B5',
-      'cyan': '#00A6A6',
-      'pink': '#FFC0CB',
-      'lime': '#00FF00',
-      'teal': '#008080',
-      'brown': '#8B4513',
-      'beige': '#F5F5DC',
-      'black': '#000000',
-      'white': '#FFFFFF',
-      'olive': '#808000'
-    };
-    return colorMap[colorName] || '#a78bfa';
+    return getBaseColor(colorName);
   };
 
   /**
@@ -261,7 +244,6 @@ const Legend = (props: LeftPanelProps) => {
           defaultExpandedItems={[]}
           onItemClick={(event, itemId) => {
             const link = findItemLink(directory, itemId);
-            console.log("Link:", link);
             if (link) navigate(link);
           }}
           sx={{
@@ -291,8 +273,6 @@ const Legend = (props: LeftPanelProps) => {
               textAlign: 'left',
               justifyContent: 'flex-start',
               overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
             },
             '& .MuiTreeItem-iconContainer': {
               color: '#a78bfa',
