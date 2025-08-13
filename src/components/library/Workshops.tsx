@@ -164,6 +164,8 @@ const Workshops = () => {
 
   return (
     <div className="workshops">
+      <h1 style={{ marginTop: 0, marginBottom: "0.25rem" }}>All Workshops</h1>
+      <p style={{ marginTop: 0, opacity: 0.8 }}>Hands-on coding workshops you can complete right in your browser</p>
       <div className="workshops-stats">
         <div className="ws-stat">
           <div className="ws-stat-number">{loading ? <Skeleton width={20} /> : total}</div>

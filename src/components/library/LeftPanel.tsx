@@ -83,10 +83,10 @@ const LeftPanel = (props: LeftPanelProps) => {
   return (
     <div className="left-panel">
       <h1 className="header">
-        <Link to="/library">MArXiv</Link>
+        <Link to="/library" onClick={() => { try { sessionStorage.setItem('maic:clear-featured-search', '1'); } catch (_) {} }}>MArXiv</Link>
       </h1>
       <div className="navigation">
-        <Link to="/library?nav=Featured" className="left-nav-link">
+        <Link to="/library?nav=Featured" className="left-nav-link" onClick={() => { try { sessionStorage.setItem('maic:clear-featured-search', '1'); } catch (_) {} }}>
           <AutoAwesomeIcon />
           <span>Featured</span>
         </Link>
