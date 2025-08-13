@@ -316,12 +316,16 @@ const Library = () => {
     const normalized = raw ? raw.trim().toLowerCase() : null;
     const isNowFeatured = normalized === null || normalized === "featured";
     const wasFeatured = lastNavRef.current === "featured";
-    if (isNowFeatured && !wasFeatured) {
+    // Check sessionStorage signal from LeftPanel clicks
+    let shouldForceClear = false;
+    try { shouldForceClear = sessionStorage.getItem('maic:clear-featured-search') === '1'; } catch (_) { shouldForceClear = false; }
+    if (isNowFeatured && (!wasFeatured || shouldForceClear)) {
       setGlobalQuery("");
       setGlobalResults([]);
       setActiveTypes({ ...defaultActiveTypes });
       setIsSearching(false);
       setFiltersDebouncing(false);
+      try { sessionStorage.removeItem('maic:clear-featured-search'); } catch (_) {}
     }
     lastNavRef.current = isNowFeatured ? "featured" : String(normalized || "other");
   }, [location.search, location.pathname]);
