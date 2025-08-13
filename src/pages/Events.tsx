@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
-import ReactMarkdown from "react-markdown";
 import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";
 import Footer from "../components/footer/Footer";
 import "./Events.css";
 import {
-  Brackets,
   Megaphone,
   Trophy,
   Lightbulb,
   Grip,
   Funnel,
+  BrainCircuit,
 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
 
@@ -21,7 +20,6 @@ interface EventData {
   date: string;
   image: string;
   description: string;
-  content: string;
 }
 
 interface IconProps extends LucideProps {
@@ -34,7 +32,7 @@ const EVENT_TYPE_META: Record<
   { icon: React.ComponentType<IconProps>; label: string }
 > = {
   workshop: {
-    icon: (props: IconProps) => <Brackets color="#fff" {...props} />,
+    icon: (props: IconProps) => <BrainCircuit color="#fff" {...props} />,
     label: "Workshops",
   },
   speaker: {
@@ -60,7 +58,7 @@ const FILTERS = [
   {
     key: "workshop",
     label: "Workshops",
-    icon: (props: IconProps) => <Brackets color="#fff" {...props} />,
+    icon: (props: IconProps) => <BrainCircuit color="#fff" {...props} />,
   },
   {
     key: "speaker",
@@ -84,8 +82,6 @@ const Events: React.FC = () => {
   const [filteredEvents, setFilteredEvents] = useState<EventData[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
@@ -155,7 +151,7 @@ const Events: React.FC = () => {
     filtered = filtered.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
-      return dateA.getTime() - dateB.getTime();
+      return dateB.getTime() - dateA.getTime();
     });
 
     setFilteredEvents(filtered);
@@ -165,7 +161,7 @@ const Events: React.FC = () => {
   const getEventIcon = (eventType: string, props: IconProps = {}) => {
     switch (eventType) {
       case "workshop":
-        return <Brackets color="#fff" size={28} {...props} />;
+        return <BrainCircuit color="#fff" size={28} {...props} />;
       case "speaker":
         return <Megaphone color="#fff" size={28} {...props} />;
       case "competition":
@@ -185,44 +181,6 @@ const Events: React.FC = () => {
       day: "numeric",
     });
   };
-
-  const openModal = (event: EventData) => {
-    setSelectedEvent(event);
-    setIsModalOpen(true);
-    document.body.classList.add("no-scroll");
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedEvent(null);
-    document.body.classList.remove("no-scroll");
-  };
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isModalOpen) {
-        closeModal();
-      }
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const modal = document.querySelector(".events-modal");
-      if (e.target === modal && isModalOpen) {
-        closeModal();
-      }
-    };
-
-    if (isModalOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.addEventListener("click", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.removeEventListener("click", handleClickOutside);
-    };
-    // eslint-disable-next-line
-  }, [isModalOpen]);
 
   return (
     <>
@@ -250,7 +208,7 @@ const Events: React.FC = () => {
                 <div className="events-item-container">
                   {Object.entries(EVENT_TYPE_META).map(
                     ([type, { icon: Icon, label }]) => (
-                      <SpotlightCard className="header-event-item" key={type}>
+                      <SpotlightCard className="header-event-item" key={type} onClick={() => setActiveFilter(type)}>
                         <div
                           className="header-event-header"
                           style={{
@@ -335,17 +293,7 @@ const Events: React.FC = () => {
                       }}
                     >
                       <div
-                        style={{ cursor: "pointer" }}
-                        onClick={() => openModal(event)}
-                        tabIndex={0}
-                        role="button"
-                        aria-label={`View details for ${event.title}`}
-                        onKeyDown={(e: React.KeyboardEvent) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            openModal(event);
-                          }
-                        }}
+                          className="event-card-content"
                       >
                         <div className="event-header">
                           <div
@@ -356,27 +304,31 @@ const Events: React.FC = () => {
                               gap: 8,
                             }}
                           >
-                            {getEventIcon(event.type, {
-                              style: { marginRight: 0 },
-                            })}
                             {event.title}
-                          </div>
-                          <div className="event-date">
-                            {formatDate(event.date)}
                           </div>
                         </div>
                         <div className="event-preview-content-row">
-                          <img
-                            src={getRawFileUrl(event.image)}
-                            alt={`${event.title} event image`}
-                            className="event-preview-image"
-                          />
+                          <div className="event-left">
+                            <div className="event-image-box">
+                              <img
+                                src={getRawFileUrl(event.image)}
+                                alt={`${event.title} event image`}
+                                className="event-preview-image"
+                              />
+                              <div className="event-image-spacer" />
+                            </div>
+                            <div className="event-bottom-left">
+                              {getEventIcon(event.type, { size: 32 })}
+                              <div className="event-date">{formatDate(event.date)}</div>
+                            </div>
+                          </div>
                           <div className="event-preview-description-container">
                             <div className="event-preview-description">
                               {event.description}
                             </div>
                           </div>
                         </div>
+                        
                       </div>
                     </SpotlightCard>
                   ))
@@ -391,55 +343,55 @@ const Events: React.FC = () => {
         )}
 
         {/* Modal */}
-        {isModalOpen && selectedEvent && (
-          <div className="events-modal">
-            <div className="modal-content">
-              <button
-                className="close-button"
-                onClick={closeModal}
-                aria-label="Close modal"
-              >
-                ×
-              </button>
-              <div className="modal-content-body">
-                <div
-                  className="modal-header"
-                  style={{
-                    marginBottom: "20px",
-                    borderBottom: "2px solid rgba(var(--text-2), 0.3)",
-                    paddingBottom: "15px",
-                  }}
-                >
-                  <h1
-                    style={{
-                      fontSize: "2.2em",
-                      fontWeight: "bold",
-                      margin: "0 0 8px 0",
-                      display: "flex",
-                      alignItems: "center",
-                      color: "rgb(var(--text-1))",
-                    }}
-                  >
-                    {getEventIcon(selectedEvent.type, {
-                      style: { marginRight: 12 },
-                    })}
-                    {selectedEvent.title}
-                  </h1>
-                  <div
-                    style={{
-                      fontSize: "1.1em",
-                      color: "rgba(var(--text-2), 0.8)",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {formatDate(selectedEvent.date)}
-                  </div>
-                </div>
-                <ReactMarkdown>{selectedEvent.content}</ReactMarkdown>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* {selectedEvent && ( // Changed isModalOpen to selectedEvent */}
+        {/*   <div className="events-modal"> */}
+        {/*     <div className="modal-content"> */}
+        {/*       <button */}
+        {/*         className="close-button" */}
+        {/*         onClick={closeModal} */}
+        {/*         aria-label="Close modal" */}
+        {/*       > */}
+        {/*         × */}
+        {/*       </button> */}
+        {/*       <div className="modal-content-body"> */}
+        {/*         <div */}
+        {/*           className="modal-header" */}
+        {/*           style={{ */}
+        {/*             marginBottom: "20px", */}
+        {/*             borderBottom: "2px solid rgba(var(--text-2), 0.3)", */}
+        {/*             paddingBottom: "15px", */}
+        {/*           }} */}
+        {/*         > */}
+        {/*           <h1 */}
+        {/*             style={{ */}
+        {/*               fontSize: "2.2em", */}
+        {/*               fontWeight: "bold", */}
+        {/*               margin: "0 0 8px 0", */}
+        {/*               display: "flex", */}
+        {/*               alignItems: "center", */}
+        {/*               color: "rgb(var(--text-1))", */}
+        {/*             }} */}
+        {/*           > */}
+        {/*             {getEventIcon(selectedEvent.type, { */}
+        {/*               style: { marginRight: 12 }, */}
+        {/*             })} */}
+        {/*             {selectedEvent.title} */}
+        {/*           </h1> */}
+        {/*           <div */}
+        {/*             style={{ */}
+        {/*               fontSize: "1.1em", */}
+        {/*               color: "rgba(var(--text-2), 0.8)", */}
+        {/*               fontWeight: "500", */}
+        {/*             }} */}
+        {/*           > */}
+        {/*             {formatDate(selectedEvent.date)} */}
+        {/*           </div> */}
+        {/*         </div> */}
+        {/*         {/* Removed ReactMarkdown */}
+        {/*       </div> */}
+        {/*     </div> */}
+        {/*   </div> */}
+        {/* )} */}
       </div>
       <Footer />
     </>

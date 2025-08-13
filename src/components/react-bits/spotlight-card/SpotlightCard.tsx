@@ -6,6 +6,7 @@ interface SpotlightCardProps {
   className?: string;
   style?: React.CSSProperties;
   spotlightColor?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const SpotlightCard: React.FC<SpotlightCardProps> = ({
@@ -13,6 +14,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
   className = "",
   style = {},
   spotlightColor = "rgba(255, 255, 255, 0.15)",
+  onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -36,6 +38,15 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
     setIsHovered(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      // @ts-expect-error forwarding keyboard activation as click
+      onClick(e as unknown as React.MouseEvent<HTMLDivElement>);
+    }
+  };
+
   return (
     <div
       ref={cardRef}
@@ -44,6 +55,10 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={handleKeyDown}
     >
       <div className="spotlight-card-content">{children}</div>
       {isHovered && (

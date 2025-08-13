@@ -69,7 +69,7 @@
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px;
   width: 320px;
-  height: 590px;
+  height: 540px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -348,7 +348,7 @@
 
   .eboard-member-card {
     width: 300px;
-    height: 570px;
+    height: 520px;
   }
 }
 
@@ -374,6 +374,6 @@
 
   .eboard-member-card {
     width: 280px;
-    height: 550px;
+    height: 500px;
   }
 }
