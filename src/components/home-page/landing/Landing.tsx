@@ -24,7 +24,7 @@ function Landing() {
                     <div className="landing-text-section">
                         <h1 className="landing-title">MSOE AI CLUB (MAIC)</h1>
                         <p className="landing-description">
-                        We are dedicated to making artificial intelligence accessible to everyone—regardless of background or experience. Our mission is to educate and inspire students by creating opportunities to explore the innovative world of AI. Through engaging Speaker Events, hands-on Innovation Labs, and collaborative Research Groups, we provide a welcoming space for learners of all levels to grow, experiment, and lead in the future of technology.
+                        Empowering students of all backgrounds to explore and innovate in artificial intelligence through hands-on workshops, industry insights, and collaborative research.
                         </p>
                         <div className="landing-button-container">
                             <a href="/about" className="landing-learn-more-link">

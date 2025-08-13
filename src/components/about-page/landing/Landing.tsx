@@ -1,20 +1,20 @@
 import "./Landing.css";
 import SpotlightCard from "../../react-bits/spotlight-card/SpotlightCard";
-import { Brain, Brackets, Lightbulb } from "lucide-react";  
+import { GraduationCap, Handshake, BrainCircuit } from "lucide-react";
 
 function Landing() {
   const spotlightCards = [
     {
       title: "Learning Community",
-      image: <Brain size={36} />,
+      image: <GraduationCap size={36} />,
     },
     {
       title: "Workshops & Events",
-      image: <Brackets size={36} />,
+      image: <BrainCircuit size={36} />,
     },
     {
       title: "Industry Partners",
-      image: <Lightbulb size={36} />,
+      image: <Handshake size={36} />,
     },
   ];
 
