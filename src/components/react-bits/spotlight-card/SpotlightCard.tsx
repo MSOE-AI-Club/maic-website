@@ -42,8 +42,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
     if (!onClick) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      // @ts-expect-error forwarding keyboard activation as click
-      onClick(e as unknown as React.MouseEvent<HTMLDivElement>);
+      e.currentTarget.click();
     }
   };
 
