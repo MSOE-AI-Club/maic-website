@@ -101,6 +101,7 @@ const ResearchProjects = () => {
   return (
     <div className="research-list">
       <h1 style={{ marginTop: 0, marginBottom: "0.25rem" }}>All Research Projects</h1>
+      <p style={{ marginTop: 0, opacity: 0.8 }}>Explore student-led research projects, teams, and publications</p>
       {loading && (
         <>
           <div className="filter-row">

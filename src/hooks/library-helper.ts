@@ -195,6 +195,79 @@ export async function getContentMetadata(
   return metadata as ContentMetadata;
 }
 
+// ---------- Global search across all content ----------
+
+export type SearchResult = {
+  id: string;
+  meta: ContentMetadata;
+  source: "Article" | "Research" | "Workshop" | "Video" | "Competition" | "Other";
+  path: string;
+};
+
+function detectSourceFromPath(path: string): SearchResult["source"] {
+  if (path.startsWith("articles/research/")) return "Research";
+  if (path.startsWith("articles/")) return "Article";
+  if (path.startsWith("workshops/")) return "Workshop";
+  if (path.startsWith("videos/")) return "Video";
+  if (path.startsWith("competitions/")) return "Competition";
+  return "Other";
+}
+
+export async function searchAllContent(query: string): Promise<SearchResult[]> {
+  const q = (query || "").trim().toLowerCase();
+  const files = await getAllFiles();
+  // Consider all markdown files across repository; skip obvious data folders that are not content
+  const mdFiles = files.filter((p) => p.endsWith(".md"));
+
+  // Early exit
+  if (q.length === 0) {
+    // Return the latest N items (by date) as a default suggestion set
+    const out: SearchResult[] = [];
+    for (const p of mdFiles) {
+      const id = p.split("/").pop()?.replace(/\.md$/i, "") || "";
+      if (!id) continue;
+      const meta = await getContentMetadata(id);
+      if (!meta) continue;
+      out.push({ id, meta, source: detectSourceFromPath(p), path: p });
+    }
+    // Sort newest first when date present
+    out.sort((a, b) => (parseDateToMillis(b.meta.date) - parseDateToMillis(a.meta.date)));
+    return out.slice(0, 50);
+  }
+
+  const results: SearchResult[] = [];
+  for (const p of mdFiles) {
+    const id = p.split("/").pop()?.replace(/\.md$/i, "") || "";
+    if (!id) continue;
+    const meta = await getContentMetadata(id);
+    if (!meta) continue;
+    const haystack = [
+      id,
+      meta.title,
+      meta.description,
+      meta.authors,
+      ...(meta.tags || []),
+      ...(meta.categories || []),
+    ]
+      .filter(Boolean)
+      .join(" \n ")
+      .toLowerCase();
+    if (haystack.includes(q)) {
+      results.push({ id, meta, source: detectSourceFromPath(p), path: p });
+    }
+  }
+
+  // Stable sort: primarily by date desc, then title
+  results.sort((a, b) => {
+    const bd = parseDateToMillis(b.meta.date);
+    const ad = parseDateToMillis(a.meta.date);
+    if (bd !== ad) return bd - ad;
+    return String(a.meta.title || a.id).localeCompare(String(b.meta.title || b.id));
+  });
+
+  return results;
+}
+
 export async function getTags(): Promise<string[]> {
   const tags = new Set<string>();
   for (const folder of contentRootFolders) {
