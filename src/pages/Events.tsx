@@ -341,57 +341,6 @@ const Events: React.FC = () => {
             </div>
           </>
         )}
-
-        {/* Modal */}
-        {/* {selectedEvent && ( // Changed isModalOpen to selectedEvent */}
-        {/*   <div className="events-modal"> */}
-        {/*     <div className="modal-content"> */}
-        {/*       <button */}
-        {/*         className="close-button" */}
-        {/*         onClick={closeModal} */}
-        {/*         aria-label="Close modal" */}
-        {/*       > */}
-        {/*         × */}
-        {/*       </button> */}
-        {/*       <div className="modal-content-body"> */}
-        {/*         <div */}
-        {/*           className="modal-header" */}
-        {/*           style={{ */}
-        {/*             marginBottom: "20px", */}
-        {/*             borderBottom: "2px solid rgba(var(--text-2), 0.3)", */}
-        {/*             paddingBottom: "15px", */}
-        {/*           }} */}
-        {/*         > */}
-        {/*           <h1 */}
-        {/*             style={{ */}
-        {/*               fontSize: "2.2em", */}
-        {/*               fontWeight: "bold", */}
-        {/*               margin: "0 0 8px 0", */}
-        {/*               display: "flex", */}
-        {/*               alignItems: "center", */}
-        {/*               color: "rgb(var(--text-1))", */}
-        {/*             }} */}
-        {/*           > */}
-        {/*             {getEventIcon(selectedEvent.type, { */}
-        {/*               style: { marginRight: 12 }, */}
-        {/*             })} */}
-        {/*             {selectedEvent.title} */}
-        {/*           </h1> */}
-        {/*           <div */}
-        {/*             style={{ */}
-        {/*               fontSize: "1.1em", */}
-        {/*               color: "rgba(var(--text-2), 0.8)", */}
-        {/*               fontWeight: "500", */}
-        {/*             }} */}
-        {/*           > */}
-        {/*             {formatDate(selectedEvent.date)} */}
-        {/*           </div> */}
-        {/*         </div> */}
-        {/*         {/* Removed ReactMarkdown */}
-        {/*       </div> */}
-        {/*     </div> */}
-        {/*   </div> */}
-        {/* )} */}
       </div>
       <Footer />
     </>
