@@ -88,6 +88,11 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     className: "smalltreenode",
   });
 
+  // Check if device is mobile
+  const isMobile = () => {
+    return window.innerWidth <= 768; // Common mobile breakpoint
+  };
+
   const card = [];
   if (state.raised) {
     // Big Node Content
@@ -193,10 +198,16 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
           background: `linear-gradient(to top, ${gradientBottom}, ${gradientTop})`,
           color: textColor,
         }}
-        onMouseOver={() => setState({ raised: true, className: "bigtreenode" })}
-        onMouseOut={() =>
-          setState({ raised: false, className: "smalltreenode" })
-        }
+        onMouseOver={() => {
+          if (!isMobile()) {
+            setState({ raised: true, className: "bigtreenode" });
+          }
+        }}
+        onMouseOut={() => {
+          if (!isMobile()) {
+            setState({ raised: false, className: "smalltreenode" });
+          }
+        }}
         raised={state.raised}
       >
         {card}
