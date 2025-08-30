@@ -11,7 +11,7 @@ const activities = [
   },
   {
     title: "Participate in Research Groups",
-    description: "Get involved in our MAIC research groups to provide Noval AI Research!",
+    description: "Get involved in our MAIC research groups to provide Novel AI Research!",
   },
   {
     title: "Participate in Innovation Labs",
