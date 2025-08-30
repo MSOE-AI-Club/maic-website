@@ -103,7 +103,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     // Big Node Content
     card.push(
       <CardActionArea 
-        href={!isMobile() ? data.link : undefined}
+        {...(!isMobile() ? { href: data.link } : {})}
         onClick={handleClick}
         sx={{ 
           color: `${textColor} !important`,
@@ -168,7 +168,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     // Small Node Content
     card.push(
       <CardActionArea 
-        href={!isMobile() ? data.link : undefined}
+        {...(!isMobile() ? { href: data.link } : {})}
         onClick={handleClick}
         sx={{ 
           color: `${textColor} !important`,
