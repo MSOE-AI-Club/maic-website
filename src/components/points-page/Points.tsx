@@ -11,16 +11,20 @@ const activities = [
   },
   {
     title: "Participate in Research Groups",
-    description: "Get involved in MAIC research initiatives and projects",
+    description: "Get involved in our MAIC research groups to provide Noval AI Research!",
   },
   {
     title: "Participate in Innovation Labs",
-    description: "Work on cutting-edge AI/ML projects in our innovation labs",
+    description: "Work on multi-month hackathons with a team to compete for prizes and recommendations!",
   },
   {
     title: "Compete in Hacksgiving",
-    description: "Join our annual hackathon and showcase your skills",
+    description: "Join our annual Thansgiving themed hackathon with non-profit sponsors!",
   },
+  {
+    title: "Compete in the Rosie Super Computer Challenge",
+    description: "NVIDIA's annual super computer challenge with the largest prizes on campus!",
+  }
   {
     title: "Other Opportunities",
     description: "Various other ways to get involved with MAIC",
