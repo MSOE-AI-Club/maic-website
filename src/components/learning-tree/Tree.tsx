@@ -236,7 +236,6 @@ const Tree = (props: TreeProps) => {
     const loadTreeData = async () => {
       setIsLoading(true);
       try {
-        console.log("Fetching tree.json from GitHub...");
 
         // Fetch the tree.json file using the GitHub hook
         const treeJsonContent = await getFileContent(
@@ -252,9 +251,7 @@ const Tree = (props: TreeProps) => {
 
         // Parse the JSON content
         const treeData: TreeJsonData = JSON.parse(treeJsonContent);
-        console.log(
-          `Loaded tree data with ${treeData.metadata.total_nodes} nodes across ${treeData.metadata.total_categories} categories`
-        );
+
 
         // Transform and set the nodes
         const transformedNodes = transformTreeNodes(treeData);
@@ -287,7 +284,6 @@ const Tree = (props: TreeProps) => {
   // Handle specific node focus when nodeID changes
   useEffect(() => {
     if (props.nodeID !== null && reactFlowInstance.current && nodes.length > 0) {
-      console.log("Fitting view to node:", props.nodeID);
       reactFlowInstance.current.fitView({
         nodes: [{ id: props.nodeID }],
         minZoom: 0.001,

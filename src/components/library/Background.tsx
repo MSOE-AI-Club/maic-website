@@ -33,7 +33,6 @@ const CanvasBackground = () => {
     };
 
     x = x > 140 ? 140 : x;
-    console.log("num bg points:", x);
 
     for (let i = 0; i < x; i++) {
       stars.push({

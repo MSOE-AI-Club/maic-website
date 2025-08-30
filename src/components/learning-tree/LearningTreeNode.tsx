@@ -88,14 +88,28 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     className: "smalltreenode",
   });
 
+  const isMobile = () => window.innerWidth <= 768;
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (isMobile()) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open(data.link, '_blank');
+    }
+  };
+
   const card = [];
   if (state.raised) {
     // Big Node Content
     card.push(
-      <CardActionArea href={data.link} sx={{ 
-        color: `${textColor} !important`,
-        '& *': { color: `${textColor} !important` }
-      }}>
+      <CardActionArea 
+        {...(!isMobile() ? { href: data.link } : {})}
+        onClick={handleClick}
+        sx={{ 
+          color: `${textColor} !important`,
+          '& *': { color: `${textColor} !important` }
+        }}
+      >
         <Box sx={{ display: 'flex', gap: 0.5, height: '100%' }}>
           {/* Left Side: Image and Title */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -153,10 +167,14 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
   } else {
     // Small Node Content
     card.push(
-      <CardActionArea href={data.link} sx={{ 
-        color: `${textColor} !important`,
-        '& *': { color: `${textColor} !important` }
-      }}>
+      <CardActionArea 
+        {...(!isMobile() ? { href: data.link } : {})}
+        onClick={handleClick}
+        sx={{ 
+          color: `${textColor} !important`,
+          '& *': { color: `${textColor} !important` }
+        }}
+      >
         <CardMedia
           component="img"
           height="150"
@@ -181,7 +199,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="target"
         position={Position.Top}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
       <Card
@@ -193,10 +210,18 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
           background: `linear-gradient(to top, ${gradientBottom}, ${gradientTop})`,
           color: textColor,
         }}
-        onMouseOver={() => setState({ raised: true, className: "bigtreenode" })}
-        onMouseOut={() =>
-          setState({ raised: false, className: "smalltreenode" })
-        }
+        onMouseOver={() => {
+          if (!isMobile()) {
+            setState({ raised: true, className: "bigtreenode" });
+          }
+        }}
+        onMouseOut={() => {
+          if (!isMobile()) {
+            setState({ raised: false, className: "smalltreenode" });
+          }
+        }}
+        onTouchStart={(e) => e.preventDefault()}
+        onTouchEnd={(e) => e.preventDefault()}
         raised={state.raised}
       >
         {card}
@@ -205,7 +230,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="source"
         position={Position.Bottom}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
     </div>
