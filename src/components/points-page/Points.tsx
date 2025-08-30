@@ -4,51 +4,26 @@ import { FaTshirt } from "react-icons/fa";
 import { FaTicketAlt } from "react-icons/fa";
 
 
-const earnPoints = [
+const activities = [
   {
-    title: "Attend MAIC Meetings",
-    description: "Join our bi-weekly workshops, speaker events, etc.",
-    points: "+1",
+    title: "Attend Our Meetings",
+    description: "Join our bi-weekly workshops, speaker events, and club activities",
   },
   {
-    title: "Participate in Workshops",
-    description: "Attend hands-on AI/ML workshops and coding sessions",
-    points: "+2",
+    title: "Participate in Research Groups",
+    description: "Get involved in MAIC research initiatives and projects",
   },
   {
-    title: "Join Research Groups",
-    description: "Actively participate in MAIC research initiatives",
-    points: "+3",
+    title: "Participate in Innovation Labs",
+    description: "Work on cutting-edge AI/ML projects in our innovation labs",
   },
   {
-    title: "Present at Events",
-    description: "Share your projects or research with the MAIC community",
-    points: "+5",
+    title: "Compete in Hacksgiving",
+    description: "Join our annual hackathon and showcase your skills",
   },
   {
-    title: "Complete NVIDIA DLI Courses",
-    description: "Finish certified Deep Learning Institute courses",
-    points: "+4",
-  },
-  {
-    title: "Participate in Hackathons",
-    description: "Join MAIC-sponsored hackathons like Hacksgiving",
-    points: "+6",
-  },
-  {
-    title: "Volunteer at Events",
-    description: "Help organize and run MAIC events and activities",
-    points: "+3",
-  },
-  {
-    title: "Submit to MICS Conference",
-    description: "Present your research at the MICS conference",
-    points: "+8",
-  },
-  {
-    title: "ROSIE Challenge Participation",
-    description: "Compete in the annual ROSIE Supercomputer Challenge",
-    points: "+7",
+    title: "Other Opportunities",
+    description: "Various other ways to get involved with MAIC",
   },
 ];
 
@@ -65,13 +40,8 @@ function Points() {
       </div>
       <div className="line"></div>
       <div className="points-container">
-        {earnPoints.map((item, idx) => (
+        {activities.map((item, idx) => (
           <div className="points-item" key={idx}>
-            <div className="points-item-left">
-              <h2 className="points-item-value">
-                {item.points}
-              </h2>
-            </div>
             <div className="points-item-right">
               <h2 className="points-item-title">
                 {item.title}
