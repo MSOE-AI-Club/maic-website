@@ -53,18 +53,13 @@
   position: absolute;
 }
 
-/* Prevent hover effects on mobile devices */
 @media (max-width: 768px) {
-  .learning-tree-card {
-    transition: none !important;
-  }
-  
+  .learning-tree-card,
   .smalltreenode,
   .bigtreenode {
     transition: none !important;
   }
   
-  /* Ensure nodes don't change size on mobile */
   .smalltreenode {
     width: 10vw !important;
     min-width: 150px !important;

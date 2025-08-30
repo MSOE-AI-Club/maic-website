@@ -88,12 +88,8 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     className: "smalltreenode",
   });
 
-  // Check if device is mobile
-  const isMobile = () => {
-    return window.innerWidth <= 768; // Common mobile breakpoint
-  };
+  const isMobile = () => window.innerWidth <= 768;
 
-  // Handle click for mobile devices
   const handleClick = (e: React.MouseEvent) => {
     if (isMobile()) {
       e.preventDefault();
@@ -225,14 +221,8 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
             setState({ raised: false, className: "smalltreenode" });
           }
         }}
-        onTouchStart={(e) => {
-          // Prevent any touch events from triggering hover behavior on mobile
-          e.preventDefault();
-        }}
-        onTouchEnd={(e) => {
-          // Prevent any touch events from triggering hover behavior on mobile
-          e.preventDefault();
-        }}
+        onTouchStart={(e) => e.preventDefault()}
+        onTouchEnd={(e) => e.preventDefault()}
         raised={state.raised}
       >
         {card}
