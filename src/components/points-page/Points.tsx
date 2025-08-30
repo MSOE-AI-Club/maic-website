@@ -28,7 +28,7 @@ const activities = [
   {
     title: "Other Opportunities",
     description: "Various other ways to get involved with MAIC",
-  },
+  }
 ];
 
 function Points() {
