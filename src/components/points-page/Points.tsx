@@ -24,7 +24,7 @@ const activities = [
   {
     title: "Compete in the Rosie Super Computer Challenge",
     description: "NVIDIA's annual super computer challenge with the largest prizes on campus!",
-  }
+  },
   {
     title: "Other Opportunities",
     description: "Various other ways to get involved with MAIC",
