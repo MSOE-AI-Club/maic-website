@@ -52,3 +52,16 @@
 .category-chip {
   position: absolute;
 }
+
+@media (max-width: 768px) {
+  .learning-tree-card,
+  .smalltreenode,
+  .bigtreenode {
+    transition: none !important;
+  }
+  
+  .smalltreenode {
+    width: 10vw !important;
+    min-width: 150px !important;
+  }
+}

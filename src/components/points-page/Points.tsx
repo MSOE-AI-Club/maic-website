@@ -4,51 +4,30 @@ import { FaTshirt } from "react-icons/fa";
 import { FaTicketAlt } from "react-icons/fa";
 
 
-const earnPoints = [
+const activities = [
   {
-    title: "Attend MAIC Meetings",
-    description: "Join our bi-weekly workshops, speaker events, etc.",
-    points: "+1",
+    title: "Attend Our Meetings",
+    description: "Join our bi-weekly workshops, speaker events, and club activities",
   },
   {
-    title: "Participate in Workshops",
-    description: "Attend hands-on AI/ML workshops and coding sessions",
-    points: "+2",
+    title: "Participate in Research Groups",
+    description: "Get involved in our MAIC research groups to provide Noval AI Research!",
   },
   {
-    title: "Join Research Groups",
-    description: "Actively participate in MAIC research initiatives",
-    points: "+3",
+    title: "Participate in Innovation Labs",
+    description: "Work on multi-month hackathons with a team to compete for prizes and recommendations!",
   },
   {
-    title: "Present at Events",
-    description: "Share your projects or research with the MAIC community",
-    points: "+5",
+    title: "Compete in Hacksgiving",
+    description: "Join our annual Thansgiving themed hackathon with non-profit sponsors!",
   },
   {
-    title: "Complete NVIDIA DLI Courses",
-    description: "Finish certified Deep Learning Institute courses",
-    points: "+4",
-  },
+    title: "Compete in the Rosie Super Computer Challenge",
+    description: "NVIDIA's annual super computer challenge with the largest prizes on campus!",
+  }
   {
-    title: "Participate in Hackathons",
-    description: "Join MAIC-sponsored hackathons like Hacksgiving",
-    points: "+6",
-  },
-  {
-    title: "Volunteer at Events",
-    description: "Help organize and run MAIC events and activities",
-    points: "+3",
-  },
-  {
-    title: "Submit to MICS Conference",
-    description: "Present your research at the MICS conference",
-    points: "+8",
-  },
-  {
-    title: "ROSIE Challenge Participation",
-    description: "Compete in the annual ROSIE Supercomputer Challenge",
-    points: "+7",
+    title: "Other Opportunities",
+    description: "Various other ways to get involved with MAIC",
   },
 ];
 
@@ -65,13 +44,8 @@ function Points() {
       </div>
       <div className="line"></div>
       <div className="points-container">
-        {earnPoints.map((item, idx) => (
+        {activities.map((item, idx) => (
           <div className="points-item" key={idx}>
-            <div className="points-item-left">
-              <h2 className="points-item-value">
-                {item.points}
-              </h2>
-            </div>
             <div className="points-item-right">
               <h2 className="points-item-title">
                 {item.title}
