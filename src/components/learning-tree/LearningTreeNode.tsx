@@ -93,14 +93,27 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     return window.innerWidth <= 768; // Common mobile breakpoint
   };
 
+  // Handle click for mobile devices
+  const handleClick = (e: React.MouseEvent) => {
+    if (isMobile()) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open(data.link, '_blank');
+    }
+  };
+
   const card = [];
   if (state.raised) {
     // Big Node Content
     card.push(
-      <CardActionArea href={data.link} sx={{ 
-        color: `${textColor} !important`,
-        '& *': { color: `${textColor} !important` }
-      }}>
+      <CardActionArea 
+        href={!isMobile() ? data.link : undefined}
+        onClick={handleClick}
+        sx={{ 
+          color: `${textColor} !important`,
+          '& *': { color: `${textColor} !important` }
+        }}
+      >
         <Box sx={{ display: 'flex', gap: 0.5, height: '100%' }}>
           {/* Left Side: Image and Title */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -158,10 +171,14 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
   } else {
     // Small Node Content
     card.push(
-      <CardActionArea href={data.link} sx={{ 
-        color: `${textColor} !important`,
-        '& *': { color: `${textColor} !important` }
-      }}>
+      <CardActionArea 
+        href={!isMobile() ? data.link : undefined}
+        onClick={handleClick}
+        sx={{ 
+          color: `${textColor} !important`,
+          '& *': { color: `${textColor} !important` }
+        }}
+      >
         <CardMedia
           component="img"
           height="150"
@@ -207,6 +224,14 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
           if (!isMobile()) {
             setState({ raised: false, className: "smalltreenode" });
           }
+        }}
+        onTouchStart={(e) => {
+          // Prevent any touch events from triggering hover behavior on mobile
+          e.preventDefault();
+        }}
+        onTouchEnd={(e) => {
+          // Prevent any touch events from triggering hover behavior on mobile
+          e.preventDefault();
         }}
         raised={state.raised}
       >
