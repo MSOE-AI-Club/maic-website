@@ -103,7 +103,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     // Big Node Content
     card.push(
       <CardActionArea 
-        href={!isMobile() ? data.link : undefined}
+        {...(!isMobile() ? { href: data.link } : {})}
         onClick={handleClick}
         sx={{ 
           color: `${textColor} !important`,
@@ -168,7 +168,7 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
     // Small Node Content
     card.push(
       <CardActionArea 
-        href={!isMobile() ? data.link : undefined}
+        {...(!isMobile() ? { href: data.link } : {})}
         onClick={handleClick}
         sx={{ 
           color: `${textColor} !important`,
@@ -199,7 +199,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="target"
         position={Position.Top}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
       <Card
@@ -231,7 +230,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="source"
         position={Position.Bottom}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
     </div>

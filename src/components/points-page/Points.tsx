@@ -11,7 +11,7 @@ const activities = [
   },
   {
     title: "Participate in Research Groups",
-    description: "Get involved in our MAIC research groups to provide Noval AI Research!",
+    description: "Get involved in our MAIC research groups to provide Novel AI Research!",
   },
   {
     title: "Participate in Innovation Labs",
@@ -24,7 +24,7 @@ const activities = [
   {
     title: "Compete in the Rosie Super Computer Challenge",
     description: "NVIDIA's annual super computer challenge with the largest prizes on campus!",
-  }
+  },
   {
     title: "Other Opportunities",
     description: "Various other ways to get involved with MAIC",
