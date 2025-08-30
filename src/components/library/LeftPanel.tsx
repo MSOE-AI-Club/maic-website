@@ -58,7 +58,6 @@ const LeftPanel = (props: LeftPanelProps) => {
     // Build article type list from content manifest instead of backend API
     (async () => {
       const articleRoot = await getDirectoryContents("articles");
-      console.log(articleRoot);
       const articleDirs = articleRoot?.filter(item => item.type === 'dir') || [];
       const sorted = [...articleDirs].sort((a: any, b: any) =>
         toTitleCase(a.name).localeCompare(toTitleCase(b.name), undefined, { sensitivity: 'base' })

@@ -88,8 +88,6 @@ const create_MUI_X_TreeView = async () => {
     });
   }
 
-  console.log("Tree View:", treeView);
-
   return treeView;
 }
 
@@ -140,7 +138,6 @@ const Legend = (props: LeftPanelProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Legend component mounted");
 
     const fetchDirectory = async () => {
       setDirectory(await create_MUI_X_TreeView());
@@ -149,9 +146,7 @@ const Legend = (props: LeftPanelProps) => {
     
     // Get sections for learning tree
     const fetchSections = async () => {
-      console.log("Fetching sections...");
       const treeSections = await getSections();
-      console.log("Sections fetched:", treeSections);
       setSections(treeSections);
     };
     fetchSections();
@@ -179,8 +174,6 @@ const Legend = (props: LeftPanelProps) => {
       setTimeout(applyCategoryColors, 100);
     }
   }, [directory]);
-
-  console.log("Legend rendering with sections:", sections.length, "categories:", categories.length);
 
   const findItemLink = (items: ExtendedTreeViewItem[], targetItemId: string): string | null => {
     for (const treeItem of items) {

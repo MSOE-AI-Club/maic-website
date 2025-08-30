@@ -199,7 +199,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="target"
         position={Position.Top}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
       <Card
@@ -231,7 +230,6 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         type="source"
         position={Position.Bottom}
         style={{ background: baseColor, visibility: "hidden" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
     </div>

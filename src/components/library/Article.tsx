@@ -246,7 +246,6 @@ const Article = (props: ArticleProps) => {
                     typeof props.children[0] === "string" &&
                     props.children[0] === "Why"
                     ) {
-                    console.log("Applying yellow-why class to Why heading");
                     return (
                         <h2 {...props} className="yellow-why">
                         {props.children}
