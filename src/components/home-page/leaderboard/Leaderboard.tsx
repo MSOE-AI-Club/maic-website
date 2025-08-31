@@ -172,7 +172,7 @@ const Leaderboard: React.FC = () => {
   );
 
   return (
-    <div style={{ marginTop: "2rem", color: "white", width: "100%", overflowX: "hidden" }}>
+    <div className="leaderboard-container" style={{ marginTop: "2rem", color: "white", width: "100%", overflowX: "hidden" }}>
       <div style={{ marginBottom: "8px" }}>
         <input
           type="text"
