@@ -286,24 +286,12 @@ const Events: React.FC = () => {
                     <SpotlightCard
                       key={index}
                       className="event-item"
-                      style={{
-                        textAlign: "left",
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                      }}
                     >
                       <div
                           className="event-card-content"
                       >
                         <div className="event-header">
-                          <div
-                            className="event-title"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 8,
-                            }}
-                          >
+                          <div className="event-title">
                             {event.title}
                           </div>
                         </div>
