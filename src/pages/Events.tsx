@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
+
 import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";
 import Footer from "../components/footer/Footer";
 import "./Events.css";
@@ -79,18 +80,19 @@ const FILTERS = [
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState<EventData[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<EventData[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<EventData[]>([]);
+  const [pastEvents, setPastEvents] = useState<EventData[]>([]);
+  const [filteredPastEvents, setFilteredPastEvents] = useState<EventData[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [loading, setLoading] = useState<boolean>(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Set page title on mount
   useEffect(() => {
     const previousTitle = document.title;
     document.title = "MAIC - Events";
@@ -109,12 +111,10 @@ const Events: React.FC = () => {
         } else {
           console.warn("Failed to fetch events data, using hardcoded backup");
           setEvents([]);
-          setFilteredEvents([]);
         }
       } catch (e) {
         console.warn("Error parsing events data, using hardcoded backup:", e);
         setEvents([]);
-        setFilteredEvents([]);
       } finally {
         setLoading(false);
       }
@@ -124,12 +124,63 @@ const Events: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    filterAndSortEvents(events, activeFilter, searchTerm);
-    // eslint-disable-next-line
-  }, [events, activeFilter, searchTerm]);
+    separateEventsByDate();
+  }, [events]);
 
-  const filterAndSortEvents = (
-    eventsList: EventData[] = events,
+  const parseLocalDate = (dateString: string): Date => {
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+    
+    const date = new Date(dateString);
+    
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/) && !dateString.includes('T')) {
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+    }
+    
+    return date;
+  };
+
+  useEffect(() => {
+    filterAndSortPastEvents(pastEvents, activeFilter, searchTerm);
+  }, [pastEvents, activeFilter, searchTerm]);
+
+  const separateEventsByDate = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const upcoming: EventData[] = [];
+    const past: EventData[] = [];
+
+    events.forEach((event) => {
+      const eventDate = parseLocalDate(event.date);
+      
+      if (eventDate >= today) {
+        upcoming.push(event);
+      } else {
+        past.push(event);
+      }
+    });
+
+    upcoming.sort((a, b) => {
+      const dateA = parseLocalDate(a.date);
+      const dateB = parseLocalDate(b.date);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    past.sort((a, b) => {
+      const dateA = parseLocalDate(a.date);
+      const dateB = parseLocalDate(b.date);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    setUpcomingEvents(upcoming);
+    setPastEvents(past);
+  };
+
+  const filterAndSortPastEvents = (
+    eventsList: EventData[] = pastEvents,
     filter: string = activeFilter,
     search: string = searchTerm
   ) => {
@@ -148,16 +199,9 @@ const Events: React.FC = () => {
       );
     }
 
-    filtered = filtered.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return dateB.getTime() - dateA.getTime();
-    });
-
-    setFilteredEvents(filtered);
+    setFilteredPastEvents(filtered);
   };
 
-  // Returns a lucide icon for the event type, for use in event cards and modal
   const getEventIcon = (eventType: string, props: IconProps = {}) => {
     switch (eventType) {
       case "workshop":
@@ -174,13 +218,15 @@ const Events: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = parseLocalDate(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
   };
+
+
 
   return (
     <>
@@ -233,6 +279,82 @@ const Events: React.FC = () => {
               </div>
             </div>
 
+            <div style={{ 
+              paddingTop: "0", 
+              marginTop: "-2rem", 
+              marginBottom: "0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}>
+              <div style={{
+                width: "80vw",
+                height: "1px",
+                background: "linear-gradient(90deg, rgba(132, 67, 255, 0.001) 0%, rgba(132, 67, 255, 0.25) 25%, rgba(132, 67, 255, 1) 50%, rgba(132, 67, 255, 0.25) 75%, rgba(132, 67, 255, 0.001) 100%)",
+                marginLeft: "auto",
+                marginRight: "auto"
+              }} />
+            </div>
+
+            {upcomingEvents.length > 0 && (
+              <>
+                <div className="events-section-header">
+                  <h2 className="events-section-title">Upcoming Events</h2>
+                </div>
+                <div className="upcoming-events-section" style={{ marginBottom: "2rem" }}>
+                  <div className="upcoming-events-container">
+                    <div
+                      className={`upcoming-events-grid ${
+                        upcomingEvents.length === 1
+                          ? "upcoming-events-count-1"
+                          : upcomingEvents.length === 2
+                          ? "upcoming-events-count-2"
+                          : "upcoming-events-count-3"
+                      }`}
+                    >
+                      {upcomingEvents.map((event, index) => (
+                        <SpotlightCard
+                          key={index}
+                          className="event-item featured-event"
+                        >
+                                                          <div className="event-header">
+                                <div className="event-title">
+                                  {event.title}
+                                </div>
+                                <div className="event-date" style={{
+                                  fontSize: "1.1rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "0.5rem",
+                                  marginTop: "0.5rem"
+                                }}>
+                                  {getEventIcon(event.type, { size: 32 })}
+                                  {formatDate(event.date)}
+                                </div>
+                              </div>
+                            <div className="event-preview-content-row">
+                              <img
+                                src={getRawFileUrl(event.image)}
+                                alt={`${event.title} event image`}
+                                className="event-preview-image"
+                              />
+                              <div className="event-preview-description-container">
+                                <div className="event-preview-description">
+                                  {event.description}
+                                </div>
+                              </div>
+                            </div>
+                        </SpotlightCard>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+
+
             {/* Filter Bar */}
             <div className="events-controls-section">
               <div className="events-filter-bar">
@@ -278,46 +400,42 @@ const Events: React.FC = () => {
               </div>
             </div>
 
-            {/* Events Grid */}
             <div className="events-grid-section">
               <div className="events-grid">
-                {filteredEvents.length > 0 ? (
-                  filteredEvents.map((event, index) => (
+                {filteredPastEvents.length > 0 ? (
+                  filteredPastEvents.map((event, index) => (
                     <SpotlightCard
                       key={index}
                       className="event-item"
                     >
-                      <div
-                          className="event-card-content"
-                      >
-                        <div className="event-header">
-                          <div className="event-title">
-                            {event.title}
+                        <div className="event-card-content">
+                          <div className="event-header">
+                            <div className="event-title">
+                              {event.title}
+                            </div>
+                          </div>
+                          <div className="event-preview-content-row">
+                            <div className="event-left">
+                              <div className="event-image-box">
+                                <img
+                                  src={getRawFileUrl(event.image)}
+                                  alt={`${event.title} event image`}
+                                  className="event-preview-image"
+                                />
+                                <div className="event-image-spacer" />
+                              </div>
+                              <div className="event-bottom-left">
+                                {getEventIcon(event.type, { size: 32 })}
+                                <div className="event-date">{formatDate(event.date)}</div>
+                              </div>
+                            </div>
+                            <div className="event-preview-description-container">
+                              <div className="event-preview-description">
+                                {event.description}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div className="event-preview-content-row">
-                          <div className="event-left">
-                            <div className="event-image-box">
-                              <img
-                                src={getRawFileUrl(event.image)}
-                                alt={`${event.title} event image`}
-                                className="event-preview-image"
-                              />
-                              <div className="event-image-spacer" />
-                            </div>
-                            <div className="event-bottom-left">
-                              {getEventIcon(event.type, { size: 32 })}
-                              <div className="event-date">{formatDate(event.date)}</div>
-                            </div>
-                          </div>
-                          <div className="event-preview-description-container">
-                            <div className="event-preview-description">
-                              {event.description}
-                            </div>
-                          </div>
-                        </div>
-                        
-                      </div>
                     </SpotlightCard>
                   ))
                 ) : (
