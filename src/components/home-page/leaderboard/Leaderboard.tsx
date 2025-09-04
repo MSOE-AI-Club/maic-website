@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getFileContent, getRawFileUrl } from "../../../hooks/github-hook";
+import "./Leaderboard.css";
 
 interface User {
   User: string;
@@ -157,7 +158,6 @@ const Leaderboard: React.FC = () => {
             width="20px"
             alt={achievement.title}
             loading="lazy"
-            style={{ marginRight: "4px" }}
           />
         );
       }
@@ -172,98 +172,49 @@ const Leaderboard: React.FC = () => {
   const anyMatches = leaderboardData.some(matchesSearch);
 
   return (
-    <div style={{ marginTop: "2rem", color: "white", width: "100%", overflowX: "hidden" }}>
-      <div style={{ marginBottom: "8px" }}>
+    <div className="leaderboard-container">
+      <div className="leaderboard-search">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by name..."
           aria-label="Search leaderboard by name"
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: "6px",
-            border: "1px solid rgba(255,255,255,0.4)",
-            background: "#1e1e1e",
-            color: "#fff",
-            outline: "none",
-            boxSizing: "border-box",
-            maxWidth: "100%",
-            WebkitAppearance: "none",
-          }}
         />
       </div>
-      <div
-        style={{
-          maxHeight: "550px",
-          overflowY: "auto",
-          overflowX: "auto",
-          marginTop: "10px",
-          border: "1px solid white",
-          width: "100%",
-          boxSizing: "border-box",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        <table
-          className="leaderboard-table"
-          style={{ width: "100%", minWidth: 0, borderCollapse: "collapse", tableLayout: "fixed" }}
-        >
+      <div className="leaderboard-scroll-container">
+        <table className="leaderboard-table">
           <thead>
-            <tr
-              style={{
-                background: "#333",
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-              }}
-            >
-              <th style={{ padding: "8px", width: "10%" }}>Place</th>
-              <th style={{ padding: "8px", wordBreak: "break-word" }}>User</th>
-              <th style={{ padding: "8px", width: "30%" }}>All-Time</th>
-              <th style={{ padding: "8px", width: "30%" }}>Current</th>
+            <tr>
+              <th>Place</th>
+              <th>User</th>
+              <th>All-Time</th>
+              <th>Current</th>
             </tr>
           </thead>
           <tbody>
             {!anyMatches ? (
               <tr>
-                <td colSpan={4} style={{ padding: "12px", textAlign: "center" }}>
+                <td colSpan={4} className="no-results">
                   No matching users
                 </td>
               </tr>
             ) : (
               leaderboardData.map((user, index) => {
-              const rowStyle: React.CSSProperties = {
-                background: index % 2 === 0 ? "#282828" : "#303030",
-                fontWeight: "bold",
-                fontSize: "1em",
-                  wordBreak: "break-word",
-              };
-              if (index === 0) {
-                rowStyle.background = "gold";
-                rowStyle.color = "rgb(103, 88, 4)";
-              }
-              if (index === 1) {
-                rowStyle.background = "silver";
-                rowStyle.color = "rgb(76, 75, 75)";
-              }
-              if (index === 2) {
-                rowStyle.background = "#cd7f32";
-                rowStyle.color = "#5c340c";
-              }
+                let rowClass = "leaderboard-row";
+                if (index === 0) rowClass += " first-place";
+                else if (index === 1) rowClass += " second-place";
+                else if (index === 2) rowClass += " third-place";
+
               return (
-                <tr
-                  key={user.User + index}
-                  style={{ ...rowStyle, display: matchesSearch(user) ? undefined : "none" }}
-                >
-                  <td style={{ padding: "8px", textAlign: "left" }}>{index + 1}</td>
-                  <td style={{ padding: "8px", wordBreak: "break-word" }}>
+                <tr key={user.User + index} className={rowClass}>
+                  <td className="points-cell">{index + 1}</td>
+                  <td>
                     {getTrophy(index)}
                     {user.User} {renderAwards(user.Awards)}
                   </td>
-                  <td style={{ padding: "8px", textAlign: "left" }}>{user["All-Time Points"]}</td>
-                  <td style={{ padding: "8px", textAlign: "left" }}>{user["Current Points"]}</td>
+                  <td className="points-cell">{user["All-Time Points"]}</td>
+                  <td className="points-cell">{user["Current Points"]}</td>
                 </tr>
               );
               })

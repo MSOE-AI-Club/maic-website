@@ -1,6 +1,5 @@
 /* ===== EVENTS PAGE STYLING ===== */
 
-/* Page Container */
 .events-page-container {
   position: relative;
   min-height: 100vh;
@@ -373,7 +372,6 @@
   align-items: stretch;
 }
 
-/* Event Items */
 .event-item {
   overflow: hidden;
   display: flex;
@@ -802,33 +800,55 @@ body.no-scroll {
 
   .events-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
+
 
   .event-preview-content-row {
     flex-direction: column;
-    gap: 1.5rem;
+    align-items: center;
+    gap: .75rem;
   }
+
   .event-left {
     align-items: center;
-    min-width: 200px;
-    max-width: 200px;
+    min-width: auto;
+    max-width: none;
+    width: 100%;
   }
+
   .event-image-box {
-    height: 200px;
-    margin-bottom: 1rem;
-  }
-  .event-bottom-left {
-    align-self: center;
-    margin-top: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    margin-bottom: 0;
   }
 
   .event-preview-image {
-    max-width: 200px;
-    max-height: 200px;
-    width: auto;
-    height: auto;
-    align-self: center;
+    max-width: 180px;
+    max-height: 180px;
+    margin: 0 auto;
+  }
+
+  .event-bottom-left {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .event-preview-description-container {
+    text-align: center;
+  }
+
+  .event-preview-description {
+    text-align: center;
+  }
+
+  .event-header {
+    text-align: center;
+  }
+
+  .event-title {
+    justify-content: center;
   }
 
   .modal-content {
@@ -856,7 +876,6 @@ body.no-scroll {
     font-size: 1.8rem;
   }
 
-  /* Hide event type cards on mobile */
   .events-item-container {
     display: none;
   }
@@ -895,7 +914,6 @@ body.no-scroll {
     font-size: 0.9rem;
   }
 
-  /* Show mobile filter toggle on mobile */
   .mobile-filter-toggle {
     display: inline-flex;
     width: auto;
@@ -914,7 +932,6 @@ body.no-scroll {
     margin-top: 1rem;
   }
 
-  /* Show filter buttons when mobile filter is open */
   .filter-buttons-container.mobile-open {
     display: flex;
   }

@@ -1,0 +1,104 @@
+.leaderboard-container {
+  margin-top: 2rem;
+  color: white;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.leaderboard-search {
+  margin-bottom: 8px;
+}
+
+.leaderboard-search input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: #1e1e1e;
+  color: #fff;
+  outline: none;
+  box-sizing: border-box;
+  max-width: 100%;
+  -webkit-appearance: none;
+}
+
+.leaderboard-scroll-container {
+  max-height: 550px;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin-top: 10px;
+  border: 1px solid white;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.leaderboard-table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.leaderboard-table thead tr {
+  background: #333;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.leaderboard-table th {
+  padding: 8px;
+  word-break: break-word;
+}
+
+.leaderboard-table th:nth-child(2),
+.leaderboard-table th:nth-child(3) {
+  width: 30%;
+}
+
+.leaderboard-table td {
+  padding: 8px;
+  word-break: break-word;
+}
+
+.leaderboard-table .points-cell {
+  text-align: left;
+}
+
+.leaderboard-row {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.leaderboard-row:nth-child(even) {
+  background: #282828;
+}
+
+.leaderboard-row:nth-child(odd) {
+  background: #303030;
+}
+
+.leaderboard-row.first-place {
+  background: gold !important;
+  color: rgb(103, 88, 4);
+}
+
+.leaderboard-row.second-place {
+  background: silver !important;
+  color: rgb(76, 75, 75);
+}
+
+.leaderboard-row.third-place {
+  background: #cd7f32 !important;
+  color: #5c340c;
+}
+
+.custom-emoji {
+  margin-right: 4px;
+}
+
+.no-results {
+  padding: 12px;
+  text-align: center;
+}
