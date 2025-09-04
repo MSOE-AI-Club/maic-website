@@ -5,6 +5,8 @@
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 
 .info-section::before {
@@ -30,12 +32,13 @@
   position: relative;
   z-index: 2;
   box-sizing: border-box;
+  justify-content: center;
 }
 
 /* Meet the Eboard Section */
 .eboard-section {
   flex: 1;
-  max-width: 600px;
+  max-width: 700px;
   padding: 0;
   position: relative;
   box-sizing: border-box;
@@ -149,7 +152,7 @@
 /* Leaderboard Section */
 .leaderboard-section {
   flex: 1;
-  max-width: 600px;
+  max-width: 700px;
   padding: 0;
   position: relative;
   box-sizing: border-box;

@@ -167,9 +167,9 @@ const Leaderboard: React.FC = () => {
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  const filteredUsers = leaderboardData.filter((user) =>
-    user.User.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const matchesSearch = (user: User) =>
+    user.User.toLowerCase().includes(searchTerm.toLowerCase());
+  const anyMatches = leaderboardData.some(matchesSearch);
 
   return (
     <div style={{ marginTop: "2rem", color: "white", width: "100%", overflowX: "hidden" }}>
@@ -219,20 +219,21 @@ const Leaderboard: React.FC = () => {
                 zIndex: 1,
               }}
             >
+              <th style={{ padding: "8px", width: "10%" }}>Place</th>
               <th style={{ padding: "8px", wordBreak: "break-word" }}>User</th>
               <th style={{ padding: "8px", width: "30%" }}>All-Time</th>
               <th style={{ padding: "8px", width: "30%" }}>Current</th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length === 0 ? (
+            {!anyMatches ? (
               <tr>
-                <td colSpan={3} style={{ padding: "12px", textAlign: "center" }}>
+                <td colSpan={4} style={{ padding: "12px", textAlign: "center" }}>
                   No matching users
                 </td>
               </tr>
             ) : (
-              filteredUsers.map((user, index) => {
+              leaderboardData.map((user, index) => {
               const rowStyle: React.CSSProperties = {
                 background: index % 2 === 0 ? "#282828" : "#303030",
                 fontWeight: "bold",
@@ -252,7 +253,11 @@ const Leaderboard: React.FC = () => {
                 rowStyle.color = "#5c340c";
               }
               return (
-                <tr key={user.User + index} style={rowStyle}>
+                <tr
+                  key={user.User + index}
+                  style={{ ...rowStyle, display: matchesSearch(user) ? undefined : "none" }}
+                >
+                  <td style={{ padding: "8px", textAlign: "left" }}>{index + 1}</td>
                   <td style={{ padding: "8px", wordBreak: "break-word" }}>
                     {getTrophy(index)}
                     {user.User} {renderAwards(user.Awards)}
