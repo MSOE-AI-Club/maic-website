@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Event.css";
 
@@ -7,8 +6,8 @@ function Event() {
 
   return (
     <div className="event-hosting-container">
-      <div className="event-line"></div>
-      <h2 className="event-title">Interested In Hosting An Event?</h2>
+      <div className="event-hosting-line"></div>
+      <h2 className="event-hosting-title">Interested In Hosting An Event?</h2>
       <div className="event-actions">
         <a
           className="event-btn event-btn-primary"
