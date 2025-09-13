@@ -46,13 +46,10 @@ const EventCard: React.FC<EventCardProps> = ({
     }
   };
 
-  console.log(className);
-
   return (
     <div
       ref={cardRef}
       className={`event-card ${className}`}
-      style={style}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

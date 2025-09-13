@@ -315,32 +315,28 @@ const Events: React.FC = () => {
                       }`}
                     >
                       {upcomingEvents.map((event, index) => (
+                        console.log(event.title),
                         <EventCard
                           key={index}
                           className="event-item featured-event"
                         >
-                          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                          <Grid container spacing={ 3 }>
                             <Grid className="event-header">
-                              <Grid size={12} >
-                                <Grid className="event-title">
-                                  {event.title}
-                                </Grid>
+                              
+                              <Grid className="event-title">
+                                {event.title}
                               </Grid>
-                              <Grid size={12} >
-                                <Grid className="event-date" style={{
-                                  fontSize: "1.1rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "0.5rem",
-                                  marginTop: "0.5rem"
-                                }}>
+                              
+                              <Grid>
+                                <Grid className="event-date">
                                   {getEventIcon(event.type, { size: 32 })}
                                   {formatDate(event.date)}
                                 </Grid>
                               </Grid>
                             </Grid>
-                            <div className="event-preview-content-row">
+                          </Grid>
+                          <Grid container className="event-content">
+                            <Grid className="event-preview-content-row">
                               <Grid container size={6} >
                                 <img
                                   src={getRawFileUrl(event.image)}
@@ -355,7 +351,7 @@ const Events: React.FC = () => {
                                   </div>
                                 </div>
                               </Grid>
-                            </div>
+                            </Grid>
                           </Grid>
                         </EventCard>
                       ))}
