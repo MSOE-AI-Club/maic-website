@@ -315,7 +315,6 @@ const Events: React.FC = () => {
                       }`}
                     >
                       {upcomingEvents.map((event, index) => (
-                        console.log(event.title),
                         <EventCard
                           key={index}
                           className="event-item featured-event"
