@@ -11,3 +11,13 @@ Start local web server
 ```bash
 npm run dev
 ```
+
+## Re-Locking Commands
+
+```bash
+bun update
+```
+
+```bash
+npm install
+```
