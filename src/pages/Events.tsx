@@ -14,6 +14,8 @@ import {
   BrainCircuit,
 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
+import { Grid } from "@mui/material";
+import EventCard from "../components/react-bits/event-card/EventCard";
 
 interface EventData {
   title: string;
@@ -313,39 +315,44 @@ const Events: React.FC = () => {
                       }`}
                     >
                       {upcomingEvents.map((event, index) => (
-                        <SpotlightCard
+                        <EventCard
                           key={index}
                           className="event-item featured-event"
                         >
-                                                          <div className="event-header">
-                                <div className="event-title">
-                                  {event.title}
-                                </div>
-                                <div className="event-date" style={{
-                                  fontSize: "1.1rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "0.5rem",
-                                  marginTop: "0.5rem"
-                                }}>
+                          <Grid container spacing={ 3 }>
+                            <Grid className="event-header">
+                              
+                              <Grid className="event-title">
+                                {event.title}
+                              </Grid>
+                              
+                              <Grid>
+                                <Grid className="event-date">
                                   {getEventIcon(event.type, { size: 32 })}
                                   {formatDate(event.date)}
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid container className="event-content">
+                            <Grid className="event-preview-content-row">
+                              <Grid container size={6} >
+                                <img
+                                  src={getRawFileUrl(event.image)}
+                                  alt={`${event.title} event image`}
+                                  className="event-preview-image"
+                                />
+                              </Grid>
+                              <Grid container size={6} >
+                                <div className="event-preview-description-container">
+                                  <div className="event-preview-description">
+                                    {event.description}
+                                  </div>
                                 </div>
-                              </div>
-                            <div className="event-preview-content-row">
-                              <img
-                                src={getRawFileUrl(event.image)}
-                                alt={`${event.title} event image`}
-                                className="event-preview-image"
-                              />
-                              <div className="event-preview-description-container">
-                                <div className="event-preview-description">
-                                  {event.description}
-                                </div>
-                              </div>
-                            </div>
-                        </SpotlightCard>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </EventCard>
                       ))}
                     </div>
                   </div>

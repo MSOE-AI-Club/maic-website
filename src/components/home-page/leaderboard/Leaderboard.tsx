@@ -167,9 +167,9 @@ const Leaderboard: React.FC = () => {
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  const filteredUsers = leaderboardData.filter((user) =>
-    user.User.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const matchesSearch = (user: User) =>
+    user.User.toLowerCase().includes(searchTerm.toLowerCase());
+  const anyMatches = leaderboardData.some(matchesSearch);
 
   return (
     <div className="leaderboard-container">
@@ -186,27 +186,29 @@ const Leaderboard: React.FC = () => {
         <table className="leaderboard-table">
           <thead>
             <tr>
+              <th>Place</th>
               <th>User</th>
               <th>All-Time</th>
               <th>Current</th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length === 0 ? (
+            {!anyMatches ? (
               <tr>
-                <td colSpan={3} className="no-results">
+                <td colSpan={4} className="no-results">
                   No matching users
                 </td>
               </tr>
             ) : (
-              filteredUsers.map((user, index) => {
-              let rowClass = "leaderboard-row";
-              if (index === 0) rowClass += " first-place";
-              else if (index === 1) rowClass += " second-place";
-              else if (index === 2) rowClass += " third-place";
-              
+              leaderboardData.map((user, index) => {
+                let rowClass = "leaderboard-row";
+                if (index === 0) rowClass += " first-place";
+                else if (index === 1) rowClass += " second-place";
+                else if (index === 2) rowClass += " third-place";
+
               return (
                 <tr key={user.User + index} className={rowClass}>
+                  <td className="points-cell">{index + 1}</td>
                   <td>
                     {getTrophy(index)}
                     {user.User} {renderAwards(user.Awards)}
