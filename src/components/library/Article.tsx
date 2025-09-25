@@ -122,7 +122,7 @@ const Article = (props: ArticleProps) => {
         // leave loading true; markdown loader will finalize
       }
     })();
-  }, [props.articleId, navigate, props]);
+  }, [props.articleId, navigate]);
 
   useEffect(() => {
     const parts: string[] = window.location.href.split("/");
@@ -192,41 +192,44 @@ const Article = (props: ArticleProps) => {
   useEffect(() => {
     // Load markdown content and metadata locally
     (async () => {
-      if (!props.articleId) { setIsLoading(false); return; }
-      const manifest = await getManifest();
-      const files = manifest?.files || [];
-      const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
-      if (!mdPath) { setIsLoading(false); return; }
-      const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
-      const metaPathsToTry = [
-        `${dir}/metadata.json`,
-        `${dir.substring(0, dir.lastIndexOf("/"))}/metadata.json`,
-      ];
-      let meta: any = null;
-      for (const mp of metaPathsToTry) {
-        const raw = await getFileContent(mp);
-        if (raw) {
-          try {
-            meta = JSON.parse(raw);
-            break;
-          } catch {
-            // ignore
+      try {
+        if (!props.articleId) { setIsLoading(false); return; }
+        const manifest = await getManifest();
+        const files = manifest?.files || [];
+        const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
+        if (!mdPath) { setIsLoading(false); return; }
+        const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
+        const metaPathsToTry = [
+          `${dir}/metadata.json`,
+          `${dir.substring(0, dir.lastIndexOf("/"))}/metadata.json`,
+        ];
+        let meta: any = null;
+        for (const mp of metaPathsToTry) {
+          const raw = await getFileContent(mp);
+          if (raw) {
+            try {
+              meta = JSON.parse(raw);
+              break;
+            } catch {
+              // ignore
+            }
           }
         }
-      }
-      if (meta) {
-        if (meta.summary) setSummary(meta.summary.toString());
-        if (meta.date && /\d+\/\d+\/\d+/.test(meta.date.toString())) {
-          setDate(convertDateToTextual(meta.date.toString()));
-        } else if (meta.date) {
-          setDate(meta.date.toString());
+        if (meta) {
+          if (meta.summary) setSummary(meta.summary.toString());
+          if (meta.date && /\d+\/\d+\/\d+/.test(meta.date.toString())) {
+            setDate(convertDateToTextual(meta.date.toString()));
+          } else if (meta.date) {
+            setDate(meta.date.toString());
+          }
+          if (meta.title) setTitle(meta.title.toString());
+          if (meta.authors) setAuthors(meta.authors.toString());
         }
-        if (meta.title) setTitle(meta.title.toString());
-        if (meta.authors) setAuthors(meta.authors.toString());
+        const content = await getFileContent(mdPath);
+        if (content) setContents(content);
+      } finally {
+        setIsLoading(false);
       }
-      const content = await getFileContent(mdPath);
-      if (content) setContents(content);
-      setIsLoading(false);
     })();
   }, [props.articleId]);
 
