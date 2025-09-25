@@ -7,6 +7,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { createRoot } from "react-dom/client";
 import { useNavigate } from "react-router-dom";
 import { getRawFileUrl, getManifest, getFileContent } from "../../hooks/github-hook";
+import { Skeleton } from "@mui/material";
 
 /**
  * The ArticleProps interface represents the props that the Article component receives.
@@ -57,17 +58,23 @@ const Article = (props: ArticleProps) => {
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [videoId, setVideoId] = useState<string>("");
   const [marimoUrl, setMarimoUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Resolve content type and any external link/video/pdf from local metadata
     (async () => {
-      if (!props.articleId) return;
+      if (!props.articleId) {
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(true);
       const manifest = await getManifest();
       const files = manifest?.files || [];
       const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
       if (!mdPath) {
         setType("md");
+        // Let the markdown loader effect decide not found after it attempts load
         return;
       }
       const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
@@ -93,6 +100,7 @@ const Article = (props: ArticleProps) => {
           window.open(meta.link.toString(), "_blank");
           navigate("/library");
           props.closeArticle();
+          setIsLoading(false);
           return;
         }
         if (detectedType === "pdf" && meta.pdf) {
@@ -106,8 +114,12 @@ const Article = (props: ArticleProps) => {
         }
         setType(detectedType);
         window.scrollTo(0, 0);
+        if (detectedType !== "md") {
+          setIsLoading(false);
+        }
       } else {
         setType("md");
+        // leave loading true; markdown loader will finalize
       }
     })();
   }, [props.articleId, navigate, props]);
@@ -180,11 +192,11 @@ const Article = (props: ArticleProps) => {
   useEffect(() => {
     // Load markdown content and metadata locally
     (async () => {
-      if (!props.articleId) return;
+      if (!props.articleId) { setIsLoading(false); return; }
       const manifest = await getManifest();
       const files = manifest?.files || [];
       const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
-      if (!mdPath) return;
+      if (!mdPath) { setIsLoading(false); return; }
       const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
       const metaPathsToTry = [
         `${dir}/metadata.json`,
@@ -214,12 +226,26 @@ const Article = (props: ArticleProps) => {
       }
       const content = await getFileContent(mdPath);
       if (content) setContents(content);
+      setIsLoading(false);
     })();
   }, [props.articleId]);
 
   return (
     <div className="content">
-      {type === "md" && (
+      {isLoading && type === "md" && (
+        <div className="article">
+          <div style={{ paddingTop: "12px" }}>
+            <Skeleton variant="text" width="60%" height={48} />
+            <Skeleton variant="text" width="40%" height={28} />
+            <Skeleton variant="text" width="80%" height={22} />
+            <Skeleton variant="rectangular" width="100%" height={240} style={{ marginTop: 12 }} />
+            <Skeleton variant="text" width="90%" height={22} />
+            <Skeleton variant="text" width="88%" height={22} />
+            <Skeleton variant="text" width="86%" height={22} />
+          </div>
+        </div>
+      )}
+      {type === "md" && !isLoading && (
         <div className="article">
           {!title && !authors && !date && !summary && (
             <div>
