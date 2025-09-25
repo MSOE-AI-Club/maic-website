@@ -25,7 +25,7 @@ const aliasEntries: AliasEntry[] = [
     },
   },
   {
-    path: "/",
+    path: "/library",
     normalize: (params) => {
       const nav = (params.get("nav") || "").trim();
       const article = (params.get("article") || "").trim();
