@@ -7,7 +7,8 @@ import LeftPanel from "../../components/library/LeftPanel";
 import Modal from "../../components/library/Modal";
 import ModalItem from "../../components/library/ModalItem";
 import { Link, useLocation } from "react-router-dom";
-import { performAliasRedirect } from "../../hooks/alias-redirect";
+import { getAliasRedirectTarget } from "../../hooks/alias-redirect";
+import { useNavigate } from "react-router-dom";
 import { ArrowForward } from "@mui/icons-material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import MovieIcon from "@mui/icons-material/Movie";
@@ -200,14 +201,13 @@ const Library = () => {
    * The modals to display on the page.
    */
   const location = useLocation();
+  const navigate = useNavigate();
   // Handle alias redirects for legacy article paths landing on /library
   useEffect(() => {
-    const target = performAliasRedirect(location.pathname, location.search);
-    if (target) {
-      // Force a re-render by dispatching a popstate event so Router updates
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
+    const target = getAliasRedirectTarget(location.pathname, location.search);
+    if (target) navigate(target, { replace: true });
   }, [location.pathname, location.search]);
+
   const [query, setQuery] = useState<URLSearchParams>(
     new URLSearchParams(location.search)
   );
@@ -424,8 +424,13 @@ const Library = () => {
       <NavBar page="Library" />
       <div className="App">
         <nav style={{ display: "flex" }}>
-          <LeftPanel query={query} setQuery={setQuery} forceRefresh={(nav: string) => forceRefresh(nav)} />
-          {query.get("article") === null && (
+          {/* If alias redirect is pending, render minimal shell but keep hook order consistent */}
+          {getAliasRedirectTarget(location.pathname, location.search) ? (
+            <div style={{ width: "100%" }} />
+          ) : (
+            <LeftPanel query={query} setQuery={setQuery} forceRefresh={(nav: string) => forceRefresh(nav)} />
+          )}
+          {getAliasRedirectTarget(location.pathname, location.search) === null && query.get("article") === null && (
             <section
               className="modals"
               style={{ maxWidth: "93.25vw", paddingTop: "40px", width: "100%" }}
@@ -764,7 +769,7 @@ const Library = () => {
               </div>
             </section>
           )}
-          {query.get("article") !== null && (
+          {getAliasRedirectTarget(location.pathname, location.search) === null && query.get("article") !== null && (
             <Article articleId={currentArticle} closeArticle={closeArticle} />
           )}
           <ModalItemPreview

@@ -38,11 +38,9 @@ const aliasEntries: AliasEntry[] = [
 ];
 
 /**
- * Checks for an alias for the given location and performs a 308-style redirect
- * using history.replaceState to avoid an extra entry, and returns the target
- * URL if a redirect was performed.
+ * Returns the alias target URL for a given location, or null if none.
  */
-export function performAliasRedirect(pathname: string, search: string): string | null {
+export function getAliasRedirectTarget(pathname: string, search: string): string | null {
   try {
     const params = new URLSearchParams(search);
     const normalizedPathname = (pathname || "").replace(/\/+$/, "") || "/";
@@ -50,15 +48,23 @@ export function performAliasRedirect(pathname: string, search: string): string |
       const entryPathNormalized = (entry.path || "").replace(/\/+$/, "") || "/";
       if (entryPathNormalized === normalizedPathname) {
         const target = entry.normalize(params);
-        if (target) {
-          // emulate 308 Permanent Redirect client-side via replace
-          window.history.replaceState({}, "", target);
-          return target;
-        }
+        if (target) return target;
       }
     }
   } catch (_) {
     // ignore errors
+  }
+  return null;
+}
+
+/**
+ * Deprecated: side-effecting redirect helper kept for compatibility. Prefer getAliasRedirectTarget
+ */
+export function performAliasRedirect(pathname: string, search: string): string | null {
+  const target = getAliasRedirectTarget(pathname, search);
+  if (target) {
+    try { window.history.replaceState({}, "", target); } catch (_) {}
+    return target;
   }
   return null;
 }
