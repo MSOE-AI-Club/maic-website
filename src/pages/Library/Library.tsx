@@ -7,6 +7,7 @@ import LeftPanel from "../../components/library/LeftPanel";
 import Modal from "../../components/library/Modal";
 import ModalItem from "../../components/library/ModalItem";
 import { Link, useLocation } from "react-router-dom";
+import { performAliasRedirect } from "../../hooks/alias-redirect";
 import { ArrowForward } from "@mui/icons-material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import MovieIcon from "@mui/icons-material/Movie";
@@ -199,6 +200,14 @@ const Library = () => {
    * The modals to display on the page.
    */
   const location = useLocation();
+  // Handle alias redirects for legacy article paths landing on /library
+  useEffect(() => {
+    const target = performAliasRedirect(location.pathname, location.search);
+    if (target) {
+      // Force a re-render by dispatching a popstate event so Router updates
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  }, [location.pathname, location.search]);
   const [query, setQuery] = useState<URLSearchParams>(
     new URLSearchParams(location.search)
   );
