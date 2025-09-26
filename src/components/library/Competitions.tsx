@@ -67,8 +67,12 @@ const Competitions = () => {
             out.push({ id: md.name.replace(/\.md$/i, ""), meta, parentFolder: cat.name });
           }
         }
-        // newest first by date
+        // prioritize active competitions (Upcoming/In Progress), then newest first by date
+        const priority = (s: string | undefined) => (/upcoming|in progress/i.test(String(s || "")) ? 0 : 1);
         out.sort((a, b) => {
+          const ap = priority(a.meta.status);
+          const bp = priority(b.meta.status);
+          if (ap !== bp) return ap - bp;
           const ad = Date.parse(String(a.meta.date || ""));
           const bd = Date.parse(String(b.meta.date || ""));
           if (isNaN(ad) && isNaN(bd)) return a.meta.title.localeCompare(b.meta.title);
@@ -105,14 +109,16 @@ const Competitions = () => {
           const img = c.meta.image || c.meta.img;
           const typeBadge = toArray(c.meta.categories).find((t) => /hackathon|research|technical|debate/i.test(t)) || c.parentFolder;
           const link = c.meta.link || c.meta.url;
-          const status = c.meta.status || "Completed";
+          const rawProgress = c.meta.status;
+          const status = String(rawProgress ?? "Completed");
+          const isActiveStatus = /upcoming|in progress/i.test(status);
           return (
             <SpotlightCard key={c.id} className="competition-spotlight" style={{ padding: 0 }}>
               <div className="comp-card">
                 <div className="comp-header">
                   <div className="comp-icon"><EmojiEventsIcon /></div>
                   <div className="comp-title">{c.meta.title || c.id}</div>
-                  <span className="status">{status}</span>
+                  <span className="status" style={isActiveStatus ? { backgroundColor: '#0f5132', color: '#ffffff' } : undefined}>{status}</span>
                 </div>
                 <div className="comp-body">
                   <div className="badges">
@@ -133,7 +139,7 @@ const Competitions = () => {
                         <OpenInNewIcon fontSize="small" /> Learn more
                       </a>
                     )}
-                    <button className="btn" onClick={() => openItem(c.id)}>View Certificate</button>
+                    <button className="btn" onClick={() => openItem(c.id)}>{/completed/i.test(status) ? "View Certificate" : "View Event"}</button>
                   </div>
                 </div>
                 {img && (<img className="comp-thumb" alt="thumb" src={getRawFileUrl(img.replace(/^\.\//, "").replace(/^\//, ""))} />)}
