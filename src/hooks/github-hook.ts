@@ -22,21 +22,24 @@ async function resolveContentBaseUrl(): Promise<string> {
 
   // 2) Try default "/content"
   try {
-    const res = await fetch(`${DEFAULT_CONTENT_BASE_URL}/manifest.json`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const res = await fetchWithRetry(
+      `${DEFAULT_CONTENT_BASE_URL}/manifest.json`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      }
+    );
     if (res.ok) {
       resolvedContentBaseUrl = DEFAULT_CONTENT_BASE_URL;
       return resolvedContentBaseUrl;
     }
-  } catch (_) {
+  } catch {
     // ignore and try fallback
   }
 
   // 3) Try local fallback "/maic-content" (useful in development where content is a sibling folder)
   try {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `${FALLBACK_LOCAL_CONTENT_BASE_URL}/manifest.json`,
       {
         method: "GET",
@@ -47,7 +50,7 @@ async function resolveContentBaseUrl(): Promise<string> {
       resolvedContentBaseUrl = FALLBACK_LOCAL_CONTENT_BASE_URL;
       return resolvedContentBaseUrl;
     }
-  } catch (_) {
+  } catch {
     // ignore
   }
 
@@ -84,18 +87,22 @@ export async function getManifest(): Promise<Manifest | null> {
   const manifestUrl = `${baseUrl}/manifest.json`;
 
   try {
-    const response = await fetch(manifestUrl, {
+    const response = await fetchWithRetry(manifestUrl, {
       method: "GET",
       headers: { Accept: "application/json" },
     });
 
     if (!response.ok) {
-      console.error(
-        `Error fetching manifest.json from CDN: ${response.status} ${response.statusText}`
-      );
-      console.error(`Attempted URL: ${manifestUrl}`);
-      const errorBody = await response.text();
-      console.error("Error body (if any):", errorBody);
+      if (response.status === 404) {
+        console.debug(`Manifest.json not found (404) at: ${manifestUrl}`);
+      } else {
+        console.error(
+          `Error fetching manifest.json from CDN: ${response.status} ${response.statusText}`
+        );
+        console.error(`Attempted URL: ${manifestUrl}`);
+        const errorBody = await response.text();
+        console.error("Error body (if any):", errorBody);
+      }
       return null;
     }
 
@@ -192,6 +199,54 @@ export async function getDirectoryContents(
   return items;
 }
 
+// Helper function to implement exponential backoff retry logic
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<Response> {
+  let lastError: Error = new Error("Unknown error");
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+
+      // If it's a successful response, return it immediately
+      if (response.ok) {
+        return response;
+      }
+
+      // For client errors (400-499), don't retry as these are likely permanent
+      if (response.status >= 400 && response.status < 500) {
+        return response;
+      }
+
+      // For server errors (500+), retry with exponential backoff
+      if (attempt < maxRetries) {
+        const delay = baseDelay * Math.pow(2, attempt);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        continue;
+      }
+
+      return response;
+    } catch (error) {
+      lastError = error as Error;
+
+      // If this is the last attempt, throw the error
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+
+      // Wait before retrying with exponential backoff
+      const delay = baseDelay * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}
+
 export async function getFileContent(filePath: string): Promise<string | null> {
   const baseUrl = await resolveContentBaseUrl();
   const encodedFilePath = filePath.split("/").map(encodeURIComponent).join("/");
@@ -199,17 +254,22 @@ export async function getFileContent(filePath: string): Promise<string | null> {
   const rawContentUrl = `${baseUrl}/${encodedFilePath}`;
 
   try {
-    const response = await fetch(rawContentUrl, {
+    const response = await fetchWithRetry(rawContentUrl, {
       method: "GET",
     });
 
     if (!response.ok) {
-      console.error(
-        `Error fetching file content from CDN: ${response.status} ${response.statusText} for path: ${filePath}`
-      );
-      console.error(`Attempted URL: ${rawContentUrl}`);
-      const errorBody = await response.text();
-      console.error("Error body (if any):", errorBody);
+      // Log 404s as debug info rather than errors to reduce console noise
+      if (response.status === 404) {
+        console.debug(`Content not found (404) for path: ${filePath}`);
+      } else {
+        console.error(
+          `Error fetching file content from CDN: ${response.status} ${response.statusText} for path: ${filePath}`
+        );
+        console.error(`Attempted URL: ${rawContentUrl}`);
+        const errorBody = await response.text();
+        console.error("Error body (if any):", errorBody);
+      }
       return null;
     }
 
@@ -236,5 +296,6 @@ export function getRawFileUrl(filePath: string): string {
 }
 
 // Kick off async resolution early (non-blocking) so cache populates quickly
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-resolveContentBaseUrl();
+resolveContentBaseUrl().catch((error) => {
+  console.warn("Early content base URL resolution failed:", error);
+});
