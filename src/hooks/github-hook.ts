@@ -223,7 +223,7 @@ async function fetchWithRetry(
       }
 
       // For server errors (500+), retry with exponential backoff
-      if (attempt < maxRetries) {
+      if (attempt < maxRetries - 1) {
         const delay = baseDelay * Math.pow(2, attempt);
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
@@ -234,7 +234,7 @@ async function fetchWithRetry(
       lastError = error as Error;
 
       // If this is the last attempt, throw the error
-      if (attempt === maxRetries) {
+      if (attempt === maxRetries - 1) {
         throw lastError;
       }
 
