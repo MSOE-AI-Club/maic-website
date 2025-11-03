@@ -139,7 +139,14 @@ const Article = (props: ArticleProps) => {
         !img.classList.contains("logo")
       ) {
         try {
-          const tail = img.src.split("/").slice(-3).map(decodeURIComponent).join("/");
+          // Preserve fully specified URLs (http://, https://, data:, etc.)
+          const imgSrc = img.src;
+          if (imgSrc && (imgSrc.startsWith('http://') || imgSrc.startsWith('https://') || imgSrc.startsWith('data:') || /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(imgSrc))) {
+            // This is a fully specified URL, leave it as-is
+            return;
+          }
+          // Only transform relative/local image paths
+          const tail = imgSrc.split("/").slice(-3).map(decodeURIComponent).join("/");
           // Prefer the CDN/content base URL, never fall back to S3 (deprecated)
           img.src = getRawFileUrl(tail);
         } catch (_) {
@@ -291,6 +298,25 @@ const Article = (props: ArticleProps) => {
                   }
                   // For relative URLs, use as-is
                   return <a href={href} {...props} />;
+                },
+                img: ({ node, src, alt, ...props }) => {
+                  // Preserve fully specified image URLs (http://, https://, data:, etc.)
+                  if (src && (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:') || /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(src))) {
+                    // This is a fully specified URL, use it as-is
+                    return <img src={src} alt={alt} {...props} />;
+                  }
+                  // For relative/local image paths, transform them using getRawFileUrl
+                  if (src) {
+                    try {
+                      const tail = src.split("/").slice(-3).map(decodeURIComponent).join("/");
+                      const transformedSrc = getRawFileUrl(tail);
+                      return <img src={transformedSrc} alt={alt} {...props} />;
+                    } catch (_) {
+                      // If we can't transform, use original src
+                      return <img src={src} alt={alt} {...props} />;
+                    }
+                  }
+                  return <img src={src} alt={alt} {...props} />;
                 },
                 }}
             />
