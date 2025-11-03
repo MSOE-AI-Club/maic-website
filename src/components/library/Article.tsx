@@ -283,6 +283,15 @@ const Article = (props: ArticleProps) => {
                     }
                     return <h2 {...props} />;
                 },
+                a: ({ node, href, ...props }) => {
+                  // Preserve fully specified URLs (http://, https://, mailto:, etc.)
+                  // Check if href starts with a protocol scheme (e.g., http:, https:, mailto:, etc.)
+                  if (href && (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('ftp://') || /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(href))) {
+                    return <a href={href} {...props} target="_blank" rel="noopener noreferrer" />;
+                  }
+                  // For relative URLs, use as-is
+                  return <a href={href} {...props} />;
+                },
                 }}
             />
           )}
