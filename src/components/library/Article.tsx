@@ -2,6 +2,9 @@ import "./assets/library/css/article.css";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CheckIcon from "@mui/icons-material/Check";
 import { createRoot } from "react-dom/client";
@@ -274,7 +277,8 @@ const Article = (props: ArticleProps) => {
           {title && authors && date && summary && (
             <Markdown
                 children={contents}
-                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex, rehypeRaw]}
                 components={{
                 h2: ({ node, ...props }) => {
                     if (
