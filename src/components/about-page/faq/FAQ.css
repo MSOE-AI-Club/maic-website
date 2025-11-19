@@ -40,8 +40,26 @@
   display: block;
 }
 
+.faq-accordion {
+  max-width: 80%;
+}
+
 @media (max-width: 768px) {
   .faq-title {
     line-height: 1.2;
+    font-size: 1.75rem;
+  }
+
+  .faq-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .faq-accordion {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .line {
+    width: 90vw;
   }
 }

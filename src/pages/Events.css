@@ -448,7 +448,7 @@
   gap: 2rem;
   flex: 1;
   align-items: center;
-  height:auto
+  height: auto;
 }
 
 .event-left {
@@ -746,6 +746,43 @@ body.no-scroll {
     gap: 1.5rem;
   }
 
+  /* Fix event card layout on mobile */
+  .event-preview-content-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .event-left {
+    min-width: 100%;
+    max-width: 100%;
+    align-items: center;
+  }
+
+  .event-image-box {
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  .event-preview-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: cover;
+  }
+
+  .event-preview-description-container {
+    width: 100%;
+  }
+
+  .event-preview-description {
+    font-size: 0.95rem;
+  }
+
+  .event-item {
+    padding: 1.5rem;
+  }
+
   .events-controls-section {
     padding: 0 1rem;
   }
@@ -947,12 +984,32 @@ body.no-scroll {
   }
 
   .event-item {
-    padding: 1rem;
-    min-height: 300px;
+    padding: 1.25rem;
+    min-height: auto;
   }
 
   .event-title {
     font-size: 1.3rem;
+  }
+
+  .event-content {
+    margin-top: 0.5rem;
+  }
+
+  .event-card-content {
+    min-height: auto;
+  }
+
+  /* Ensure descriptions are visible */
+  .event-preview-description {
+    display: block;
+    opacity: 1;
+    max-height: none;
+  }
+
+  /* Fix bottom spacing */
+  .event-bottom-left {
+    margin-top: 1rem;
   }
 
   .modal-content-body {

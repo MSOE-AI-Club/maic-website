@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import type { ReactElement } from "react";
 import Chip from "@mui/material/Chip";
-import { Skeleton } from "@mui/material";
+import { Skeleton, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import "./library.css";
 import LeftPanel from "../../components/library/LeftPanel";
 import Modal from "../../components/library/Modal";
@@ -107,8 +108,11 @@ const Library = () => {
   const [workshopsCount, setWorkshopsCount] = useState<number>(0);
   // Removed unused event and member learnings counts on landing
   const [researchProjectsCount, setResearchProjectsCount] = useState<number>(0); // latest school year
-  const [researchProjectsTotalCount, setResearchProjectsTotalCount] = useState<number>(0);
-  const [recentActivity, setRecentActivity] = useState<{ title: string; date: string }[]>([]);
+  const [researchProjectsTotalCount, setResearchProjectsTotalCount] =
+    useState<number>(0);
+  const [recentActivity, setRecentActivity] = useState<
+    { title: string; date: string }[]
+  >([]);
   const [articlesCount, setArticlesCount] = useState<number>(0);
   const [competitionsCount, setCompetitionsCount] = useState<number>(0);
   // Global search state (Featured view)
@@ -121,10 +125,13 @@ const Library = () => {
   } as const;
   const [globalQuery, setGlobalQuery] = useState<string>("");
   const [globalResults, setGlobalResults] = useState<any[]>([]);
-  const [activeTypes, setActiveTypes] = useState<{ [key: string]: boolean }>({ ...defaultActiveTypes });
+  const [activeTypes, setActiveTypes] = useState<{ [key: string]: boolean }>({
+    ...defaultActiveTypes,
+  });
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const isSearchActive = (globalQuery || "").trim().length > 0;
   const [filtersDebouncing, setFiltersDebouncing] = useState<boolean>(false);
+  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState<boolean>(false);
 
   useEffect(() => {
     document.title = "MAIC - Library";
@@ -163,7 +170,8 @@ const Library = () => {
   function openPreview(articleObj: string | ModalContent): boolean {
     let returnValue = false;
 
-    const articleId = typeof articleObj === 'string' ? articleObj : Object.keys(articleObj)[0];
+    const articleId =
+      typeof articleObj === "string" ? articleObj : Object.keys(articleObj)[0];
 
     setPreviewedArticle((prevArticleId) => {
       if (prevArticleId === articleId) {
@@ -253,7 +261,9 @@ const Library = () => {
 
       try {
         const events = await getRecentEvents(3);
-        setRecentActivity(events.map((e) => ({ title: e.title, date: e.date })));
+        setRecentActivity(
+          events.map((e) => ({ title: e.title, date: e.date }))
+        );
       } catch (_) {
         setRecentActivity([]);
       }
@@ -306,7 +316,10 @@ const Library = () => {
         if (!cancelled) setIsSearching(false);
       }
     }, 250); // debounce keystrokes
-    return () => { cancelled = true; window.clearTimeout(handle); };
+    return () => {
+      cancelled = true;
+      window.clearTimeout(handle);
+    };
   }, [globalQuery, query, isSearchActive]);
 
   // Debounce filter changes; hide results while filters are being adjusted
@@ -327,16 +340,25 @@ const Library = () => {
     const wasFeatured = lastNavRef.current === "featured";
     // Check sessionStorage signal from LeftPanel clicks
     let shouldForceClear = false;
-    try { shouldForceClear = sessionStorage.getItem('maic:clear-featured-search') === '1'; } catch (_) { shouldForceClear = false; }
+    try {
+      shouldForceClear =
+        sessionStorage.getItem("maic:clear-featured-search") === "1";
+    } catch (_) {
+      shouldForceClear = false;
+    }
     if (isNowFeatured && (!wasFeatured || shouldForceClear)) {
       setGlobalQuery("");
       setGlobalResults([]);
       setActiveTypes({ ...defaultActiveTypes });
       setIsSearching(false);
       setFiltersDebouncing(false);
-      try { sessionStorage.removeItem('maic:clear-featured-search'); } catch (_) {}
+      try {
+        sessionStorage.removeItem("maic:clear-featured-search");
+      } catch (_) {}
     }
-    lastNavRef.current = isNowFeatured ? "featured" : String(normalized || "other");
+    lastNavRef.current = isNowFeatured
+      ? "featured"
+      : String(normalized || "other");
   }, [location.search, location.pathname]);
 
   // no-op: removed category chips on landing
@@ -423,355 +445,634 @@ const Library = () => {
     <div style={{ margin: "0", padding: "0" }}>
       <NavBar page="Library" />
       <div className="App">
+        {/* Mobile drawer toggle button */}
+        {!getAliasRedirectTarget(location.pathname, location.search) && (
+          <IconButton
+            className="library-mobile-menu-toggle"
+            onClick={() => setIsLeftPanelOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+
         <nav style={{ display: "flex" }}>
-          {/* If alias redirect is pending, render minimal shell but keep hook order consistent */}
-          {getAliasRedirectTarget(location.pathname, location.search) ? (
-            <div style={{ width: "100%" }} />
-          ) : (
-            <LeftPanel query={query} setQuery={setQuery} forceRefresh={(nav: string) => forceRefresh(nav)} />
+          {/* Desktop fixed sidebar */}
+          {!getAliasRedirectTarget(location.pathname, location.search) && (
+            <div className="library-leftpanel-desktop">
+              <LeftPanel
+                query={query}
+                setQuery={setQuery}
+                forceRefresh={(nav: string) => forceRefresh(nav)}
+              />
+            </div>
           )}
-          {getAliasRedirectTarget(location.pathname, location.search) === null && query.get("article") === null && (
-            <section
-              className="modals"
-              style={{ maxWidth: "93.25vw", paddingTop: "40px", width: "100%" }}
-            >
-              <div>
-                {(query.get("nav") === null || query.get("nav") === "Featured") && (
-                  <div className="library-landing">
-                    <div className="library-hero">
-                      <h1>MAIC Library</h1>
-                      <p>
-                        Explore curated articles, interactive workshops, videos, and
-                        recent research from the MAIC community. Learn, build, and
-                        contribute—start with the highlights below.
-                      </p>
-                    </div>
-                    {/* Global Search and Filters moved between hero and top 4 cards */}
-                    <div className={`global-search-wrap ${isSearchActive ? "" : "single"}`}>
-                      <div className="global-search-main">
-                        <input
-                          type="text"
-                          placeholder="Search across articles, research, workshops, videos..."
-                          value={globalQuery}
-                          onChange={(e) => setGlobalQuery(e.target.value)}
-                          className="search-input"
-                        />
-                      </div>
-                      {isSearchActive && (
-                        <div className="global-filter-row">
-                          <span className="filter-title">Filter by type</span>
-                          {Object.keys(activeTypes).map((k) => (
-                            <label key={k} className={`filter-check ${activeTypes[k] ? "on" : "off"}`}>
-                              <input
-                                type="checkbox"
-                                checked={!!activeTypes[k]}
-                                onChange={() => setActiveTypes((prev) => ({ ...prev, [k]: !prev[k] }))}
-                              />
-                              <span>{k}</span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                      {isSearchActive && (isSearching || filtersDebouncing) && (
-                        <div className="global-results-grid">
-                          {[...Array(6)].map((_, i) => (
-                            <SpotlightCard key={i} className="search-result-spotlight" style={{ padding: 0 }}>
-                              <div className="search-result-card">
-                                <div className="result-top">
-                                  <Skeleton variant="rounded" width={70} height={20} />
-                                  <Skeleton variant="text" width={60} height={20} />
-                                </div>
-                                <Skeleton variant="text" width="80%" height={28} />
-                                <Skeleton variant="text" width="95%" height={18} />
-                                <Skeleton variant="text" width="90%" height={18} />
-                                <div className="result-actions">
-                                  <Skeleton variant="rounded" width={72} height={32} />
-                                </div>
-                              </div>
-                            </SpotlightCard>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    {!isSearchActive && (
-                      <div className="library-stats">
-                      <SpotlightCard
-                        className="stat-card"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          textAlign: "left",
-                          gap: 12,
-                          padding: 16,
-                          minHeight: 0,
-                          minWidth: 0
-                        }}
-                      >
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
-                          <LibraryBooksIcon />
-                          <div className="stat-text">
-                            <span className="stat-number">{resourceCount}</span>
-                            <span className="stat-label">Total Resources</span>
-                          </div>
-                        </div>
-                      </SpotlightCard>
-                      <SpotlightCard
-                        className="stat-card"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          textAlign: "left",
-                          gap: 12,
-                          padding: 16,
-                          minHeight: 0,
-                          minWidth: 0
-                        }}
-                      >
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
-                          <ConstructionIcon />
-                          <div className="stat-text">
-                            <span className="stat-number">{workshopsCount}</span>
-                            <span className="stat-label">Workshops</span>
-                          </div>
-                        </div>
-                      </SpotlightCard>
-                      <SpotlightCard
-                        className="stat-card"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          textAlign: "left",
-                          gap: 12,
-                          padding: 16,
-                          minHeight: 0,
-                          minWidth: 0
-                        }}
-                      >
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
-                        <QueryBuilderIcon />
-                        <div className="stat-text">
-                          <span className="stat-number">{videosCount}</span>
-                          <span className="stat-label">Videos</span>
-                        </div>
-                        </div>
-                      </SpotlightCard>
-                      <SpotlightCard
-                        className="stat-card"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          textAlign: "left",
-                          gap: 12,
-                          padding: 16,
-                          minHeight: 0,
-                          minWidth: 0
-                        }}
-                      >
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", height: "100%", width: "100%", gap: "0.5rem"}}>
-                          <RocketLaunchIcon />
-                          <div className="stat-text">
-                            <span className="stat-number">{researchProjectsCount}</span>
-                            <span className="stat-label">Recent Research Projects</span>
-                          </div>
-                        </div>
-                      </SpotlightCard>
-                    </div>
-                    )}
-                    {/* Search Results grid now appears after the top 4 cards */}
-                    {isSearchActive && !isSearching && !filtersDebouncing && (
-                      <div className="global-results-grid">
-                        {globalResults
-                          .filter((r: any) => activeTypes[r.source])
-                          .map((r: any) => (
-                            <SpotlightCard key={`${r.source}:${r.id}`} className="search-result-spotlight" style={{ padding: 0 }}>
-                              <div className="search-result-card">
-                                <div className="result-top">
-                                  <span className={`pill type ${String(r.source).toLowerCase()}`}>{r.source}</span>
-                                  {r.meta.date && <span className="muted">{r.meta.date}</span>}
-                                </div>
-                                <h3 className="result-title">{r.meta.title || r.id}</h3>
-                                {r.meta.description && <p className="result-desc">{r.meta.description}</p>}
-                                <div className="result-meta">
-                                  {r.meta.authors && <span className="muted">{r.meta.authors}</span>}
-                                </div>
-                                {r.source !== "Research" && (
-                                  <div className="result-actions">
-                                    <Link
-                                      to={(() => {
-                                        if (r.source === "Article") return `/library?nav=Articles&article=${encodeURIComponent(r.id)}`;
-                                        if (r.source === "Workshop") return `/library?nav=Workshops&article=${encodeURIComponent(r.id)}`;
-                                        if (r.source === "Video") return `/library?nav=Videos&article=${encodeURIComponent(r.id)}`;
-                                        if (r.source === "Competition") return `/library?nav=Competitions&article=${encodeURIComponent(r.id)}`;
-                                        return `/library?article=${encodeURIComponent(r.id)}`;
-                                      })()}
-                                      className="btn"
-                                    >
-                                      Open
-                                    </Link>
-                                  </div>
-                                )}
-                              </div>
-                            </SpotlightCard>
-                          ))}
-                        {(!isSearching && !filtersDebouncing && globalResults.filter((r: any) => activeTypes[r.source]).length === 0) && (
-                          <div className="empty-state">No results match your filters.</div>
-                        )}
-                      </div>
-                    )}
 
-                    {!isSearchActive && (
-                      <div className="library-categories">
-                      <Link to="/library?nav=Articles" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><DescriptionIcon /></div>
-                            <div className="category-content">
-                              <h3>Articles</h3>
-                              <p>Guides, tutorials, and club write-ups across AI topics.</p>
-                              <span className="category-meta">{articlesCount} articles</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-
-                      <Link to="/library?nav=Videos" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><MovieIcon /></div>
-                            <div className="category-content">
-                              <h3>Video Library</h3>
-                              <p>Educational videos covering AI concepts, tutorials, and discussions.</p>
-                              <span className="category-meta">{videosCount} videos</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-
-                      <Link to="/library?nav=Workshops" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><ConstructionIcon /></div>
-                            <div className="category-content">
-                              <h3>Interactive Workshops</h3>
-                              <p>Hands-on coding workshops you can complete right in your browser.</p>
-                              <span className="category-meta">{workshopsCount} workshops</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-
-                      <Link to="/library?nav=Research" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><ScienceIcon /></div>
-                            <div className="category-content">
-                              <h3>Research Projects</h3>
-                              <p>Current research initiatives and projects from our club members.</p>
-                              <span className="category-meta">{researchProjectsTotalCount} projects</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-
-                      <Link to="/library?nav=Competitions" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><EmojiEventsIcon /></div>
-                            <div className="category-content">
-                              <h3>Competitions</h3>
-                              <p>Hackathons and competitions hosted or joined by the club.</p>
-                              <span className="category-meta">{competitionsCount} entries</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-
-                      <Link to="https://forms.office.com/r/STYXQ1FPMn" target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-                        <SpotlightCard className="category-spotlight" style={{ padding: 16, minHeight: 0, minWidth: 0 }}>
-                          <div className="category-card">
-                            <div className="category-icon"><NoteAddIcon /></div>
-                            <div className="category-content">
-                              <h3>Submit</h3>
-                              <p>Share an article, workshop, video, or research with the community.</p>
-                              <span className="category-meta">Opens form</span>
-                            </div>
-                            <span className="category-arrow">→</span>
-                          </div>
-                        </SpotlightCard>
-                      </Link>
-                    </div>
-                    )}
-
-                    {!isSearchActive && (
-                      <div className="recent-activity">
-                        <h3>Recent Activity</h3>
-                        <ul>
-                          {recentActivity.map((a, idx) => (
-                            <li key={idx}>
-                              <span className="dot" />
-                              <span className="activity-text">{a.title}</span>
-                              <span className="time">{new Date(a.date).toLocaleDateString()}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {query.get("nav") === "Articles" && !query.get("type") && (
-                  <div className="library-landing">
-                    <ArticleCards type="" />
-                  </div>
-                )}
-                {query.get("nav") === "Articles" && query.get("type") && (
-                  <div className="library-landing">
-                    <ArticleCards type={query.get("type") as string} />
-                  </div>
-                )}
-                {query.get("nav") === "Research" && (
-                  <div className="library-landing">
-                    <ResearchProjects />
-                  </div>
-                )}
-                {query.get("nav") === "Videos" && (
-                  <div className="library-landing">
-                    <Videos />
-                  </div>
-                )}
-                {query.get("nav") === "Workshops" && (
-                  <div className="library-landing">
-                    <Workshops />
-                  </div>
-                )}
-                {query.get("nav") === "Competitions" && (
-                  <div className="library-landing">
-                    <Competitions />
-                  </div>
-                )}
-                {query.get("nav") && !["Featured","Articles","Research","Workshops","Videos","Competitions"].includes(query.get("nav") as string) && (
-                  <div>
-                    {modals}
-                  </div>
-                )}
+          {/* Mobile drawer overlay */}
+          {isLeftPanelOpen && (
+            <>
+              <div
+                className="library-leftpanel-backdrop"
+                onClick={() => setIsLeftPanelOpen(false)}
+                aria-label="Close navigation menu"
+              />
+              <div className="library-leftpanel-overlay">
+                <IconButton
+                  className="library-drawer-close"
+                  onClick={() => setIsLeftPanelOpen(false)}
+                  aria-label="Close navigation"
+                >
+                  x
+                </IconButton>
+                <LeftPanel
+                  query={query}
+                  setQuery={setQuery}
+                  forceRefresh={(nav: string) => forceRefresh(nav)}
+                  onNavigate={() => setIsLeftPanelOpen(false)}
+                />
               </div>
-            </section>
+            </>
           )}
-          {getAliasRedirectTarget(location.pathname, location.search) === null && query.get("article") !== null && (
-            <Article articleId={currentArticle} closeArticle={closeArticle} />
-          )}
+
+          {getAliasRedirectTarget(location.pathname, location.search) ===
+            null &&
+            query.get("article") === null && (
+              <section
+                className="modals"
+                style={{
+                  maxWidth: "93.25vw",
+                  paddingTop: "40px",
+                  width: "100%",
+                }}
+              >
+                <div>
+                  {(query.get("nav") === null ||
+                    query.get("nav") === "Featured") && (
+                    <div className="library-landing">
+                      <div className="library-hero">
+                        <h1>MAIC Library</h1>
+                        <p>
+                          Explore curated articles, interactive workshops,
+                          videos, and recent research from the MAIC community.
+                          Learn, build, and contribute—start with the highlights
+                          below.
+                        </p>
+                      </div>
+                      {/* Global Search and Filters moved between hero and top 4 cards */}
+                      <div
+                        className={`global-search-wrap ${
+                          isSearchActive ? "" : "single"
+                        }`}
+                      >
+                        <div className="global-search-main">
+                          <input
+                            type="text"
+                            placeholder="Search across articles, research, workshops, videos..."
+                            value={globalQuery}
+                            onChange={(e) => setGlobalQuery(e.target.value)}
+                            className="search-input"
+                          />
+                        </div>
+                        {isSearchActive && (
+                          <div className="global-filter-row">
+                            <span className="filter-title">Filter by type</span>
+                            {Object.keys(activeTypes).map((k) => (
+                              <label
+                                key={k}
+                                className={`filter-check ${
+                                  activeTypes[k] ? "on" : "off"
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={!!activeTypes[k]}
+                                  onChange={() =>
+                                    setActiveTypes((prev) => ({
+                                      ...prev,
+                                      [k]: !prev[k],
+                                    }))
+                                  }
+                                />
+                                <span>{k}</span>
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                        {isSearchActive &&
+                          (isSearching || filtersDebouncing) && (
+                            <div className="global-results-grid">
+                              {[...Array(6)].map((_, i) => (
+                                <SpotlightCard
+                                  key={i}
+                                  className="search-result-spotlight"
+                                  style={{ padding: 0 }}
+                                >
+                                  <div className="search-result-card">
+                                    <div className="result-top">
+                                      <Skeleton
+                                        variant="rounded"
+                                        width={70}
+                                        height={20}
+                                      />
+                                      <Skeleton
+                                        variant="text"
+                                        width={60}
+                                        height={20}
+                                      />
+                                    </div>
+                                    <Skeleton
+                                      variant="text"
+                                      width="80%"
+                                      height={28}
+                                    />
+                                    <Skeleton
+                                      variant="text"
+                                      width="95%"
+                                      height={18}
+                                    />
+                                    <Skeleton
+                                      variant="text"
+                                      width="90%"
+                                      height={18}
+                                    />
+                                    <div className="result-actions">
+                                      <Skeleton
+                                        variant="rounded"
+                                        width={72}
+                                        height={32}
+                                      />
+                                    </div>
+                                  </div>
+                                </SpotlightCard>
+                              ))}
+                            </div>
+                          )}
+                      </div>
+                      {!isSearchActive && (
+                        <div className="library-stats">
+                          <SpotlightCard
+                            className="stat-card"
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              textAlign: "left",
+                              gap: 12,
+                              padding: 16,
+                              minHeight: 0,
+                              minWidth: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                width: "100%",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <LibraryBooksIcon />
+                              <div className="stat-text">
+                                <span className="stat-number">
+                                  {resourceCount}
+                                </span>
+                                <span className="stat-label">
+                                  Total Resources
+                                </span>
+                              </div>
+                            </div>
+                          </SpotlightCard>
+                          <SpotlightCard
+                            className="stat-card"
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              textAlign: "left",
+                              gap: 12,
+                              padding: 16,
+                              minHeight: 0,
+                              minWidth: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                width: "100%",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <ConstructionIcon />
+                              <div className="stat-text">
+                                <span className="stat-number">
+                                  {workshopsCount}
+                                </span>
+                                <span className="stat-label">Workshops</span>
+                              </div>
+                            </div>
+                          </SpotlightCard>
+                          <SpotlightCard
+                            className="stat-card"
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              textAlign: "left",
+                              gap: 12,
+                              padding: 16,
+                              minHeight: 0,
+                              minWidth: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                width: "100%",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <QueryBuilderIcon />
+                              <div className="stat-text">
+                                <span className="stat-number">
+                                  {videosCount}
+                                </span>
+                                <span className="stat-label">Videos</span>
+                              </div>
+                            </div>
+                          </SpotlightCard>
+                          <SpotlightCard
+                            className="stat-card"
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              textAlign: "left",
+                              gap: 12,
+                              padding: 16,
+                              minHeight: 0,
+                              minWidth: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                width: "100%",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <RocketLaunchIcon />
+                              <div className="stat-text">
+                                <span className="stat-number">
+                                  {researchProjectsCount}
+                                </span>
+                                <span className="stat-label">
+                                  Recent Research Projects
+                                </span>
+                              </div>
+                            </div>
+                          </SpotlightCard>
+                        </div>
+                      )}
+                      {/* Search Results grid now appears after the top 4 cards */}
+                      {isSearchActive && !isSearching && !filtersDebouncing && (
+                        <div className="global-results-grid">
+                          {globalResults
+                            .filter((r: any) => activeTypes[r.source])
+                            .map((r: any) => (
+                              <SpotlightCard
+                                key={`${r.source}:${r.id}`}
+                                className="search-result-spotlight"
+                                style={{ padding: 0 }}
+                              >
+                                <div className="search-result-card">
+                                  <div className="result-top">
+                                    <span
+                                      className={`pill type ${String(
+                                        r.source
+                                      ).toLowerCase()}`}
+                                    >
+                                      {r.source}
+                                    </span>
+                                    {r.meta.date && (
+                                      <span className="muted">
+                                        {r.meta.date}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h3 className="result-title">
+                                    {r.meta.title || r.id}
+                                  </h3>
+                                  {r.meta.description && (
+                                    <p className="result-desc">
+                                      {r.meta.description}
+                                    </p>
+                                  )}
+                                  <div className="result-meta">
+                                    {r.meta.authors && (
+                                      <span className="muted">
+                                        {r.meta.authors}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {r.source !== "Research" && (
+                                    <div className="result-actions">
+                                      <Link
+                                        to={(() => {
+                                          if (r.source === "Article")
+                                            return `/library?nav=Articles&article=${encodeURIComponent(
+                                              r.id
+                                            )}`;
+                                          if (r.source === "Workshop")
+                                            return `/library?nav=Workshops&article=${encodeURIComponent(
+                                              r.id
+                                            )}`;
+                                          if (r.source === "Video")
+                                            return `/library?nav=Videos&article=${encodeURIComponent(
+                                              r.id
+                                            )}`;
+                                          if (r.source === "Competition")
+                                            return `/library?nav=Competitions&article=${encodeURIComponent(
+                                              r.id
+                                            )}`;
+                                          return `/library?article=${encodeURIComponent(
+                                            r.id
+                                          )}`;
+                                        })()}
+                                        className="btn"
+                                      >
+                                        Open
+                                      </Link>
+                                    </div>
+                                  )}
+                                </div>
+                              </SpotlightCard>
+                            ))}
+                          {!isSearching &&
+                            !filtersDebouncing &&
+                            globalResults.filter(
+                              (r: any) => activeTypes[r.source]
+                            ).length === 0 && (
+                              <div className="empty-state">
+                                No results match your filters.
+                              </div>
+                            )}
+                        </div>
+                      )}
+
+                      {!isSearchActive && (
+                        <div className="library-categories">
+                          <Link
+                            to="/library?nav=Articles"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <DescriptionIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Articles</h3>
+                                  <p>
+                                    Guides, tutorials, and club write-ups across
+                                    AI topics.
+                                  </p>
+                                  <span className="category-meta">
+                                    {articlesCount} articles
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+
+                          <Link
+                            to="/library?nav=Videos"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <MovieIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Video Library</h3>
+                                  <p>
+                                    Educational videos covering AI concepts,
+                                    tutorials, and discussions.
+                                  </p>
+                                  <span className="category-meta">
+                                    {videosCount} videos
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+
+                          <Link
+                            to="/library?nav=Workshops"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <ConstructionIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Interactive Workshops</h3>
+                                  <p>
+                                    Hands-on coding workshops you can complete
+                                    right in your browser.
+                                  </p>
+                                  <span className="category-meta">
+                                    {workshopsCount} workshops
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+
+                          <Link
+                            to="/library?nav=Research"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <ScienceIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Research Projects</h3>
+                                  <p>
+                                    Current research initiatives and projects
+                                    from our club members.
+                                  </p>
+                                  <span className="category-meta">
+                                    {researchProjectsTotalCount} projects
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+
+                          <Link
+                            to="/library?nav=Competitions"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <EmojiEventsIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Competitions</h3>
+                                  <p>
+                                    Hackathons and competitions hosted or joined
+                                    by the club.
+                                  </p>
+                                  <span className="category-meta">
+                                    {competitionsCount} entries
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+
+                          <Link
+                            to="https://forms.office.com/r/STYXQ1FPMn"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <SpotlightCard
+                              className="category-spotlight"
+                              style={{ padding: 16, minHeight: 0, minWidth: 0 }}
+                            >
+                              <div className="category-card">
+                                <div className="category-icon">
+                                  <NoteAddIcon />
+                                </div>
+                                <div className="category-content">
+                                  <h3>Submit</h3>
+                                  <p>
+                                    Share an article, workshop, video, or
+                                    research with the community.
+                                  </p>
+                                  <span className="category-meta">
+                                    Opens form
+                                  </span>
+                                </div>
+                                <span className="category-arrow">→</span>
+                              </div>
+                            </SpotlightCard>
+                          </Link>
+                        </div>
+                      )}
+
+                      {!isSearchActive && (
+                        <div className="recent-activity">
+                          <h3>Recent Activity</h3>
+                          <ul>
+                            {recentActivity.map((a, idx) => (
+                              <li key={idx}>
+                                <span className="dot" />
+                                <span className="activity-text">{a.title}</span>
+                                <span className="time">
+                                  {new Date(a.date).toLocaleDateString()}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {query.get("nav") === "Articles" && !query.get("type") && (
+                    <div className="library-landing">
+                      <ArticleCards type="" />
+                    </div>
+                  )}
+                  {query.get("nav") === "Articles" && query.get("type") && (
+                    <div className="library-landing">
+                      <ArticleCards type={query.get("type") as string} />
+                    </div>
+                  )}
+                  {query.get("nav") === "Research" && (
+                    <div className="library-landing">
+                      <ResearchProjects />
+                    </div>
+                  )}
+                  {query.get("nav") === "Videos" && (
+                    <div className="library-landing">
+                      <Videos />
+                    </div>
+                  )}
+                  {query.get("nav") === "Workshops" && (
+                    <div className="library-landing">
+                      <Workshops />
+                    </div>
+                  )}
+                  {query.get("nav") === "Competitions" && (
+                    <div className="library-landing">
+                      <Competitions />
+                    </div>
+                  )}
+                  {query.get("nav") &&
+                    ![
+                      "Featured",
+                      "Articles",
+                      "Research",
+                      "Workshops",
+                      "Videos",
+                      "Competitions",
+                    ].includes(query.get("nav") as string) && (
+                      <div>{modals}</div>
+                    )}
+                </div>
+              </section>
+            )}
+          {getAliasRedirectTarget(location.pathname, location.search) ===
+            null &&
+            query.get("article") !== null && (
+              <Article articleId={currentArticle} closeArticle={closeArticle} />
+            )}
           <ModalItemPreview
             articleId={previewedArticle}
             showPreview={showPreview}

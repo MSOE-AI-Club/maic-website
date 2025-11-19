@@ -24,9 +24,14 @@
   text-align: center;
 }
 
-.header > a, .header > a:visited, .header > a:active, .header > a:link,
-.header > a:focus, .header > a:hover,
-.header > .router-link, .header > .router-link:visited {
+.header > a,
+.header > a:visited,
+.header > a:active,
+.header > a:link,
+.header > a:focus,
+.header > a:hover,
+.header > .router-link,
+.header > .router-link:visited {
   text-decoration: none;
   color: white;
   transition: all 0.1s ease-in-out;
@@ -44,7 +49,8 @@
   gap: 0.75rem;
 }
 
-.navigation > a, .left-nav-link {
+.navigation > a,
+.left-nav-link {
   justify-content: left;
   padding-left: 0.5rem;
   color: white;
@@ -57,7 +63,8 @@
   transition: all 0.1s ease-in-out;
 }
 
-.navigation > a:hover, .left-nav-link:hover {
+.navigation > a:hover,
+.left-nav-link:hover {
   color: #0578ff;
   transform: translateX(-0.25rem);
 }
@@ -82,13 +89,14 @@
   margin: 0 1rem;
 }
 .articles-sublist > a:not(:last-child) {
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 .articles-sublist > a:hover {
   color: #8ab4ff;
 }
 
-.navigation > div > a, .navigation > div > .left-nav-link {
+.navigation > div > a,
+.navigation > div > .left-nav-link {
   justify-content: left;
   padding-left: 0.5rem;
   color: white;
@@ -100,10 +108,63 @@
   gap: 0.5rem;
 }
 
-.navigation > a > span > svg, .left-nav-link > span > svg, .left-nav-link > svg {
+.navigation > a > span > svg,
+.left-nav-link > span > svg,
+.left-nav-link > svg {
   font-size: 1.5rem !important;
 }
 
-.navigation > div > a > span > svg, .navigation > div > .left-nav-link > svg {
+.navigation > div > a > span > svg,
+.navigation > div > .left-nav-link > svg {
   font-size: 1.5rem !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  /* When left-panel is inside the mobile drawer overlay */
+  .library-leftpanel-overlay .left-panel {
+    position: static;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    box-shadow: none;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .library-leftpanel-overlay .header {
+    padding: 1.5rem 0;
+  }
+
+  .library-leftpanel-overlay .navigation {
+    padding: 0 0.5rem;
+  }
+
+  .library-leftpanel-overlay .left-nav-link,
+  .library-leftpanel-overlay .navigation > a {
+    margin: 0.5rem 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .library-leftpanel-overlay .left-nav-link:hover,
+  .library-leftpanel-overlay .navigation > a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(0);
+  }
+
+  .library-leftpanel-overlay .articles-sublist {
+    padding-left: 1.5rem;
+  }
+
+  .library-leftpanel-overlay .articles-sublist > a {
+    padding: 0.5rem;
+    margin: 0.25rem 0.5rem;
+    border-radius: 6px;
+  }
+
+  .library-leftpanel-overlay .articles-sublist > a:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
 }
