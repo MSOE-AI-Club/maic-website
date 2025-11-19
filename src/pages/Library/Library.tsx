@@ -827,15 +827,13 @@ const Library = () => {
                                 </div>
                               </SpotlightCard>
                             ))}
-                          {!isSearching &&
-                            !filtersDebouncing &&
-                            globalResults.filter(
-                              (r: any) => activeTypes[r.source]
-                            ).length === 0 && (
-                              <div className="empty-state">
-                                No results match your filters.
-                              </div>
-                            )}
+                          {globalResults.filter(
+                            (r: any) => activeTypes[r.source]
+                          ).length === 0 && (
+                            <div className="empty-state">
+                              No results match your filters.
+                            </div>
+                          )}
                         </div>
                       )}
 

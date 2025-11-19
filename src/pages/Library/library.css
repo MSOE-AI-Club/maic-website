@@ -1424,6 +1424,7 @@
 
   /* Close button for mobile drawer */
   .library-drawer-close {
+    display: flex;
     position: absolute;
     top: 16px;
     left: 16px;
