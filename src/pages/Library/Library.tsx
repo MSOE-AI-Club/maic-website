@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import Chip from "@mui/material/Chip";
 import { Skeleton, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import "./library.css";
 import LeftPanel from "../../components/library/LeftPanel";
 import Modal from "../../components/library/Modal";
@@ -482,7 +483,7 @@ const Library = () => {
                   onClick={() => setIsLeftPanelOpen(false)}
                   aria-label="Close navigation"
                 >
-                  x
+                  <CloseIcon />
                 </IconButton>
                 <LeftPanel
                   query={query}
