@@ -1545,7 +1545,7 @@
 /* Mobile drawer for Library sidebar */
 .library-mobile-menu-toggle {
   display: none;
-  position: fixed;
+  position: fixed !important;
   top: 50px;
   left: 16px;
   z-index: 1100;
