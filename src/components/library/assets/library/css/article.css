@@ -182,3 +182,57 @@ li.L9 {
     color: #81a2be !important;
   }
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0;
+  }
+
+  .article {
+    padding: 1.5rem 1rem;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .article h1 {
+    font-size: 2rem;
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .article h2 {
+    font-size: 1.6rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .article h3 {
+    font-size: 0.95rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .article pre {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .article pre > code {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .article img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .article p,
+  .article li {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
