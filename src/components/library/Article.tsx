@@ -2,6 +2,7 @@ import "./assets/library/css/article.css";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CheckIcon from "@mui/icons-material/Check";
 import { createRoot } from "react-dom/client";
@@ -274,6 +275,7 @@ const Article = (props: ArticleProps) => {
           {title && authors && date && summary && (
             <Markdown
                 children={contents}
+                remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
                 components={{
                 h2: ({ node, ...props }) => {

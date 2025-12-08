@@ -70,6 +70,49 @@
   border-radius: 1rem;
 }
 
+/* Table styles for markdown tables */
+.article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background-color: rgba(35, 39, 42, 0.6);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.article thead {
+  background-color: rgba(50, 55, 60, 0.8);
+}
+
+.article th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: rgb(200, 200, 220);
+  border-bottom: 2px solid rgba(100, 100, 120, 0.5);
+}
+
+.article td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(80, 80, 100, 0.3);
+}
+
+.article tbody tr:hover {
+  background-color: rgba(50, 55, 60, 0.4);
+}
+
+.article tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.article td code,
+.article th code {
+  background-color: rgba(25, 25, 30, 0.8);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
 .copy-button {
   display: flex;
   align-items: center;
