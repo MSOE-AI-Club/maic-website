@@ -169,7 +169,10 @@ const Leaderboard: React.FC = () => {
 
   const matchesSearch = (user: User) =>
     user.User.toLowerCase().includes(searchTerm.toLowerCase());
-  const anyMatches = leaderboardData.some(matchesSearch);
+  
+  const filteredData = searchTerm
+    ? leaderboardData.filter(matchesSearch)
+    : leaderboardData;
 
   return (
     <div className="leaderboard-container">
@@ -193,24 +196,25 @@ const Leaderboard: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {!anyMatches ? (
+            {filteredData.length === 0 ? (
               <tr>
                 <td colSpan={4} className="no-results">
                   No matching users
                 </td>
               </tr>
             ) : (
-              leaderboardData.map((user, index) => {
+              filteredData.map((user, index) => {
+                const originalIndex = leaderboardData.indexOf(user);
                 let rowClass = "leaderboard-row";
-                if (index === 0) rowClass += " first-place";
-                else if (index === 1) rowClass += " second-place";
-                else if (index === 2) rowClass += " third-place";
+                if (originalIndex === 0) rowClass += " first-place";
+                else if (originalIndex === 1) rowClass += " second-place";
+                else if (originalIndex === 2) rowClass += " third-place";
 
               return (
                 <tr key={user.User + index} className={rowClass}>
-                  <td className="points-cell">{index + 1}</td>
+                  <td className="points-cell">{originalIndex + 1}</td>
                   <td>
-                    {getTrophy(index)}
+                    {getTrophy(originalIndex)}
                     {user.User} {renderAwards(user.Awards)}
                   </td>
                   <td className="points-cell">{user["All-Time Points"]}</td>
