@@ -3,7 +3,7 @@ import "./EboardMember.css";
 import { FaEnvelope } from "react-icons/fa";
 import { getFileContent, getRawFileUrl } from "../../../hooks/github-hook";
 
-interface EboardMemberJson {
+interface EboardMemberInfo {
   name: string;
   title: string;
   imageUrl: string;
@@ -13,7 +13,7 @@ interface EboardMemberJson {
 }
 
 function EboardMember() {
-  const [members, setMembers] = useState<EboardMemberJson[]>([]);
+  const [members, setMembers] = useState<EboardMemberInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
@@ -25,7 +25,7 @@ function EboardMember() {
           setError(true);
           return;
         }
-        const parsed: EboardMemberJson[] = JSON.parse(raw);
+        const parsed: EboardMemberInfo[] = JSON.parse(raw);
         setMembers(parsed);
       })
       .catch(() => setError(true))
