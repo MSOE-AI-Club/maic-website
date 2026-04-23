@@ -54,22 +54,48 @@ Before you begin, ensure you have the following installed on your computer:
 
 ### Running the Application
 
-To start the local development server:
+#### `npm run dev` — Day-to-day development
 
 ```bash
 npm run dev
 ```
 
-The terminal will show a URL (usually `http://localhost:5173/`). Open this in your browser to see the website. Changes you make to the code will automatically reload the page.
+Use this whenever you are **writing or editing code**. Vite compiles on-the-fly and the browser reloads automatically every time you save a file. The terminal will show a URL (usually `http://localhost:5173/`).
 
-### Available Scripts
+- No build step needed — just run and start coding.
+- Proxies `/content` to `http://localhost:8000` if `VITE_CONTENT_BASE_URL=/content` is set in `.env`.
 
-| Command           | Description                                  |
-| ----------------- | -------------------------------------------- |
-| `npm run dev`     | Start the development server with hot reload |
-| `npm run build`   | Build the production-ready `dist/` folder    |
-| `npm run preview` | Preview the production build locally         |
-| `npm run lint`    | Run ESLint to check for code issues          |
+#### `npm run build` — Compile for production
+
+```bash
+npm run build
+```
+
+Use this when you are **done with your changes and want to produce a deployable bundle**. It compiles and optimizes everything into the `dist/` folder. You do not browse the site directly from this command — use `npm run preview` after.
+
+- Run this before `npm run preview`.
+- This is also what the CI/CD pipeline runs when deploying to GitHub Pages.
+
+#### `npm run preview` — Test the production build locally
+
+```bash
+npm run build && npm run preview
+```
+
+Use this when you want to **verify your changes behave correctly in a production-like environment** before pushing. It serves the already-built `dist/` folder — it does not recompile on save.
+
+- Always run `npm run build` first, otherwise you are previewing a stale build.
+- Like `npm run dev`, it proxies `/content` to `http://localhost:8000` when `VITE_CONTENT_BASE_URL=/content` is set.
+- If you just want to quickly check against the live CDN, comment out `VITE_CONTENT_BASE_URL` in `.env` before building (no local content server needed).
+
+#### Quick reference
+
+| Command           | When to use                                        | Auto-reloads on save? | Needs `npm run build` first? |
+| ----------------- | -------------------------------------------------- | --------------------- | ---------------------------- |
+| `npm run dev`     | Writing / editing code                             | Yes                   | No                           |
+| `npm run build`   | Preparing a deployable bundle                      | —                     | —                            |
+| `npm run preview` | Verifying the final build before pushing           | No                    | Yes                          |
+| `npm run lint`    | Checking for code style / type errors              | No                    | No                           |
 
 ---
 
@@ -134,8 +160,20 @@ A unique feature of this website is that it **fetches its content dynamically** 
   2.  Default CDN: `https://msoe-ai-club.github.io/maic-content/`
   3.  Fallback: `/maic-content` (useful when content repository is a sibling folder).
 
-  **Local Content Development**:
-  If you are also editing content, you can run a local server (like Python's `http.server`) in the content repo on port 8000. The `vite.config.ts` has a proxy that forwards `/content` requests to `http://localhost:8000`.
+  **Pointing to the production CDN (recommended for most development)**:
+  Comment out or remove `VITE_CONTENT_BASE_URL` in your `.env` file:
+  ```bash
+  # VITE_CONTENT_BASE_URL=/content
+  ```
+  The hook will automatically fetch from `https://msoe-ai-club.github.io/maic-content/`. This works for both `npm run dev` and `npm run preview` with no extra setup.
+
+  **Pointing to a local `maic-content` folder**:
+  Keep `VITE_CONTENT_BASE_URL=/content` in `.env` and start a local content server on port 8000 from inside the `maic-content` directory:
+  ```bash
+  cd ../maic-content
+  python -m http.server 8000
+  ```
+  The proxy in `vite.config.ts` forwards all `/content` requests to `http://localhost:8000` for both `npm run dev` and `npm run preview`, so content edits are reflected immediately without deploying to GitHub Pages.
 
 ### Styling
 
@@ -160,6 +198,8 @@ To test the production build locally before deploying:
 ```bash
 npm run preview
 ```
+
+> **Note**: `npm run preview` respects `VITE_CONTENT_BASE_URL` the same way `npm run dev` does. If it is set to `/content`, you need a local content server running on port 8000 (see the Content Hook section above). To test against the live CDN instead, comment the variable out in `.env` before building.
 
 ## 📚 Resources for New Developers
 
