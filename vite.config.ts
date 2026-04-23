@@ -18,4 +18,15 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    proxy: {
+      // Mirror the dev proxy so `npm run preview` also resolves /content locally
+      '/content': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/content/, ''),
+      },
+    },
+  },
 })
