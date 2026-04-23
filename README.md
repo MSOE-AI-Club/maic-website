@@ -42,12 +42,13 @@ Before you begin, ensure you have the following installed on your computer:
         - **Mac/Linux**: `cp .example.env .env`
     2.  Open `.env` in your text editor. It should look like this:
         ```bash
-        VITE_BRANCH=main
         VITE_CONTENT_BASE_URL=/content
         VITE_PUBLIC_POSTHOG_KEY=
         VITE_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
         VITE_CLERK_PUBLISHABLE_KEY=
         ```
+
+        > **Note**: Older versions of the project used a `VITE_BRANCH` environment variable. This is now legacy/unused and does not need to be set in new `.env` files.
     3.  **Important**: You will need to obtain the `VITE_PUBLIC_POSTHOG_KEY` (for analytics) from a team lead or the project administrator.
 
         > **Note**: Clerk authentication (`VITE_CLERK_PUBLISHABLE_KEY`) is currently disabled in the codebase. You can leave this blank unless authentication is re-enabled.
