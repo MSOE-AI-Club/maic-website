@@ -65,6 +65,9 @@ const NavBar = (props: NavBarProps) => {
         <Link className={`${isActive("/learning-tree") ? "active" : ""}`} to="/learning-tree">
           <p>Learning Tree</p>
         </Link>
+        <Link className={`${isActive("/projects") ? "active" : ""}`} to="/projects">
+          <p>Projects</p>
+        </Link>
         <Link className={`${isActive("/events") ? "active" : ""}`} to="/events">
           <p>Events</p>
         </Link>
@@ -106,6 +109,7 @@ const NavBar = (props: NavBarProps) => {
           <MenuItem onClick={handleNavigation} component={Link} to="/" className={isActive("/") ? "active" : ""}>Home</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/library" className={isActive("/library") ? "active" : ""}>Library</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/learning-tree" className={isActive("/learning-tree") ? "active" : ""}>Learning Tree</MenuItem>
+          <MenuItem onClick={handleNavigation} component={Link} to="/projects" className={isActive("/projects") ? "active" : ""}>Projects</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/events" className={isActive("/events") ? "active" : ""}>Events</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/merch" className={isActive("/merch") ? "active" : ""}>Merch</MenuItem>
           <MenuItem onClick={handleNavigation} component={Link} to="/contact" className={isActive("/contact") ? "active" : ""}>Contact</MenuItem>
