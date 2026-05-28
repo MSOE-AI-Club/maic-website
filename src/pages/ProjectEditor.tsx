@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import JSZip from "jszip";
 import "katex/dist/katex.min.css";
 import "./projectEditor.css";
 
@@ -26,8 +27,6 @@ import {
   Table as TableIcon,
   Image as ImageIcon,
   CheckCircle,
-  HelpCircle,
-  AlertCircle,
   ChevronDown
 } from "lucide-react";
 
@@ -38,6 +37,12 @@ interface Metadata {
   date: string;
   tags: string;
   type: string;
+}
+
+interface EmbeddedImage {
+  filename: string;
+  mimeType: string;
+  dataUrl: string;
 }
 
 const DEFAULT_METADATA: Metadata = {
@@ -51,13 +56,37 @@ const DEFAULT_METADATA: Metadata = {
 
 const DEFAULT_BODY = "";
 
+const getImageExtension = (file: File) => {
+  const mimeExtension = file.type.split("/")[1]?.toLowerCase();
+  if (!mimeExtension) {
+    return "png";
+  }
+
+  if (mimeExtension === "jpeg") {
+    return "jpg";
+  }
+
+  return mimeExtension;
+};
+
+const readImageAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error ?? new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
+
 const ProjectEditor: React.FC = () => {
   const [layout, setLayout] = useState<"split" | "editor" | "preview">("split");
   const [metadata, setMetadata] = useState<Metadata>(DEFAULT_METADATA);
   const [editorText, setEditorText] = useState<string>("");
   const [showConfig, setShowConfig] = useState<boolean>(true);
   const [exportSuccess, setExportSuccess] = useState<boolean>(false);
+  const [embeddedImages, setEmbeddedImages] = useState<EmbeddedImage[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const nextImageIndexRef = useRef<number>(1);
 
 
   // Set initial document
@@ -74,6 +103,105 @@ const ProjectEditor: React.FC = () => {
   // Update form inputs when editor content changes
   const handleEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditorText(e.target.value);
+  };
+
+  const resetEmbeddedImages = () => {
+    setEmbeddedImages([]);
+    nextImageIndexRef.current = 1;
+  };
+
+  const insertMarkdownAtSelection = (markdown: string, start?: number, end?: number) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      return;
+    }
+
+    const selectionStart = start ?? textarea.selectionStart;
+    const selectionEnd = end ?? textarea.selectionEnd;
+
+    setEditorText((currentText) => currentText.slice(0, selectionStart) + markdown + currentText.slice(selectionEnd));
+
+    window.setTimeout(() => {
+      textarea.focus();
+      const cursorPosition = selectionStart + markdown.length;
+      textarea.setSelectionRange(cursorPosition, cursorPosition);
+    }, 0);
+  };
+
+  const addImageFiles = async (files: File[], selectionStart?: number, selectionEnd?: number) => {
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    if (!imageFiles.length) {
+      return;
+    }
+
+    const textarea = textareaRef.current;
+    let insertionStart = selectionStart ?? textarea?.selectionStart ?? editorText.length;
+    let insertionEnd = selectionEnd ?? textarea?.selectionEnd ?? editorText.length;
+
+    for (const file of imageFiles) {
+      const imageDataUrl = await readImageAsDataUrl(file);
+      const extension = getImageExtension(file);
+      const filename = `image${nextImageIndexRef.current}.${extension}`;
+      nextImageIndexRef.current += 1;
+
+      const markdown = `![${filename}](images/${filename})`;
+      setEmbeddedImages((currentImages) => [
+        ...currentImages,
+        {
+          filename,
+          mimeType: file.type || "image/*",
+          dataUrl: imageDataUrl
+        }
+      ]);
+
+      insertMarkdownAtSelection(`${markdown}\n`, insertionStart, insertionEnd);
+      insertionStart += markdown.length + 1;
+      insertionEnd = insertionStart;
+    }
+  };
+
+  const handleImageBrowse = () => {
+    imageInputRef.current?.click();
+  };
+
+  const handleImageInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) {
+      return;
+    }
+
+    const textarea = textareaRef.current;
+    await addImageFiles(files, textarea?.selectionStart, textarea?.selectionEnd);
+    e.target.value = "";
+  };
+
+  const handleTextareaDrop = async (e: React.DragEvent<HTMLTextAreaElement>) => {
+    const files = Array.from(e.dataTransfer.files ?? []);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    if (!imageFiles.length) {
+      return;
+    }
+
+    e.preventDefault();
+    const textarea = textareaRef.current;
+    await addImageFiles(imageFiles, textarea?.selectionStart, textarea?.selectionEnd);
+  };
+
+  const handleTextareaPaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = Array.from(e.clipboardData.items ?? []);
+    const pastedImages = items
+      .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => Boolean(file));
+
+    if (!pastedImages.length) {
+      return;
+    }
+
+    e.preventDefault();
+    const textarea = textareaRef.current;
+    await addImageFiles(pastedImages, textarea?.selectionStart, textarea?.selectionEnd);
   };
 
   // Insertion Helper
@@ -128,13 +256,13 @@ const ProjectEditor: React.FC = () => {
   const insertTable = () => insertText(
     "\n| Header 1 | Header 2 |\n| :--- | :---: |\n| Cell 1 | Cell 2 |\n| Cell 3 | Cell 4 |\n"
   );
-  const insertImage = () => insertText("![Image Alt Text](", ")\n", "https://picsum.photos/800/400");
 
   // Load standard template
   const loadTemplate = () => {
     if (window.confirm("Are you sure you want to load the template? This will replace your current editor content.")) {
       setEditorText(DEFAULT_BODY);
       setMetadata(DEFAULT_METADATA);
+      resetEmbeddedImages();
     }
   };
 
@@ -151,15 +279,17 @@ const ProjectEditor: React.FC = () => {
       };
       setMetadata(emptyMeta);
       setEditorText("");
+      resetEmbeddedImages();
     }
   };
 
   // Export File
-  const exportJSONFile = () => {
+  const exportJSONFile = async () => {
     const filename = (metadata.title || "maic-project")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "") + ".json";
+    const zipFilename = filename.replace(/\.json$/i, ".zip");
 
     const formattedTags = metadata.tags
       .split(",")
@@ -173,28 +303,46 @@ const ProjectEditor: React.FC = () => {
       date: metadata.date,
       tags: formattedTags,
       type: metadata.type,
-      content: editorText
+      content: editorText,
+      images: embeddedImages.map((image) => ({
+        filename: image.filename,
+        mimeType: image.mimeType
+      }))
     };
 
-    const fileContent = JSON.stringify(jsonExport, null, 2);
-    const blob = new Blob([fileContent], { type: "application/json;charset=utf-8;" });
-    const link = document.createElement("a");
-    
-    if (navigator.maxTouchPoints && (navigator as any).msSaveBlob) {
-      // IE10+
-      (navigator as any).msSaveBlob(blob, filename);
-    } else {
-      const url = URL.createObjectURL(blob);
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
+    try {
+      const zip = new JSZip();
+      zip.file(filename, JSON.stringify(jsonExport, null, 2));
 
-    setExportSuccess(true);
-    setTimeout(() => setExportSuccess(false), 4000);
+      const imagesFolder = zip.folder("images");
+      if (imagesFolder) {
+        for (const image of embeddedImages) {
+          const base64Data = image.dataUrl.split(",")[1];
+          imagesFolder.file(image.filename, base64Data, { base64: true });
+        }
+      }
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+
+      if (navigator.maxTouchPoints && (navigator as any).msSaveBlob) {
+        (navigator as any).msSaveBlob(blob, zipFilename);
+      } else {
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", zipFilename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      setExportSuccess(true);
+      setTimeout(() => setExportSuccess(false), 4000);
+    } catch (error) {
+      console.error("Failed to export project package", error);
+      window.alert("Unable to export the project package. Please try again.");
+    }
   };
 
   // Render body markdown inside previewer
@@ -248,7 +396,7 @@ const ProjectEditor: React.FC = () => {
               style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem", gap: "0.5rem", borderRadius: "10px" }}
             >
               <Download size={16} />
-              <span>Export .JSON File</span>
+              <span>Export .ZIP File</span>
             </button>
           </div>
         </section>
@@ -271,7 +419,7 @@ const ProjectEditor: React.FC = () => {
             }}
           >
             <CheckCircle size={18} />
-            <span>Success! JSON downloaded successfully. You can upload this file directly to the MAIC site administrator.</span>
+            <span>Success! ZIP downloaded successfully with the JSON file and images folder.</span>
           </div>
         )}
 
@@ -367,7 +515,7 @@ const ProjectEditor: React.FC = () => {
                 <button className="toolbar-btn" onClick={insertTable} data-tooltip="Insert Table">
                   <TableIcon size={15} />
                 </button>
-                <button className="toolbar-btn" onClick={insertImage} data-tooltip="Insert Image">
+                <button className="toolbar-btn" onClick={handleImageBrowse} data-tooltip="Add Image Files">
                   <ImageIcon size={15} />
                 </button>
                 <div className="toolbar-divider" />
@@ -410,7 +558,18 @@ const ProjectEditor: React.FC = () => {
                   className="markdown-textarea"
                   value={editorText}
                   onChange={handleEditorChange}
+                  onDrop={handleTextareaDrop}
+                  onPaste={handleTextareaPaste}
+                  onDragOver={(e) => e.preventDefault()}
                   placeholder="Draft your markdown package here..."
+                />
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageInputChange}
+                  style={{ display: "none" }}
                 />
               </div>
             </article>
@@ -468,7 +627,12 @@ const ProjectEditor: React.FC = () => {
                           return <a href={href} {...props} />;
                         },
                         img: ({ node, src, alt, ...props }) => {
-                          return <img src={src} alt={alt} style={{ maxWidth: "100%", borderRadius: "8px", marginTop: "1rem" }} {...props} />;
+                          const resolvedSrc =
+                            typeof src === "string" && src.startsWith("images/")
+                              ? embeddedImages.find((image) => `images/${image.filename}` === src)?.dataUrl ?? src
+                              : src;
+
+                          return <img src={resolvedSrc} alt={alt} style={{ maxWidth: "100%", borderRadius: "8px", marginTop: "1rem" }} {...props} />;
                         }
                       }}
                     >
