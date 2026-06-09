@@ -12,6 +12,13 @@
   box-sizing: border-box;
 }
 
+.projects-container-embedded {
+  min-height: auto;
+  padding-top: 1rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -273,6 +280,34 @@
   border-color: rgb(var(--hl-1));
   box-shadow: 0 0 8px rgba(var(--hl-1), 0.15);
   background: rgba(10, 10, 15, 0.8);
+}
+
+.thumbnail-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.thumbnail-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgb(var(--text-1));
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.thumbnail-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.thumbnail-btn-clear {
+  color: rgb(var(--text-2));
+}
+
+.thumbnail-file-label {
+  font-size: 0.72rem;
+  color: rgb(var(--text-2));
 }
 
 /* Toolbar Buttons inside Editor */

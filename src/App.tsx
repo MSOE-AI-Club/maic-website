@@ -9,7 +9,7 @@ import Merch from './pages/Merch'
 import Library from './pages/Library/Library'
 import LearningTree from './pages/LearningTree'
 import Events from './pages/Events'
-import ProjectEditor from './pages/ProjectEditor'
+import ProjectEditor from './components/projects/ProjectEditor'
 import Projects from './pages/Projects'
 
 function App() {
