@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Achievements.css";
 import { getRawFileUrl } from "../../hooks/github-hook";
+import { getDashboardBundle, type DashboardBadge } from "../../hooks/dashboard-hook";
+import { BadgeIcon } from "../badge-icon/BadgeIcon";
 
 const listOfAchievements = [
   {
@@ -203,6 +205,25 @@ const listOfAchievements = [
 ];
 
 function Achievements() {
+  /**
+   * The badge catalog lives in the ALL dashboard, where officers create badges
+   * and award them. This page used to hardcode the list, so every new badge
+   * meant a code change and the counts were never shown at all.
+   *
+   * The hardcoded list stays as the fallback for a dashboard outage.
+   */
+  const [badges, setBadges] = useState<DashboardBadge[] | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    getDashboardBundle().then((bundle) => {
+      if (live && bundle?.badges?.length) setBadges(bundle.badges);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
   return (
     <>
       <div className="achievements-intro">
@@ -217,17 +238,45 @@ function Achievements() {
       <div className="line"></div>
 
       <div className="achievements-container">
-        {listOfAchievements.map((achievement, index) => (
-          <div className="achievement-card" key={index}>
-            <div className="achievement-icon">{achievement.icon}</div>
-            <div className="achievement-content">
-              <h3 className="achievement-title">{achievement.title}</h3>
-              <p className="achievement-description">
-                {achievement.description}
-              </p>
-            </div>
-          </div>
-        ))}
+        {badges
+          ? // Most-earned first — that's what visitors scan for.
+            [...badges]
+              .sort((a, b) => b.award_count - a.award_count)
+              .map((badge) => (
+                <div className="achievement-card" key={badge.id}>
+                  <div className="achievement-icon">
+                    <BadgeIcon
+                      icon={badge.icon}
+                      name={badge.name}
+                      size={38}
+                      imgClassName="achievement-img-icon"
+                      emojiClassName="achievement-emoji-icon"
+                    />
+                  </div>
+                  <div className="achievement-content">
+                    <h3 className="achievement-title">{badge.name}</h3>
+                    <p className="achievement-description">
+                      {badge.description ||
+                        (badge.award_count > 0
+                          ? `Earned by ${badge.award_count} ${
+                              badge.award_count === 1 ? "member" : "members"
+                            }`
+                          : "")}
+                    </p>
+                  </div>
+                </div>
+              ))
+          : listOfAchievements.map((achievement, index) => (
+              <div className="achievement-card" key={index}>
+                <div className="achievement-icon">{achievement.icon}</div>
+                <div className="achievement-content">
+                  <h3 className="achievement-title">{achievement.title}</h3>
+                  <p className="achievement-description">
+                    {achievement.description}
+                  </p>
+                </div>
+              </div>
+            ))}
       </div>
 
       <div className="achievements-footer">
