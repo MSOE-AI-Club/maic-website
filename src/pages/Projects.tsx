@@ -1,14 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
-import ProjectEditor from "../components/projects/ProjectEditor";
+import { Link, useNavigate } from "react-router-dom";
 import NavBar from "../components/navbar/Navbar";
 import Footer from "../components/footer/Footer";
 import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
-import ProjectPreview, { type ProjectDocument } from "../components/projects/ProjectPreview";
-import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";
+import { getProjectMembers, getProjectTags, type ProjectDocument } from "../components/projects/ProjectPreview";
+import ProjectCard from "../components/projects/ProjectCard";
+import ProjectsIntro from "../components/projects/ProjectsIntro";
 import "./Projects.css";
 
 interface ProjectListFile {
   projects: string[];
+  featured?: string[];
 }
 
 interface ProjectListItem {
@@ -36,26 +38,6 @@ function normalizeProjectDocument(raw: unknown): ProjectDocument | null {
   };
 }
 
-function getThumbnailPath(document: ProjectDocument | null): string | null {
-  if (!document?.thumbnail) {
-    return null;
-  }
-
-  if (typeof document.thumbnail === "string") {
-    return document.thumbnail;
-  }
-
-  if (document.thumbnail.path) {
-    return document.thumbnail.path;
-  }
-
-  if (document.thumbnail.filename) {
-    return `images/${document.thumbnail.filename}`;
-  }
-
-  return null;
-}
-
 function resolveProjectAsset(projectId: string, src: string): string {
   if (/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(src) || src.startsWith("/")) {
     return src;
@@ -66,11 +48,13 @@ function resolveProjectAsset(projectId: string, src: string): string {
 }
 
 const Projects: React.FC = () => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
-  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [showEditor, setShowEditor] = useState<boolean>(false);
+  const [featuredProjectIds, setFeaturedProjectIds] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   useEffect(() => {
     document.title = "MAIC - Projects";
@@ -133,6 +117,7 @@ const Projects: React.FC = () => {
       }
 
       setProjects(loaded);
+      setFeaturedProjectIds(Array.isArray(parsedIndex.featured) ? parsedIndex.featured : []);
       setIsLoading(false);
     };
 
@@ -143,92 +128,102 @@ const Projects: React.FC = () => {
     };
   }, []);
 
-  const activeProject = useMemo(() => {
-    if (!activeProjectId) {
-      return null;
-    }
+  const categoryOptions = useMemo(() => {
+    const categories = projects
+      .map(({ document }) => document?.type.trim())
+      .filter((type): type is string => Boolean(type));
+    return ["all", ...Array.from(new Set(categories))];
+  }, [projects]);
+  const filteredProjects = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+    return projects.filter(({ id, document }) => {
+      if (categoryFilter !== "all" && document?.type !== categoryFilter) return false;
+      if (!search) return true;
 
-    return projects.find((project) => project.id === activeProjectId) ?? null;
-  }, [projects, activeProjectId]);
+      const searchableText = [
+        id,
+        document?.title,
+        document?.description,
+        document?.type,
+        document?.content,
+        ...getProjectMembers(document?.members ?? ""),
+        ...getProjectTags(document?.tags ?? [])
+      ].join(" ").toLowerCase();
+      return searchableText.includes(search);
+    }).sort((a, b) => {
+      const dateA = a.document?.date ? Date.parse(a.document.date) : Number.NEGATIVE_INFINITY;
+      const dateB = b.document?.date ? Date.parse(b.document.date) : Number.NEGATIVE_INFINITY;
+      return (Number.isNaN(dateB) ? Number.NEGATIVE_INFINITY : dateB) - (Number.isNaN(dateA) ? Number.NEGATIVE_INFINITY : dateA);
+    });
+  }, [categoryFilter, projects, searchTerm]);
+
+  const renderProjectCards = (items: ProjectListItem[]) => (
+    <div className="projects-tile-grid">
+      {items.map((project) => (
+        <ProjectCard key={project.id} id={project.id} document={project.document} featured={featuredProjectIds.includes(project.id)} onOpen={(id) => navigate(`/projects/view/${id}`)} resolveImageSrc={resolveProjectAsset} />
+      ))}
+    </div>
+  );
 
   return (
     <div>
       <NavBar page="Projects" />
       <main className="projects-page-wrap">
-        <section className="projects-page-toolbar">
-          <h1 className="projects-page-title">Projects</h1>
-          <button className="projects-page-btn" onClick={() => setShowEditor((current) => !current)}>
-            {showEditor ? "Close Editor" : "Open Editor"}
-          </button>
-        </section>
+        <ProjectsIntro />
 
-        {!showEditor && (
-          <section className="projects-grid-panel">
+        <section className="projects-grid-panel">
             <h2 className="projects-section-title">Project Gallery</h2>
+            <div className="projects-filters" role="search" aria-label="Search and filter projects">
+              <label className="projects-search-field">
+                <span>Search projects</span>
+                <input type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Title, tag, author, or description" />
+              </label>
+              <label className="projects-category-field">
+                <span>Category</span>
+                <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+                  {categoryOptions.map((category) => <option key={category} value={category}>{category === "all" ? "All categories" : category}</option>)}
+                </select>
+              </label>
+            </div>
             {isLoading && <p className="projects-message">Loading projects...</p>}
             {!isLoading && error && <p className="projects-message projects-error">{error}</p>}
             {!isLoading && !error && projects.length === 0 && (
               <p className="projects-message">No projects found in projects/projects.json.</p>
             )}
 
-            {!isLoading && !error && projects.length > 0 && (
-              <div className="projects-tile-grid">
-                {projects.map((project) => {
-                  const thumbnailPath = getThumbnailPath(project.document);
-                  const thumbnailSrc = thumbnailPath ? resolveProjectAsset(project.id, thumbnailPath) : null;
-                  const title = project.document?.title?.trim() || "Untitled Project";
-                  const description = project.document?.description?.trim() || "No description available.";
-                  const canOpen = Boolean(project.document);
-
-                  return (
-                    <SpotlightCard
-                      key={project.id}
-                      className={`projects-tile ${canOpen ? "is-clickable" : "is-disabled"}`}
-                      onClick={canOpen ? () => setActiveProjectId(project.id) : undefined}
-                    >
-                      {thumbnailSrc ? (
-                        <img className="projects-tile-image" src={thumbnailSrc} alt={`${title} thumbnail`} />
-                      ) : (
-                        <div className="projects-tile-image projects-tile-image-placeholder">No image</div>
-                      )}
-                      <div className="projects-tile-body">
-                        <div className="projects-tile-title">{title}</div>
-                        <div className="projects-tile-description">{description}</div>
-                        {!canOpen && <div className="projects-tile-note">Missing metadata.json for this entry.</div>}
-                      </div>
-                    </SpotlightCard>
-                  );
-                })}
-              </div>
+            {!isLoading && !error && projects.length > 0 && filteredProjects.length === 0 && (
+              <p className="projects-message">No projects match your search or category filter.</p>
             )}
-          </section>
-        )}
 
-        {activeProject?.document && (
-          <div className="projects-modal-overlay" onClick={() => setActiveProjectId(null)}>
-            <div className="projects-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="projects-modal-header">
-                <h2 className="projects-modal-title">{activeProject.document.title || "Project Preview"}</h2>
-                <button className="projects-page-btn" onClick={() => setActiveProjectId(null)}>
-                  Close
-                </button>
-              </div>
-              <div className="projects-modal-content">
-                <ProjectPreview
-                  project={activeProject.document}
-                  resolveImageSrc={(src) => resolveProjectAsset(activeProject.id, src)}
-                />
-              </div>
-            </div>
+            {!isLoading && !error && filteredProjects.length > 0 && (
+              <section aria-labelledby="all-projects-title">
+                <div className="projects-subsection-heading">
+                  <h3 id="all-projects-title">All projects</h3>
+                  <span>{filteredProjects.length} project{filteredProjects.length === 1 ? "" : "s"}, newest first</span>
+                </div>
+                {renderProjectCards(filteredProjects)}
+              </section>
+            )}
+        </section>
+
+        <section className="projects-submit-panel" aria-labelledby="submit-project-title">
+          <div>
+            <p className="projects-kicker">Share your work</p>
+            <h2 id="submit-project-title">Submit a project</h2>
+            <p>Use the editor to package your project. Only ZIP files exported from the editor will be accepted.</p>
           </div>
-        )}
+          <div className="projects-submit-details">
+            <span>Upload the exported ZIP file when you submit. Other file types will not be accepted.</span>
+            <Link className="projects-page-btn" to="/projects/editor">Open editor</Link>
+            <a
+              className="projects-page-btn projects-submit-btn"
+              href="mailto:eboard%20-%20MSOE%20AI%20%3C36e830d8.msoe365.onmicrosoft.com%40amer.teams.ms%3E?subject=MAIC%20project%20submission&body=Project%20name%3A%20%0A%0AProject%20summary%3A%20%0A%0AAnything%20else%20the%20reviewers%20should%20know%3A%20"
+            >
+              Email a submission
+            </a>
+          </div>
+        </section>
 
-        {showEditor && (
-          <section className="projects-editor-panel">
-            <h2 className="projects-section-title">Project Editor</h2>
-            <ProjectEditor embedded />
-          </section>
-        )}
       </main>
       <Footer />
     </div>

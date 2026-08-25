@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import JSZip from "jszip";
 import ProjectPreview, { type ProjectDocument } from "./ProjectPreview";
+import ProjectCard from "./ProjectCard";
 import "./ProjectEditor.css";
 
 // Lucide React Icons
 import {
-  Columns,
   FileText,
   Eye,
   Download,
   RotateCcw,
   Trash2,
+  Plus,
+  X,
   Bold,
   Italic,
   Heading,
@@ -20,7 +22,10 @@ import {
   Image as ImageIcon,
   CheckCircle,
   ChevronDown,
-  Upload
+  Upload,
+  Maximize2,
+  Minimize2,
+  ArrowLeft
 } from "lucide-react";
 
 interface ProjectEditorProps {
@@ -29,10 +34,10 @@ interface ProjectEditorProps {
 
 interface Metadata {
   title: string;
-  members: string;
+  members: string[];
   description: string;
   date: string;
-  tags: string;
+  tags: string[];
   type: string;
 }
 
@@ -42,16 +47,25 @@ interface EmbeddedImage {
   dataUrl: string;
 }
 
+const PROJECT_CATEGORIES = ["Research Group", "Innovation Lab", "Hackathon", "Personal Project"] as const;
+
 const DEFAULT_METADATA: Metadata = {
   title: "",
-  members: "",
+  members: [],
   description: "",
   date: "",
-  tags: "",
-  type: "Project"
+  tags: [],
+  type: PROJECT_CATEGORIES[0]
 };
 
 const DEFAULT_BODY = "";
+
+const toList = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value.map(String).map((item) => item.trim()).filter(Boolean);
+  }
+  return typeof value === "string" ? value.split(",").map((item) => item.trim()).filter(Boolean) : [];
+};
 
 const getImageExtension = (file: File) => {
   const mimeExtension = file.type.split("/")[1]?.toLowerCase();
@@ -75,7 +89,8 @@ const readImageAsDataUrl = (file: File) =>
   });
 
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
-  const [layout, setLayout] = useState<"split" | "editor" | "preview">("split");
+  const [expandedPanel, setExpandedPanel] = useState<"editor" | "preview" | null>(null);
+  const [previewMode, setPreviewMode] = useState<"card" | "full">("card");
   const [metadata, setMetadata] = useState<Metadata>(DEFAULT_METADATA);
   const [editorText, setEditorText] = useState<string>("");
   const [showConfig, setShowConfig] = useState<boolean>(true);
@@ -94,6 +109,14 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
     document.title = "MAIC - Projects";
     setEditorText(DEFAULT_BODY);
   }, []);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [editorText, showConfig]);
 
   // Update editor frontmatter when form metadata changes
   const handleFormChange = (updatedMeta: Metadata) => {
@@ -302,11 +325,11 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
     if (window.confirm("Are you sure you want to clear all content inside the editor?")) {
       const emptyMeta = {
         title: "",
-        members: "",
+        members: [],
         description: "",
         date: "",
-        tags: "",
-        type: "Project"
+        tags: [],
+        type: PROJECT_CATEGORIES[0]
       };
       setMetadata(emptyMeta);
       setEditorText("");
@@ -322,11 +345,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "") || "maic-project") + ".zip";
 
-    const formattedTags = metadata.tags
-      .split(",")
-      .map(t => t.trim())
-      .filter(Boolean);
-
     const packagedImages = [...embeddedImages];
     if (thumbnailImage && !packagedImages.some((image) => image.filename === thumbnailImage.filename)) {
       packagedImages.push(thumbnailImage);
@@ -337,7 +355,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
       members: metadata.members,
       description: metadata.description,
       date: metadata.date,
-      tags: formattedTags,
+      tags: metadata.tags,
       type: metadata.type,
       content: editorText,
       thumbnail: thumbnailImage
@@ -413,11 +431,11 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
       // Extract metadata fields
       const newMetadata: Metadata = {
         title: parsed.title || "",
-        members: parsed.members || "",
+        members: toList(parsed.members),
         description: parsed.description || "",
         date: parsed.date || "",
-        tags: Array.isArray(parsed.tags) ? parsed.tags.join(", ") : (parsed.tags || ""),
-        type: parsed.type || "Project",
+        tags: toList(parsed.tags),
+        type: PROJECT_CATEGORIES.includes(parsed.type) ? parsed.type : PROJECT_CATEGORIES[0],
       };
 
       const content = parsed.content || "";
@@ -516,33 +534,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
 
       {/* Action / Control Bar */}
       <section className="projects-control-bar">
-        <div className="control-group">
-          <span className="control-label">Layout</span>
-          <div className="view-btn-group">
-            <button
-              className={`view-btn ${layout === "split" ? "active" : ""}`}
-              onClick={() => setLayout("split")}
-            >
-              <Columns size={16} />
-              <span>Split View</span>
-            </button>
-            <button
-              className={`view-btn ${layout === "editor" ? "active" : ""}`}
-              onClick={() => setLayout("editor")}
-            >
-              <FileText size={16} />
-              <span>Editor Only</span>
-            </button>
-            <button
-              className={`view-btn ${layout === "preview" ? "active" : ""}`}
-              onClick={() => setLayout("preview")}
-            >
-              <Eye size={16} />
-              <span>Preview Only</span>
-            </button>
-          </div>
-        </div>
-
         <div className="control-group" style={{ gap: "0.5rem" }}>
           <button
             className="btn-glass btn-secondary-glass"
@@ -594,18 +585,18 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
       )}
 
       {/* Main Split Panels */}
-      <section className={`projects-workspace ${layout}`}>
+      <section className={`projects-workspace ${expandedPanel ? `${expandedPanel}-expanded` : "split"}`}>
         {/* Editor Panel */}
-        {layout !== "preview" && (
-          <article className="panel">
+        {expandedPanel !== "preview" && (
+          <article className="panel editor-panel">
             <div className="panel-header">
               <span className="panel-title">
                 <FileText size={16} color="#8de0fe" />
-                <span>Markdown Workspace</span>
+                <span>Editor</span>
               </span>
-              <span style={{ fontSize: "0.75rem", color: "rgb(var(--text-2))" }}>
-                {editorText.length} characters
-              </span>
+              <button className="panel-expand-btn" type="button" aria-label={expandedPanel === "editor" ? "Return to split view" : "Expand editor"} onClick={() => setExpandedPanel(expandedPanel === "editor" ? null : "editor")}>
+                {expandedPanel === "editor" ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
             </div>
 
 
@@ -624,13 +615,21 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
                 </div>
                 <div className="form-field">
                   <label className="form-label">Members</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={metadata.members}
-                    onChange={(e) => handleFormChange({ ...metadata, members: e.target.value })}
-                    placeholder="e.g. John Doe, Jane Smith"
-                  />
+                  <div className="metadata-list">
+                    {metadata.members.map((member, index) => (
+                      <div className="metadata-list-row" key={`member-${index}`}>
+                        <input
+                          type="text"
+                          className="form-input"
+                          value={member}
+                          onChange={(e) => handleFormChange({ ...metadata, members: metadata.members.map((item, itemIndex) => itemIndex === index ? e.target.value : item) })}
+                          placeholder="Member name"
+                        />
+                        <button className="metadata-remove-btn" type="button" aria-label={`Remove member ${index + 1}`} onClick={() => handleFormChange({ ...metadata, members: metadata.members.filter((_, itemIndex) => itemIndex !== index) })}><X size={14} /></button>
+                      </div>
+                    ))}
+                    <button className="metadata-add-btn" type="button" onClick={() => handleFormChange({ ...metadata, members: [...metadata.members, ""] })}><Plus size={14} /> Add member</button>
+                  </div>
                 </div>
                 <div className="form-field">
                   <label className="form-label">Description Summary</label>
@@ -652,14 +651,33 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
                   />
                 </div>
                 <div className="form-field">
-                  <label className="form-label">Tags</label>
-                  <input
-                    type="text"
+                  <label className="form-label" htmlFor="project-type">Project category</label>
+                  <select
+                    id="project-type"
                     className="form-input"
-                    value={metadata.tags}
-                    onChange={(e) => handleFormChange({ ...metadata, tags: e.target.value })}
-                    placeholder="Separated by commas"
-                  />
+                    value={metadata.type}
+                    onChange={(e) => handleFormChange({ ...metadata, type: e.target.value })}
+                  >
+                    {PROJECT_CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Tags</label>
+                  <div className="metadata-list metadata-tags-list">
+                    {metadata.tags.map((tag, index) => (
+                      <div className="metadata-list-row" key={`tag-${index}`}>
+                        <input
+                          type="text"
+                          className="form-input"
+                          value={tag}
+                          onChange={(e) => handleFormChange({ ...metadata, tags: metadata.tags.map((item, itemIndex) => itemIndex === index ? e.target.value : item) })}
+                          placeholder="e.g. Computer Vision"
+                        />
+                        <button className="metadata-remove-btn" type="button" aria-label={`Remove tag ${index + 1}`} onClick={() => handleFormChange({ ...metadata, tags: metadata.tags.filter((_, itemIndex) => itemIndex !== index) })}><X size={14} /></button>
+                      </div>
+                    ))}
+                    <button className="metadata-add-btn" type="button" onClick={() => handleFormChange({ ...metadata, tags: [...metadata.tags, ""] })}><Plus size={14} /> Add tag</button>
+                  </div>
                 </div>
                 <div className="form-field">
                   <label className="form-label">Thumbnail</label>
@@ -752,7 +770,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
                 onDrop={handleTextareaDrop}
                 onPaste={handleTextareaPaste}
                 onDragOver={(e) => e.preventDefault()}
-                placeholder="Draft your markdown package here..."
+                placeholder="Enter your markdown content here..."
               />
               <input
                 ref={imageInputRef}
@@ -767,18 +785,36 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ embedded = false }) => {
         )}
 
         {/* Live Preview Panel */}
-        {layout !== "editor" && (
+        {expandedPanel !== "editor" && (
           <article className="panel">
             <div className="panel-header">
               <span className="panel-title">
                 <Eye size={16} color="#e084ff" />
                 <span>Live Preview</span>
               </span>
+              <button className="panel-expand-btn" type="button" aria-label={expandedPanel === "preview" ? "Return to split view" : "Expand preview"} onClick={() => setExpandedPanel(expandedPanel === "preview" ? null : "preview")}>
+                {expandedPanel === "preview" ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
             </div>
 
             {/* Rendered Viewport */}
             <div className="preview-body">
-              <ProjectPreview project={previewDocument} resolveImageSrc={resolveEditorImageSrc} />
+              {previewMode === "card" && <div className="editor-card-preview">
+                <span className="editor-preview-label">Gallery card preview</span>
+                <ProjectCard
+                  id="editor-preview"
+                  document={previewDocument}
+                  showMissingMetadata={false}
+                  onOpen={() => setPreviewMode("full")}
+                  resolveImageSrc={(_projectId, src) => resolveEditorImageSrc(src)}
+                />
+              </div>}
+              {previewMode === "full" && <>
+                <button className="preview-back-btn" type="button" onClick={() => setPreviewMode("card")}>
+                  <ArrowLeft size={15} aria-hidden="true" /> Back to card
+                </button>
+                <ProjectPreview project={previewDocument} resolveImageSrc={resolveEditorImageSrc} />
+              </>}
             </div>
           </article>
         )}

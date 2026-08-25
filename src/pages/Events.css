@@ -588,13 +588,13 @@
 }
 
 .modal-content-body::-webkit-scrollbar-thumb {
-  background-color: rgba(var(--text-2), 0.4);
+  background-color: rgba(var(--hl-1), 0.45);
   border-radius: 10px;
   border: 1px solid rgba(var(--bg-2), 0.3);
 }
 
 .modal-content-body::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(var(--text-2), 0.6);
+  background-color: rgba(var(--hl-1), 0.75);
 }
 
 .close-button {

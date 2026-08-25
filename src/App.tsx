@@ -9,8 +9,9 @@ import Merch from './pages/Merch'
 import Library from './pages/Library/Library'
 import LearningTree from './pages/LearningTree'
 import Events from './pages/Events'
-import ProjectEditor from './components/projects/ProjectEditor'
 import Projects from './pages/Projects'
+import ProjectEditorPage from './pages/ProjectEditorPage'
+import ProjectView from './pages/ProjectView'
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
           <Route path="/learning-tree" element={<LearningTree />} />
           <Route path="/events" element={<Events />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/editor" element={<ProjectEditorPage />} />
+          <Route path="/projects/view/:projectId" element={<ProjectView />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

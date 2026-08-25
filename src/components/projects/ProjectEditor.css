@@ -6,7 +6,7 @@
   min-height: calc(100vh - var(--transition-height));
   background: radial-gradient(circle at 50% 0%, rgba(var(--purple-primary), 0.15) 0%, transparent 60%), rgb(var(--bg-1));
   padding: 1.5rem;
-  padding-top: 5.5rem;
+  padding-top: 1rem;
   color: rgb(var(--text-1));
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
@@ -132,6 +132,11 @@
   grid-template-columns: 1fr 1fr;
 }
 
+.projects-workspace.editor-expanded,
+.projects-workspace.preview-expanded {
+  grid-template-columns: 1fr;
+}
+
 .projects-workspace.editor-only {
   grid-template-columns: 1fr;
 }
@@ -172,6 +177,15 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.editor-panel {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.editor-panel .metadata-panel {
+  flex: 0 0 auto;
+}
+
 .panel:focus-within {
   border-color: rgba(var(--hl-1), 0.3);
   box-shadow: 0 8px 32px rgba(var(--purple-primary), 0.15);
@@ -184,6 +198,25 @@
   padding: 0.75rem 1.25rem;
   background: rgba(20, 20, 25, 0.6);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgb(var(--text-2));
+  padding: 0.3rem;
+  cursor: pointer;
+}
+
+.panel-expand-btn:hover,
+.panel-expand-btn:focus-visible {
+  color: rgb(var(--text-1));
+  border-color: rgba(var(--hl-1), 0.45);
 }
 
 .panel-title {
@@ -203,7 +236,7 @@
   background: rgba(0, 0, 0, 0.15);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.75rem;
   animation: slideDown 0.2s ease-out;
 }
@@ -280,6 +313,64 @@
   border-color: rgb(var(--hl-1));
   box-shadow: 0 0 8px rgba(var(--hl-1), 0.15);
   background: rgba(10, 10, 15, 0.8);
+}
+
+.form-input[type="date"] {
+  color-scheme: dark;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.metadata-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 7rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.metadata-tags-list {
+  max-height: 7rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.metadata-list-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.metadata-remove-btn,
+.metadata-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgb(var(--text-2));
+  cursor: pointer;
+}
+
+.metadata-remove-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.metadata-add-btn {
+  align-self: flex-start;
+  gap: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.72rem;
 }
 
 .thumbnail-controls {
@@ -379,9 +470,9 @@
 /* Textarea / Raw Input */
 .editor-body-wrapper {
   display: flex;
-  flex: 1;
+  flex: 0 0 auto;
   position: relative;
-  min-height: 0;
+  min-height: 30rem;
 }
 
 .markdown-textarea {
@@ -389,16 +480,16 @@
   background: rgba(15, 15, 20, 0.35);
   border: none;
   resize: none;
-  padding: 1.25rem;
+  padding: 1.25rem 1.25rem 3.5rem;
   color: #e5e7eb;
   font-family: 'Fira Code', 'Courier New', Courier, monospace;
   font-size: 0.9rem;
   line-height: 1.6;
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: auto;
+  min-height: 30rem;
   outline: none;
-  overflow-y: auto;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -414,6 +505,36 @@
   background: rgba(10, 10, 15, 0.2);
   color: rgb(var(--text-3));
   box-sizing: border-box;
+}
+
+.preview-tabs {
+  display: inline-flex;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.panel-header .preview-tabs {
+  margin: 0 0 0 auto;
+}
+
+.preview-tabs button {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgb(var(--text-2));
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.preview-tabs button.active,
+.preview-tabs button:hover {
+  background: rgba(var(--hl-1), 0.14);
+  color: rgb(var(--text-1));
 }
 
 /* Reusing Library Article Styles inside Preview Panel */
@@ -540,7 +661,7 @@
 
 .markdown-textarea::-webkit-scrollbar-thumb,
 .preview-body::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(var(--hl-1), 0.45);
   border-radius: 4px;
   border: 2px solid transparent;
 }

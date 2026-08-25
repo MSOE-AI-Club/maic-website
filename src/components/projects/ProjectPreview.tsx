@@ -20,7 +20,7 @@ export interface ProjectThumbnail {
 
 export interface ProjectDocument {
   title: string;
-  members: string;
+  members: string | string[];
   description: string;
   date: string;
   tags: string[] | string;
@@ -30,10 +30,45 @@ export interface ProjectDocument {
   thumbnail?: string | ProjectThumbnail | null;
 }
 
+export function getProjectMembers(members: ProjectDocument["members"]): string[] {
+  return Array.isArray(members) ? members : members.split(",").map((member) => member.trim()).filter(Boolean);
+}
+
+export function getProjectTags(tags: ProjectDocument["tags"]): string[] {
+  return Array.isArray(tags) ? tags : tags.split(",").map((tag) => tag.trim()).filter(Boolean);
+}
+
 interface ProjectPreviewProps {
   project: ProjectDocument;
   resolveImageSrc?: (src: string) => string;
 }
+
+export const ProjectHeader: React.FC<{ project: ProjectDocument; resolveImageSrc?: (src: string) => string }> = ({ project, resolveImageSrc }) => {
+  const displayDate = project.date || new Date().toISOString().split("T")[0];
+  const thumbnailPath = getThumbnailPath(project);
+  const thumbnailSrc = thumbnailPath ? resolveImage(thumbnailPath, resolveImageSrc) : null;
+
+  return (
+    <div className="project-preview-header">
+      {thumbnailSrc && (
+        <div className="project-preview-thumbnail-wrap">
+          <img src={thumbnailSrc} alt={`${project.title || "Project"} thumbnail`} className="project-preview-thumbnail" />
+        </div>
+      )}
+      <div className="project-preview-meta">
+        <h1 className="project-preview-title">{project.title || "Project Title"}</h1>
+        <p><strong>Authors / Members:</strong> {getProjectMembers(project.members).join(", ") || "Author Name(s)"}</p>
+        <p><strong>Published:</strong> {displayDate}</p>
+        <p><strong>Description:</strong> <em>{project.description || "Brief project summary..."}</em></p>
+        {getProjectTags(project.tags).length > 0 && (
+          <div className="project-preview-tags" aria-label="Project tags">
+            {getProjectTags(project.tags).map((tag) => <span key={tag}>{tag}</span>)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 function getThumbnailPath(project: ProjectDocument): string | null {
   if (!project.thumbnail) {
@@ -64,33 +99,9 @@ function resolveImage(source: string, resolveImageSrc?: (src: string) => string)
 }
 
 const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, resolveImageSrc }) => {
-  const displayDate = project.date || new Date().toISOString().split("T")[0];
-  const thumbnailPath = getThumbnailPath(project);
-  const thumbnailSrc = thumbnailPath ? resolveImage(thumbnailPath, resolveImageSrc) : null;
-
   return (
     <div className="project-preview article">
-      <span className="article-title">
-        <Markdown>{`# ${project.title || "Project Title"}`}</Markdown>
-      </span>
-
-      <div className="project-preview-header">
-        {thumbnailSrc && (
-          <div className="project-preview-thumbnail-wrap">
-            <img
-              src={thumbnailSrc}
-              alt={`${project.title || "Project"} thumbnail`}
-              className="project-preview-thumbnail"
-            />
-          </div>
-        )}
-
-        <div className="project-preview-meta">
-          <Markdown>{`### **Authors / Members:** ${project.members || "Author Name(s)"}`}</Markdown>
-          <Markdown>{`### **Published:** ${displayDate}`}</Markdown>
-          <Markdown>{`### **Description:** *${project.description || "Brief project summary..."}*`}</Markdown>
-        </div>
-      </div>
+      <ProjectHeader project={project} resolveImageSrc={resolveImageSrc} />
 
       {project.content && (
         <Markdown

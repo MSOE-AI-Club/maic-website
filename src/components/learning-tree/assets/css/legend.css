@@ -47,7 +47,7 @@
   overflow-y: auto;
   /* Custom scrollbar styling */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+  scrollbar-color: rgba(var(--hl-1), 0.55) rgba(8, 12, 18, 0.7);
 }
 
 .navigation::-webkit-scrollbar {
@@ -55,18 +55,18 @@
 }
 
 .navigation::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(8, 12, 18, 0.7);
   border-radius: 4px;
 }
 
 .navigation::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(var(--hl-1), 0.45);
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navigation::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(var(--hl-1), 0.75);
 }
 
 .navigation > a {
@@ -180,18 +180,18 @@
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(8, 12, 18, 0.7);
   border-radius: 4px;
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(var(--hl-1), 0.45);
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navigation .MuiTreeView-root::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(var(--hl-1), 0.75);
 }
 
 /* Button enhancements */

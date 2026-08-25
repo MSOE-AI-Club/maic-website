@@ -69,6 +69,27 @@ html {
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--hl-1), 0.55) rgba(8, 12, 18, 0.7);
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(8, 12, 18, 0.7);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(var(--hl-1), 0.45);
+  border: 2px solid rgba(8, 12, 18, 0.7);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--hl-1), 0.75);
 }
 
 .center {
