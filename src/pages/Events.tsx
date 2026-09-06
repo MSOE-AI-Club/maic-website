@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import { getFileContent, getRawFileUrl } from "../hooks/github-hook";
+import { getDashboardBundle, toSiteEventType } from "../hooks/dashboard-hook";
 
 import SpotlightCard from "../components/react-bits/spotlight-card/SpotlightCard";
 import Footer from "../components/footer/Footer";
@@ -28,6 +29,27 @@ interface EventData {
 interface IconProps extends LucideProps {
   size?: number;
   color?: string;
+}
+
+/**
+ * ISO timestamp -> YYYY-MM-DD in the event's own timezone. The dashboard
+ * stores UTC, so an evening Central event is already "tomorrow" in UTC and
+ * would land in the wrong month heading without this.
+ */
+function toDateKey(iso: string, timezone?: string | null): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  try {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      ...(timezone ? { timeZone: timezone } : {}),
+    }).format(d);
+    return parts; // en-CA formats as YYYY-MM-DD
+  } catch {
+    return d.toISOString().slice(0, 10);
+  }
 }
 
 const EVENT_TYPE_META: Record<
@@ -104,18 +126,36 @@ const Events: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    /**
+     * Events come from the ALL dashboard, where the eboard already maintains
+     * them — so adding an event there puts it on this page with no redeploy
+     * and no second copy in maic-content.
+     *
+     * maic-content stays as the fallback: if the dashboard is unreachable the
+     * page shows the last-published events.json rather than an empty page.
+     */
     const fetchEvents = async () => {
       try {
-        const jsonData = await getFileContent("data/events/events.json");
-        if (jsonData) {
-          const data: EventData[] = JSON.parse(jsonData);
-          setEvents(data);
-        } else {
-          console.warn("Failed to fetch events data, using hardcoded backup");
-          setEvents([]);
+        const bundle = await getDashboardBundle();
+        if (bundle?.events?.length) {
+          setEvents(
+            bundle.events.map((e) => ({
+              title: e.title,
+              type: toSiteEventType(e.type),
+              // The grouping code below wants a plain date; render it in the
+              // event's own timezone so a 6pm CT event doesn't slide a day.
+              date: toDateKey(e.date, e.timezone),
+              image: e.image_url || "images/events/DH.jpg",
+              description: e.description || "",
+            })),
+          );
+          return;
         }
+        console.warn("[events] dashboard empty or unreachable — using content CDN");
+        const jsonData = await getFileContent("data/events/events.json");
+        setEvents(jsonData ? (JSON.parse(jsonData) as EventData[]) : []);
       } catch (e) {
-        console.warn("Error parsing events data, using hardcoded backup:", e);
+        console.warn("[events] load failed:", e);
         setEvents([]);
       } finally {
         setLoading(false);

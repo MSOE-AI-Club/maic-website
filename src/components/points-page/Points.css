@@ -475,3 +475,118 @@
     filter: none;
   }
 }
+
+/* ── Live leaderboard (ALL dashboard) ─────────────────────────────────
+   Reuses the same glass tokens as .points-item so the standings read as
+   part of this page rather than a bolted-on widget. */
+.points-leaderboard {
+  max-width: 800px;
+  margin: 3rem auto 0;
+  padding: 0 2rem;
+}
+
+.points-leaderboard-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgb(var(--text-1));
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.points-leaderboard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.points-leader {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--glass-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Top three get a medal tint on the rank only — enough to read at a
+   glance without turning the list into a gradient. */
+.points-leader--top .points-leader-rank {
+  color: #0d0d12;
+  font-weight: 800;
+}
+.points-leader--1 .points-leader-rank { background: #f4c145; }
+.points-leader--2 .points-leader-rank { background: #cfd3da; }
+.points-leader--3 .points-leader-rank { background: #d08a53; }
+
+.points-leader-rank {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(var(--text-1));
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.points-leader-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgb(var(--text-1));
+}
+
+.points-leader-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.points-leader-badge {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.points-leader-badge--emoji {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.points-leader-points {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: rgb(var(--text-1));
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+  .points-leaderboard {
+    padding: 0 1rem;
+  }
+  .points-leader {
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+  }
+  .points-leader-name {
+    font-size: 0.95rem;
+  }
+}
