@@ -14,11 +14,6 @@ import "@xyflow/react/dist/style.css";
 import LearningTreeNode from "./LearningTreeNode.tsx";
 import "./assets/css/tree.css";
 import { getFileContent } from "../../hooks/github-hook";
-import {
-  getDashboardTree,
-  type TreeNode,
-  type TreePayload,
-} from "../../hooks/dashboard-hook";
 
 interface TreeProps {
   nodeID: string | null;
@@ -204,90 +199,6 @@ const transformTreeNodes = (treeData: TreeJsonData): CustomNode[] => {
 };
 
 /**
- * Builds ReactFlow nodes straight from the ALL dashboard's learning tree.
- *
- * Deliberately does NOT go through transformTreeNodes. That function derives
- * positions from parent nodes because maic-content's tree.json shipped every
- * position as {0,0}; the dashboard instead returns pos_x/pos_y that an officer
- * arranged by hand in the editor, and recomputing over the top would throw
- * that away. Nodes without stored coordinates fall back to a category-based
- * grid so a freshly-added node still lands somewhere sensible.
- *
- * The payload merges the network's shared base tree with MAIC's own nodes, so
- * this renders both — `source` distinguishes them if that's ever wanted.
- */
-const transformDashboardTree = (
-  payload: TreePayload,
-): { nodes: CustomNode[]; edges: Edge[] } => {
-  const byId = new Map(payload.nodes.map((n) => [n.id, n]));
-
-  // prereqs is the full parent set; parent_ref is the primary one. Prefer
-  // prereqs so multi-parent nodes keep every edge.
-  const parentsOf = (n: TreeNode): string[] => {
-    const raw = n.prereqs && n.prereqs.length ? n.prereqs : n.parent_ref ? [n.parent_ref] : [];
-    return raw.filter((p) => byId.has(p));
-  };
-
-  const childrenOf = new Map<string, string[]>();
-  for (const n of payload.nodes) {
-    for (const p of parentsOf(n)) {
-      childrenOf.set(p, [...(childrenOf.get(p) ?? []), n.id]);
-    }
-  }
-
-  // Fallback grid for nodes the dashboard hasn't positioned yet.
-  let unplaced = 0;
-  const nodes: CustomNode[] = payload.nodes.map((n) => {
-    let x = n.pos_x;
-    let y = n.pos_y;
-    if (x == null || y == null) {
-      x = (unplaced % 6) * 420;
-      y = 4000 + Math.floor(unplaced / 6) * 300;
-      unplaced += 1;
-    }
-    const color = n.color || "#7c6bd6";
-    return {
-      id: n.id,
-      type: "treeNode",
-      position: { x, y },
-      children: childrenOf.get(n.id) ?? [],
-      data: {
-        name: n.title,
-        // Thumbnails are absolute URLs; LearningTreeNode already prefers
-        // image_path when it looks like one.
-        image_path: n.thumbnail || "",
-        api_image_path: n.thumbnail || "",
-        description: n.summary || "",
-        category: n.tags?.[0] || "General",
-        category_color: color,
-        highlighted_path: "False",
-        // The dashboard holds node content as markdown rather than a link to
-        // a library article, so there's nothing to navigate to yet.
-        link: "",
-      },
-    } as CustomNode;
-  });
-
-  // Build edges from the payload's own edge list rather than re-deriving them
-  // from parent links — the API already resolved the graph, including the
-  // multi-parent cases, so there's nothing to gain by recomputing it.
-  const nodeIds = new Set(nodes.map((n) => n.id));
-  const colorOf = new Map(nodes.map((n) => [n.id, n.data.category_color as string]));
-  const edges: Edge[] = (payload.edges ?? [])
-    .filter((e) => nodeIds.has(e.from) && nodeIds.has(e.to))
-    .map((e, i) => ({
-      id: `${e.from}-${e.to}-${i}`,
-      source: e.from,
-      target: e.to,
-      type: "default",
-      animated: true,
-      style: { stroke: colorOf.get(e.to) || "#7c6bd6", strokeWidth: 6 },
-    }));
-
-  return { nodes, edges };
-};
-
-/**
  * Generates edges based on the children attribute of each node.
  */
 const generateEdges = (nodes: CustomNode[]): Edge[] => {
@@ -325,27 +236,6 @@ const Tree = (props: TreeProps) => {
     const loadTreeData = async () => {
       setIsLoading(true);
       try {
-        /**
-         * The learning tree now lives in the ALL dashboard, where officers
-         * edit nodes and arrange the layout — this renders the network's
-         * shared base tree merged with MAIC's own additions.
-         *
-         * maic-content's tree.json remains the fallback so a dashboard
-         * outage shows the previous tree instead of the placeholder nodes.
-         */
-        const dashboardTree = await getDashboardTree();
-        if (dashboardTree?.nodes?.length) {
-          const { nodes: dashNodes, edges: dashEdges } =
-            transformDashboardTree(dashboardTree);
-          setNodes(dashNodes);
-          setEdges(dashEdges);
-          // Frame the whole tree. The old code picked node "1" and the
-          // highest numeric id, which assumed numeric ids — dashboard ids
-          // are slugs and uuids, so Number() on them yields NaN.
-          fitViewOptions.nodes = undefined;
-          return;
-        }
-        console.warn("[tree] dashboard unavailable — falling back to content CDN");
 
         // Fetch the tree.json file using the GitHub hook
         const treeJsonContent = await getFileContent(
