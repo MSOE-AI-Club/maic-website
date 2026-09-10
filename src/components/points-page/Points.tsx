@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Points.css";
 import { FaTshirt } from "react-icons/fa";
 import { FaTicketAlt } from "react-icons/fa";
+import { getDashboardBundle, type DashboardLeader } from "../../hooks/dashboard-hook";
+import { BadgeIcon } from "../badge-icon/BadgeIcon";
 
 
 const activities = [
@@ -33,6 +36,17 @@ const activities = [
 
 function Points() {
   const navigate = useNavigate();
+  const [leaders, setLeaders] = useState<DashboardLeader[] | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    getDashboardBundle().then((bundle) => {
+      if (live && bundle?.leaderboard?.length) setLeaders(bundle.leaderboard);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   return (
     <>
@@ -57,6 +71,46 @@ function Points() {
           </div>
         ))}
       </div>
+      {/* Live leaderboard. The copy above has always promised one ("climb the
+          leaderboard") without ever showing it — the standings live in the ALL
+          dashboard, so this is now the real thing rather than a screenshot
+          someone has to remember to update. Hidden entirely if unreachable. */}
+      {leaders && leaders.length > 0 && (
+        <div className="points-leaderboard">
+          <h1 className="points-leaderboard-title">Current Standings</h1>
+          <ol className="points-leaderboard-list">
+            {leaders.map((m) => (
+              <li
+                className={`points-leader${m.rank <= 3 ? ` points-leader--top points-leader--${m.rank}` : ""}`}
+                key={`${m.rank}-${m.name}`}
+              >
+                <span className="points-leader-rank">{m.rank}</span>
+                <span className="points-leader-name">
+                  {m.name}
+                  {m.badges?.length > 0 && (
+                    <span className="points-leader-badges">
+                      {m.badges.slice(0, 4).map((b) => (
+                        <BadgeIcon
+                          key={b.id}
+                          icon={b.icon}
+                          name={b.name}
+                          size={16}
+                          imgClassName="points-leader-badge"
+                          emojiClassName="points-leader-badge points-leader-badge--emoji"
+                        />
+                      ))}
+                    </span>
+                  )}
+                </span>
+                <span className="points-leader-points">
+                  {m.points.toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
       <div className="points-spend-container">
         <h1 className="points-spend-title">What Can You Do With Points?</h1>
         <div className="points-spend-options">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { getSubsectionModals } from "../../hooks/library-helper";
+import { getDashboardBundle } from "../../hooks/dashboard-hook";
 import { Skeleton } from "@mui/material";
 import SpotlightCard from "../react-bits/spotlight-card/SpotlightCard";
 
@@ -36,8 +37,47 @@ const ResearchProjects = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const data = await getSubsectionModals("Research");
-      const cleaned = (data || []).filter(Boolean) as ResearchModalLike[];
+
+      /**
+       * Research projects come from the ALL dashboard, where each one carries
+       * its full author byline and attached papers/slides/recordings. The
+       * maic-content copy under-credited teams — several projects listed a
+       * single name for work done by eight people — so this is both live and
+       * more accurate.
+       *
+       * Falls back to the content CDN if the dashboard is unreachable.
+       */
+      const bundle = await getDashboardBundle();
+      let cleaned: ResearchModalLike[];
+
+      if (bundle?.projects?.length) {
+        cleaned = bundle.projects.map((p) => {
+          const paper = p.files.find((f) => f.kind === "paper");
+          const repo =
+            p.files.find((f) => f.kind === "link" && /github/i.test(f.url)) ||
+            (p.link_url && /github/i.test(p.link_url)
+              ? { url: p.link_url }
+              : undefined);
+          return {
+            title: p.title,
+            description: p.description || "",
+            img: p.image_url || undefined,
+            date: p.year || "",
+            team: p.members.map((m) => m.name),
+            authors: p.members.map((m) => m.name).join(", "),
+            membersCount: p.members.length,
+            publicationsCount: p.files.length,
+            content_ids: p.files,
+            paperUrl: paper?.url ?? p.link_url ?? undefined,
+            repoUrl: repo?.url,
+          } as ResearchModalLike;
+        });
+      } else {
+        console.warn("[research] dashboard unavailable — using content CDN");
+        const data = await getSubsectionModals("Research");
+        cleaned = (data || []).filter(Boolean) as ResearchModalLike[];
+      }
+
       setProjects(cleaned);
 
       // Derive available years from project dates

@@ -285,6 +285,12 @@ export async function getFileContent(filePath: string): Promise<string | null> {
 }
 
 export function getRawFileUrl(filePath: string): string {
+  // Images now arrive from two places: relative paths in the content repo,
+  // and absolute URLs from the ALL dashboard. Prefixing an absolute URL with
+  // the CDN base produces a mangled, double-encoded link, so pass those
+  // through untouched.
+  if (/^https?:\/\//i.test(filePath)) return filePath;
+
   const baseUrl =
     resolvedContentBaseUrl || ENV_CONTENT_BASE_URL || DEFAULT_CONTENT_BASE_URL;
   const encodedFilePath = filePath

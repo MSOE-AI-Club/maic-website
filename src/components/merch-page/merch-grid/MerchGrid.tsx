@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./MerchGrid.css";
 import { getRawFileUrl } from "../../../hooks/github-hook";
+import { getDashboardBundle } from "../../../hooks/dashboard-hook";
 
 interface MerchItem {
   name: string;
@@ -77,6 +78,43 @@ function MerchGrid() {
   const [selectedItem, setSelectedItem] = useState<MerchItem | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  /**
+   * The catalog lives in the ALL dashboard so the eboard can add items and
+   * change point costs without a code change. The hardcoded list below stays
+   * as the fallback for a dashboard outage.
+   *
+   * Cost has two forms: `cost_points` for a plain price, and `cost_text` for
+   * the ones that aren't purely points ("Participate in and Complete a MAIC
+   * Research Group"). Prefer the text when it's set.
+   */
+  const [items, setItems] = useState<MerchItem[]>(merchItems);
+
+  useEffect(() => {
+    let live = true;
+    getDashboardBundle().then((bundle) => {
+      if (!live || !bundle?.merch?.length) return;
+      setItems(
+        bundle.merch.map((m) => ({
+          name: m.name,
+          imagePaths: m.images?.length
+            ? m.images
+            : m.image_url
+              ? [m.image_url]
+              : [],
+          cost: m.cost_text?.trim()
+            ? m.cost_text
+            : `${m.cost_points ?? 0} Points`,
+          description: m.description || "",
+          // No dashboard equivalent — redemption is in person either way.
+          purchaseInfo: "Ask an Eboard Member",
+        })),
+      );
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
   const handleOpen = (item: MerchItem) => {
     setSelectedItem(item);
     setCurrentImageIndex(0);
@@ -120,7 +158,7 @@ function MerchGrid() {
     <>
       <div className="merch-grid">
         <div className="merch-grid-item">
-          {merchItems.map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={index}
               className="merch-grid-item-container"
