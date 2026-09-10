@@ -1,10 +1,10 @@
 /**
  * ALL Applied AI Network dashboard — live chapter data.
  *
- * The eboard edits events, badges, merch, the leaderboard, research projects
- * and the learning tree in dashboard.all-ai-network.org. This module reads
- * them so the site reflects those edits on the next page load, with no
- * redeploy and no second copy of the data in maic-content.
+ * The eboard edits events, badges, merch, the leaderboard, and research
+ * projects in dashboard.all-ai-network.org. This module reads them so the site
+ * reflects those edits on the next page load, with no redeploy and no second
+ * copy of the data in maic-content.
  *
  * NO API KEY, deliberately. This site is a static Vite build served from S3 —
  * there is no server, and every `VITE_*` variable is inlined into the
@@ -97,29 +97,6 @@ export interface DashboardBundle {
   projects: DashboardProject[];
 }
 
-export interface TreeNode {
-  id: string;
-  title: string;
-  summary: string | null;
-  body: string | null;
-  parent_ref: string | null;
-  prereqs: string[];
-  tags: string[];
-  thumbnail: string | null;
-  difficulty: string | null;
-  /** CSS color set on the node in the dashboard, or inherited per category. */
-  color: string | null;
-  pos_x: number | null;
-  pos_y: number | null;
-  /** "base" for the network's shared nodes, "chapter" for this club's own. */
-  source: string;
-}
-
-export interface TreePayload {
-  nodes: TreeNode[];
-  edges: Array<{ from: string; to: string }>;
-}
-
 /* ── Fetching ─────────────────────────────────────────────────────── */
 
 /**
@@ -132,7 +109,6 @@ export interface TreePayload {
  * never sees an update.
  */
 let bundlePromise: Promise<DashboardBundle | null> | null = null;
-let treePromise: Promise<TreePayload | null> | null = null;
 
 async function getJson<T>(url: string): Promise<T | null> {
   try {
@@ -168,20 +144,6 @@ export function getDashboardBundle(): Promise<DashboardBundle | null> {
     }) as Promise<DashboardBundle | null>;
   }
   return bundlePromise;
-}
-
-/** The network's shared learning tree merged with this chapter's own nodes. */
-export function getDashboardTree(): Promise<TreePayload | null> {
-  if (!treePromise) {
-    treePromise = getJson<TreePayload>(
-      `${DASHBOARD_BASE}/api/public/learning-tree/${CHAPTER_SLUG}`,
-    ).finally(() => {
-      setTimeout(() => {
-        treePromise = null;
-      }, 30_000);
-    }) as Promise<TreePayload | null>;
-  }
-  return treePromise;
 }
 
 /* ── Helpers the pages share ──────────────────────────────────────── */
