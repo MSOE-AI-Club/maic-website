@@ -39,9 +39,11 @@
 .bigtreenode {
   width: 30vw;
   min-width: 400px;
+  height: 280px;
   position: relative;
   left: -10vw;
   text-align: center;
+  overflow: hidden;
   /* transition: all 0.3s ease-in-out; Smooth transition when scaling down */
 }
 

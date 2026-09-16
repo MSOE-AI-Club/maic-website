@@ -172,3 +172,24 @@ export const getColorScheme = (categoryColor: string): ColorScheme => {
 export const getBaseColor = (categoryColor: string): string => {
   return getColorScheme(categoryColor).baseColor;
 };
+
+/**
+ * Converts a hex color string to an rgba string with the given opacity
+ */
+const hexToRgba = (hex: string, opacity: number): string => {
+  const cleaned = hex.replace("#", "");
+  const r = parseInt(cleaned.substring(0, 2), 16);
+  const g = parseInt(cleaned.substring(2, 4), 16);
+  const b = parseInt(cleaned.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+/**
+ * Returns a translucent version of the base color (15% opacity) for expanded category container backgrounds
+ * @param categoryColor - The category color name
+ * @returns An rgba CSS string
+ */
+export const getTranslucentColor = (categoryColor: string): string => {
+  const baseColor = getColorScheme(categoryColor).baseColor;
+  return hexToRgba(baseColor, 0.15);
+};
