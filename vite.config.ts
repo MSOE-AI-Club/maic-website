@@ -11,9 +11,10 @@ export default defineConfig({
     proxy: {
       // Proxy relative content requests to local content server to avoid CORS in dev
       '/content': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
+        timeout: 10000,
         rewrite: (path) => path.replace(/^\/content/, ''),
       },
     },
@@ -22,9 +23,10 @@ export default defineConfig({
     proxy: {
       // Mirror the dev proxy so `npm run preview` also resolves /content locally
       '/content': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
+        timeout: 10000,
         rewrite: (path) => path.replace(/^\/content/, ''),
       },
     },

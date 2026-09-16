@@ -8,19 +8,62 @@ const ENV_CONTENT_BASE_URL = RAW_ENV_CONTENT_BASE_URL
   ? RAW_ENV_CONTENT_BASE_URL.trim().replace(/\/+$/, "")
   : undefined;
 
+const LOCAL_CONTENT_DIRECT_URL = "http://127.0.0.1:8000";
+
 // Lazily resolved and cached content base URL
 let resolvedContentBaseUrl: string | null = null;
+
+async function probeContentBaseUrl(url: string, timeoutMs = 5000): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${url}/manifest.json`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 async function resolveContentBaseUrl(): Promise<string> {
   if (resolvedContentBaseUrl) return resolvedContentBaseUrl;
 
   // 1) Honor explicit env override first
   if (ENV_CONTENT_BASE_URL && ENV_CONTENT_BASE_URL.length > 0) {
+    // In dev, if the proxy path hangs, fall back to the direct content server
+    if (import.meta.env.DEV && ENV_CONTENT_BASE_URL === "/content") {
+      const proxyWorks = await probeContentBaseUrl(ENV_CONTENT_BASE_URL);
+      if (proxyWorks) {
+        resolvedContentBaseUrl = ENV_CONTENT_BASE_URL;
+        return resolvedContentBaseUrl;
+      }
+      const directWorks = await probeContentBaseUrl(LOCAL_CONTENT_DIRECT_URL);
+      if (directWorks) {
+        console.info(
+          "Vite /content proxy unavailable; using direct local content server."
+        );
+        resolvedContentBaseUrl = LOCAL_CONTENT_DIRECT_URL;
+        return resolvedContentBaseUrl;
+      }
+    }
+
     resolvedContentBaseUrl = ENV_CONTENT_BASE_URL;
     return resolvedContentBaseUrl;
   }
 
-  // 2) Try default "/content"
+  // 2) In dev, prefer direct local content server
+  if (import.meta.env.DEV) {
+    const directWorks = await probeContentBaseUrl(LOCAL_CONTENT_DIRECT_URL);
+    if (directWorks) {
+      resolvedContentBaseUrl = LOCAL_CONTENT_DIRECT_URL;
+      return resolvedContentBaseUrl;
+    }
+  }
   try {
     const res = await fetchWithRetry(
       `${DEFAULT_CONTENT_BASE_URL}/manifest.json`,
@@ -200,6 +243,26 @@ export async function getDirectoryContents(
 }
 
 // Helper function to implement exponential backoff retry logic
+const FETCH_TIMEOUT_MS = 15000;
+
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeoutMs = FETCH_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
@@ -210,7 +273,7 @@ async function fetchWithRetry(
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      const response = await fetch(url, options);
+      const response = await fetchWithTimeout(url, options);
 
       // If it's a successful response, return it immediately
       if (response.ok) {

@@ -24,11 +24,13 @@ type treeNode = Node<
     highlighted_path: string;
     position?: string;
     link: string;
+    onHoverStart?: (id: string, rightShift: number, leftShift: number) => void;
+    onHoverEnd?: () => void;
   },
   "treeNode"
 >;
 
-const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
+const LearningTreeNode = ({ id, data }: NodeProps<treeNode>) => {
   // State for managing the resolved image URL
   const [imageUrl, setImageUrl] = useState<string>(
     "https://via.placeholder.com/200x150?text=Loading..."
@@ -110,55 +112,41 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
           '& *': { color: `${textColor} !important` }
         }}
       >
-        <Box sx={{ display: 'flex', gap: 0.5, height: '100%' }}>
+        <Box sx={{ display: 'flex', gap: 0.5, height: '280px', overflow: 'hidden' }}>
           {/* Left Side: Image and Title */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ flex: 1, overflow: 'hidden' }}>
               <CardMedia
                 component="img"
                 height="100%"
-                image={
-                  imageUrl
-                }
+                image={imageUrl}
                 alt="Image"
                 sx={{ borderRadius: 2, objectFit: 'cover', width: '100%' }}
               />
             </Box>
-            <Box>
-              <CardContent>
-                <div className="title">
-                  {data.name}
-                </div>
+            <Box sx={{ flexShrink: 0 }}>
+              <CardContent sx={{ py: 0.5 }}>
+                <div className="title">{data.name}</div>
               </CardContent>
             </Box>
           </Box>
 
-          {/* Right Side: Description and Category */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box>
+          {/* Right Side: Description (scrollable) and Category */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
               <CardContent>
-                <div>
-                  {data.description}
-                </div>
+                <div>{data.description}</div>
               </CardContent>
             </Box>
-            <Box>
-                <Chip
-                    sx={{
-                    backgroundColor: baseColor,
-                    color: textColor,
-                    borderRadius: 4,
-                    mb: 0 // Reduced margin-bottom to bring the text closer to the chip
-                    }}
-                    size="medium"
-                    label={data.category}
-                />
-                <Typography
-                    variant="body2" // Adjust this variant to change the font size and style
-                    sx={{ mb: 3, fontSize: 14, fontStyle: 'italic', fontWeight: 'bold' }}
-                >
-                    Click to learn more!
-                </Typography>
+            <Box sx={{ flexShrink: 0 }}>
+              <Chip
+                sx={{ backgroundColor: baseColor, color: textColor, borderRadius: 4 }}
+                size="medium"
+                label={data.category}
+              />
+              <Typography variant="body2" sx={{ fontSize: 12, fontStyle: 'italic', fontWeight: 'bold' }}>
+                Click to learn more!
+              </Typography>
             </Box>
           </Box>
         </Box>
@@ -213,11 +201,15 @@ const LearningTreeNode = ({ data }: NodeProps<treeNode>) => {
         onMouseOver={() => {
           if (!isMobile()) {
             setState({ raised: true, className: "bigtreenode" });
+            // bigtreenode is 30vw wide with left:-10vw → expands 10vw left AND right.
+            const perSideShift = Math.max(Math.round(window.innerWidth * 0.1), 125);
+            data.onHoverStart?.(id, perSideShift, perSideShift);
           }
         }}
         onMouseOut={() => {
           if (!isMobile()) {
             setState({ raised: false, className: "smalltreenode" });
+            data.onHoverEnd?.();
           }
         }}
         onTouchStart={(e) => e.preventDefault()}

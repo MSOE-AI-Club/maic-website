@@ -4,3 +4,9 @@
   height: 100%;
   overflow: hidden;
 }
+
+/* Hovered category boxes and tree nodes float above all siblings */
+.react-flow__node-categoryGroup:hover,
+.react-flow__node-treeNode:hover {
+  z-index: 9999 !important;
+}
