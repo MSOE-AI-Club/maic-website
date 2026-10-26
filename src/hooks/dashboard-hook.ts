@@ -125,6 +125,28 @@ async function getJson<T>(url: string): Promise<T | null> {
 }
 
 /**
+ * The whole public board, not just the first page the bundle carries.
+ * The homepage leaderboard searches every member, and a scan should show
+ * up here without anyone editing a spreadsheet.
+ */
+export async function getFullLeaderboard(): Promise<DashboardLeader[] | null> {
+  const first = await getJson<{ rows: DashboardLeader[]; total: number }>(
+    `${DASHBOARD_BASE}/api/public/chapter/${CHAPTER_SLUG}/leaderboard?offset=0&limit=100`,
+  );
+  if (!first?.rows) return null;
+  const rows = [...first.rows];
+  const total = first.total ?? rows.length;
+  while (rows.length < total && rows.length < 2000) {
+    const page = await getJson<{ rows: DashboardLeader[] }>(
+      `${DASHBOARD_BASE}/api/public/chapter/${CHAPTER_SLUG}/leaderboard?offset=${rows.length}&limit=100`,
+    );
+    if (!page?.rows?.length) break;
+    rows.push(...page.rows);
+  }
+  return rows;
+}
+
+/**
  * The whole chapter payload in one request.
  *
  * `events=all` matters: the bundle returns only UPCOMING events by default,

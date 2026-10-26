@@ -52,9 +52,12 @@
   word-break: break-word;
 }
 
-.leaderboard-table th:nth-child(2),
+.leaderboard-table th:nth-child(1) {
+  width: 18%;
+}
+
 .leaderboard-table th:nth-child(3) {
-  width: 30%;
+  width: 22%;
 }
 
 .leaderboard-table td {
@@ -94,8 +97,21 @@
   color: #5c340c;
 }
 
-.custom-emoji {
-  margin-right: 4px;
+.leaderboard-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.leaderboard-badge {
+  width: 16px;
+  height: 16px;
+}
+
+.leaderboard-status {
+  margin-top: 1rem;
 }
 
 .no-results {
