@@ -149,12 +149,24 @@ const transformTreeNodes = (treeData: TreeJsonData): CustomNode[] => {
   // Sort nodes by ID to process them in order
   allNodes.sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
-  allNodes.forEach((node) => {
+  // A node's position depends on its parents' positions, so place every
+  // parent before its children. ID order alone breaks when a node with a
+  // high ID (for example 85) is the parent of nodes with lower IDs.
+  const placed = new Set<string>();
+  const placeNode = (node: CustomNode) => {
+    if (placed.has(node.id)) return;
+    placed.add(node.id);
+
     const originalNode = Object.values(treeData.categories)
       .flatMap((cat) => cat.nodes)
       .find((n) => n.id === node.id);
 
     if (!originalNode) return;
+
+    originalNode.parents.forEach((parentId) => {
+      const parentNode = nodeMap.get(parentId);
+      if (parentNode) placeNode(parentNode);
+    });
 
     if (node.id === "1") {
       // Root node
@@ -193,7 +205,9 @@ const transformTreeNodes = (treeData: TreeJsonData): CustomNode[] => {
         node.position = { x, y };
       }
     }
-  });
+  };
+
+  allNodes.forEach(placeNode);
 
   return allNodes;
 };
