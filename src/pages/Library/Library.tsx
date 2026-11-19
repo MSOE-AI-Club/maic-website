@@ -1070,7 +1070,10 @@ const Library = () => {
           {getAliasRedirectTarget(location.pathname, location.search) ===
             null &&
             query.get("article") !== null && (
-              <Article articleId={currentArticle} closeArticle={closeArticle} />
+              <Article
+                articleId={query.get("article") ?? ""}
+                closeArticle={closeArticle}
+              />
             )}
           <ModalItemPreview
             articleId={previewedArticle}
