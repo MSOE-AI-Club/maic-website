@@ -63,6 +63,7 @@ const Article = (props: ArticleProps) => {
   const [videoId, setVideoId] = useState<string>("");
   const [marimoUrl, setMarimoUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [notFound, setNotFound] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -202,13 +203,23 @@ const Article = (props: ArticleProps) => {
 
   useEffect(() => {
     // Load markdown content and metadata locally
+    let cancelled = false;
+    setIsLoading(true);
+    setNotFound(false);
+    setTitle("");
+    setSummary("");
+    setDate("");
+    setAuthors("");
+    setContents("");
     (async () => {
+      let found = false;
       try {
-        if (!props.articleId) { setIsLoading(false); return; }
+        if (!props.articleId) return;
         const manifest = await getManifest();
+        if (cancelled) return;
         const files = manifest?.files || [];
         const mdPath = files.find((p) => p.endsWith(`/${props.articleId}.md`) || p === `${props.articleId}.md`);
-        if (!mdPath) { setIsLoading(false); return; }
+        if (!mdPath) return;
         const dir = mdPath.substring(0, mdPath.lastIndexOf("/"));
         const metaPathsToTry = [
           `${dir}/metadata.json`,
@@ -226,7 +237,9 @@ const Article = (props: ArticleProps) => {
             }
           }
         }
+        if (cancelled) return;
         if (meta) {
+          found = Boolean(meta.title || meta.authors || meta.date || meta.summary);
           if (meta.summary) setSummary(meta.summary.toString());
           if (meta.date && /\d+\/\d+\/\d+/.test(meta.date.toString())) {
             setDate(convertDateToTextual(meta.date.toString()));
@@ -237,11 +250,18 @@ const Article = (props: ArticleProps) => {
           if (meta.authors) setAuthors(meta.authors.toString());
         }
         const content = await getFileContent(mdPath);
+        if (cancelled) return;
         if (content) setContents(content);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setNotFound(!found);
+          setIsLoading(false);
+        }
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [props.articleId]);
 
   return (
@@ -261,7 +281,7 @@ const Article = (props: ArticleProps) => {
       )}
       {type === "md" && !isLoading && (
         <div className="article">
-          {!title && !authors && !date && !summary && (
+          {notFound && (
             <div>
               <h1>404 - Article Not Found</h1>
               <p>No article was found here. Try again looking for the article.</p>
